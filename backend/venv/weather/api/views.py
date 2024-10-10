@@ -70,6 +70,7 @@ class SimpleWeatherView(View):
         #print(request.GET)
         #req = requests.get("https://api.openweathermap.org/data/2.5/weather", params = {"lat" : 43.1056, "lon" : 131.87353, "appid" : API_KEY})
 
+        #   artifical response (delete later) !!!
         data = EXAMPLE_RESPONSE_DATA
 
         return JsonResponse(data)
@@ -82,7 +83,10 @@ class CoordinatesWeatherView(View):
 
         #req = requests.get("https://api.openweathermap.org/data/2.5/weather", params = {"lat" : lat, "lon" : lon, "appid" : API_KEY})
         #data = dict(req.json())
-        
+
+        #   artifical response (delete later) !!!
         data = EXAMPLE_RESPONSE_DATA
+        data["lat"] = lat
+        data["lon"] = lon
 
         return JsonResponse(data)
