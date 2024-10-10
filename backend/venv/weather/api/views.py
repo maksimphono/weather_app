@@ -9,11 +9,15 @@ from .models import Pair
 from .serializers import PairSerializer, SimpleWeatherSerializer
 from time import time
 import requests
+import os
+from dotenv import load_dotenv
 
 # Create your views here. 
 
-"""
-{
+load_dotenv()
+API_KEY = os.environ.get("API_KEY")
+
+EXAMPLE_RESPONSE_DATA = {
     'coord': {
         'lon': 10.99, 
         'lat': 44.34
@@ -59,14 +63,25 @@ import requests
     'name': 'Zocca', 
     'cod': 200
 }
-"""
+
 
 class SimpleWeatherView(View):
     def get(self, request):
         #print(request.GET)
         #req = requests.get("https://api.openweathermap.org/data/2.5/weather", params = {"lat" : 43.1056, "lon" : 131.87353, "appid" : "b2c7e53d740b18010af6e34dadf39662"})
 
-        data = dict(request.GET)
+        data = EXAMPLE_RESPONSE_DATA
 
         return JsonResponse(data)
     
+class CoordinatesWeatherView(View):
+    
+    def get(self, request):
+        lat = request.GET.get("lat")
+        lon = request.GET.get("lon")
+
+        req = requests.get("https://api.openweathermap.org/data/2.5/weather", params = {"lat" : lat, "lon" : lon, "appid" : API_KEY})
+
+        data = dict(req.json())
+    
+        return JsonResponse(data)
