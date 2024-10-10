@@ -68,7 +68,7 @@ EXAMPLE_RESPONSE_DATA = {
 class SimpleWeatherView(View):
     def get(self, request):
         #print(request.GET)
-        #req = requests.get("https://api.openweathermap.org/data/2.5/weather", params = {"lat" : 43.1056, "lon" : 131.87353, "appid" : "b2c7e53d740b18010af6e34dadf39662"})
+        #req = requests.get("https://api.openweathermap.org/data/2.5/weather", params = {"lat" : 43.1056, "lon" : 131.87353, "appid" : API_KEY})
 
         data = EXAMPLE_RESPONSE_DATA
 
@@ -80,8 +80,9 @@ class CoordinatesWeatherView(View):
         lat = request.GET.get("lat")
         lon = request.GET.get("lon")
 
-        req = requests.get("https://api.openweathermap.org/data/2.5/weather", params = {"lat" : lat, "lon" : lon, "appid" : API_KEY})
+        #req = requests.get("https://api.openweathermap.org/data/2.5/weather", params = {"lat" : lat, "lon" : lon, "appid" : API_KEY})
+        #data = dict(req.json())
+        
+        data = EXAMPLE_RESPONSE_DATA
 
-        data = dict(req.json())
-    
         return JsonResponse(data)
