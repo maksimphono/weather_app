@@ -1,0 +1,27 @@
+@font-face {
+    font-family: 'MyFont';
+    src: url('./Baumans-Regular.ttf');
+}
+
+h1 {
+    font-family: 'MyFont';
+}
+
+.button {
+    display: flex;
+    text-align: center;
+    padding : 10px;
+    border-radius: 3px;
+    border: none;
+    outline-offset: 2px;
+    outline: 2px solid red;
+    background-color: #222;
+    color : #ddd;
+    font-family: 'MyFont';
+}
+.ico {
+    display: block;
+    width: 100px;
+    height: 100px;
+    background: url('./icon.css.png');
+}
