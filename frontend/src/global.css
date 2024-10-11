@@ -23,4 +23,5 @@ body {
     height: auto;
     min-height: 100vh;
     background-color: #ada;
+    padding-top: 50px;
 }
