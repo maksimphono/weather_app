@@ -18,7 +18,11 @@ module.exports = {
                 use : ["babel-loader"]
             },
             {
-                test : /\.s[ac]ss$/i,
+                test : /\.scss$/i,
+                use : ["style-loader", "css-loader", "sass-loader"]
+            },
+            {
+                test : /\.css$/i,
                 use : ["style-loader", "css-loader", "sass-loader"]
             },
             {
@@ -36,7 +40,8 @@ module.exports = {
         filename : "bundle.js"
     },
     devServer : {
-        hot : true
+        hot : true,
+        historyApiFallback : true
     }
 }
 /*
