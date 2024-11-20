@@ -2,11 +2,12 @@
   "name": "weather-app-frontend",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "./src/main.js",
   "scripts": {
     "test": "jest",
-    "start": "webpack serve --config ./webpack.config.js --mode development",
-    "build": "webpack --mode production"
+    "start": "electron .",
+    "dev": "webpack serve --open",
+    "build": "webpack"
   },
   "keywords": [],
   "author": "",
