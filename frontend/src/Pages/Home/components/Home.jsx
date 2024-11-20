@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 
 export default function Home() {
-    const [weather, setWeather] = useState({})
+    const [weather, setWeather] = useState({main : "sunny"})
     const [lon, setLon] = useState(0)
     const [lat, setLat] = useState(0)
 
@@ -9,8 +9,9 @@ export default function Home() {
         event.preventDefault()
         console.dir(lon, lat)
 
-        const res = await fetch(`http://localhost:8000/api/coords?lon=${lon}&lat=${lat}`)
-        console.dir(res.json())
+        setWeather({"main" : "rain"})
+        //const res = await fetch(`http://localhost:8000/api/coords?lon=${lon}&lat=${lat}`)
+        //console.dir(res.json())
         //setWeather(res)
     }
 

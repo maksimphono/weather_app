@@ -16,18 +16,13 @@ module.exports = {
                 use : ["ts-loader"]
             },
             {
-                test: /\.jsx?$/, // Match JavaScript and JSX files
-                exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-env', '@babel/preset-react'],
-                    },
-                },
+                test : /\.(js|jsx)$/i,
+                exclude : /node_modules/,
+                use : ["babel-loader"]
             },
             {
-                test : /\.s?css$/i, // Match CSS files
-                use: ['style-loader', 'css-loader'],
+                test : /\.s?css$/i,
+                use : ["style-loader", "css-loader", "sass-loader"]
             },
             {
                 test : /\.(png|svg|jpg|jpeg|gif)$/i,
@@ -37,7 +32,7 @@ module.exports = {
         ],
     },
     resolve: {
-        extensions: ['.js', '.jsx'], // Resolve JS and JSX extensions
+        extensions : ["*", ".js", "jsx"], // Resolve JS and JSX extensions
     },
     plugins: [
         new HtmlWebpackPlugin({
