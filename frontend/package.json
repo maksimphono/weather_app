@@ -2,9 +2,11 @@
   "name": "weather-app-frontend",
   "version": "0.0.1",
   "description": "",
-  "main": "./src/main.js",
+  "main" : "./index.js",
+  "_main": "./src/main.js",
   "scripts": {
     "test": "jest",
+    "desktop" : "webpack . && electron .",
     "start": "electron .",
     "dev": "webpack serve --open",
     "build": "webpack"

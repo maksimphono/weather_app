@@ -7,7 +7,7 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.js',
     },
-    target: 'electron-renderer', // Target Electron's renderer process
+    //target: 'electron-renderer', // Target Electron's renderer process
     module: {
         rules: [
             {
