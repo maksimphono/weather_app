@@ -20,8 +20,8 @@ body {
 #root {
     display: block;
     width: 100%;
-    height: auto;
     min-height: 100vh;
+    height: auto;
     background-color: #ada;
     padding-top: 50px;
 }

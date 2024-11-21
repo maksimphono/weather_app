@@ -1,26 +1,27 @@
 import React from 'react'
 import Layout from './Layout.jsx'
 import Home from './Pages/Home/components/Home.jsx'
-import { HashRouter, Route, Routes } from 'react-router-dom'
+//import WeatherByCity from './Pages/WaetherByCity/Components/WeatherByCity.jsx'
+//import WeatherByCoordinates from './Pages/WaetherByCity/Components/WeatherByCoordinates.jsx'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import "./global.css"
 
 export default function App() {
     return (
-      <HashRouter>
+      <BrowserRouter>
         <Routes>
           <Route path = "/" element = {<Layout/>}>
             <Route index element = {<Home></Home>}/>
-            <Route path = "qqqq" element = {<h1>Qwe</h1>}/>
           </Route>
           <Route path = "tests">
             <Route index element = {<h1>Tests</h1>}/>
           </Route>
         </Routes>
-      </HashRouter>
+      </BrowserRouter>
     )
 }
 /*
-<HashRouter>
+<BrowserRouter>
       <Routes>
         <Route path = "/" element = {<h1>Qwerty</h1>}>
           <Route index element = {<h1>Qwerty</h1>}/>
@@ -29,5 +30,5 @@ export default function App() {
           <Route index element = {<h1>Tests</h1>}/>
         </Route>
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
 */
