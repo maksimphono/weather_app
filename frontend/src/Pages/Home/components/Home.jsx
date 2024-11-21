@@ -16,13 +16,13 @@ function InputFields() {
     return (
         <form className={style["input__fields"]} style = {{"gridArea" : "input_fields", backgroundColor: "blue"}}>
             <div className = {style["input__switch"]}>
-                <label style = {seletcedMode === "city"?{"color" : "#fff"}:{"color" : "#222"}}>
+                <label>
                     <input type = "radio" name = "input_mode" defaultChecked = {true} value = "city" onChange={({target}) => setSelectedMode(target.value)} />
-                    <span>City</span>
+                    <span style = {seletcedMode === "city"?{"color" : "var(--color-light)"}:{"color" : "var(--color-dark)"}}>City</span>
                 </label>
-                <label style = {seletcedMode === "coords"?{"color" : "#fff"}:{"color" : "#222"}}>
+                <label>
                     <input type = "radio" name = "input_mode" value = "coords" onChange={({target}) => setSelectedMode(target.value)}/>
-                    <span>Coordinates</span>
+                    <span style = {seletcedMode === "coords"?{"color" : "var(--color-light)"}:{"color" : "var(--color-dark)"}}>Coordinates</span>
                 </label>
             </div>
             <label htmlFor="">
