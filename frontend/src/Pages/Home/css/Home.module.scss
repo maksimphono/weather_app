@@ -12,7 +12,21 @@
         background-color: #5556;
         overflow: hidden;
 
+        .follower {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            aspect-ratio: 1/1;
+            width: 300px;
+            //background-color: #000;
+            background-image: radial-gradient(#fff3 40%, #fff0 60%);
+            border-radius: 50%;
+            transform: none;
+        }
+
         .basic__info {
+            position: relative;
             display: grid;
             height: 100%;
             width: 100%;
@@ -102,8 +116,8 @@
             display: grid;
             grid-template-areas:
                 "logo . . ."
-                "main main . ."
-                "name name . ."
+                "main main main ."
+                "name name name ."
                 "date date . ."
                 "timezone . . ."
                 "wind visibility sea_level grnd_level"
@@ -119,6 +133,7 @@
             grid-template-columns: repeat(4, 1fr);
 
             .smallWeatherData {
+                position: relative;
                 display: flex;
                 flex-direction: column !important;
                 height: 100%;
@@ -144,6 +159,28 @@
                 }
                 &.date {
                     font-size: 2rem
+                }
+                &.wind__data::after,
+                &.visibility__data::after,
+                &.sea_level::after {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    right: 0px;
+                    display: block;
+                    background-image: linear-gradient(#0000, #0008, #0008, #0000);
+                    width: 1.5px;
+                    height: 100%;
+                }
+                &.wind__data,
+                &.visibility__data,
+                &.sea_level,
+                &.grnd_level {
+                    display: grid;
+                    grid-template-rows: 20% 1fr;
+                    justify-items: center;
+                    align-items: center;
+                    padding-bottom: 10%;
                 }
             }
         }

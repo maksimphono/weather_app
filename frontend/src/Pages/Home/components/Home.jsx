@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useReducer, useState} from 'react'
+import React, {useCallback, useEffect, useReducer, useRef, useState} from 'react'
 import style from "../css/Home.module.scss"
 import InputFields from './InputFields.jsx'
 //const style = {}
@@ -54,10 +54,13 @@ const currentWeatherData = {
 
 export default function Home() {
     const [weatherData, setWeatherData] = useState(currentWeatherData)
+    const [followerCoords, setFollowerCoords] = useState({x: 0, y : 0})
+    const weatherViewRef = useRef(null)
 
     return (
         <div className = {style["home"]}>
-            <div className = {style["weather__view"]}>
+            <div ref = {weatherViewRef} className = {style["weather__view"]}>
+                <i style = {{top: followerCoords.y, left: followerCoords.x}} className = {style["follower"]}></i>
                 <div className = {style["basic__info"]}>
                     <InputFields />
                     <SmallWeatherData gridArea = "temp" value = {weatherData.main.temp}>Temperature</SmallWeatherData>
@@ -94,11 +97,11 @@ export default function Home() {
                         <span>Visibility</span>
                         <span>{weatherData.visibility}</span>
                     </SmallWeatherData>
-                    <SmallWeatherData gridArea = "sea_level" className = {"sunrise"}>
+                    <SmallWeatherData gridArea = "sea_level" className = {"sea_level"}>
                         <span>Sea level</span>
                         <span>{weatherData.main.sea_level}</span>
                     </SmallWeatherData>
-                    <SmallWeatherData gridArea = "grnd_level" className = {"sunset"}>
+                    <SmallWeatherData gridArea = "grnd_level" className = {"grnd_level"}>
                         <span>Ground level</span>
                         <span>{weatherData.main.grnd_level}</span>
                     </SmallWeatherData>

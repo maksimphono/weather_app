@@ -1,0 +1,14 @@
+.home {
+    display: grid;
+    width: 100%;
+    height: 100vh;
+    padding: 1.5%;
+
+    .weather__view {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        border-radius: 20px;
+        background-color: #5556;
+        overflow: hidden;
+    }
+}

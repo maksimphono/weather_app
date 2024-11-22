@@ -9,7 +9,7 @@
     "desktop": "webpack . && electron .",
     "start": "electron .",
     "dev": "webpack serve",
-    "build": "webpack"
+    "build": "webpack --config ./webpack.config.js --mode production"
   },
   "keywords": [],
   "author": "",
