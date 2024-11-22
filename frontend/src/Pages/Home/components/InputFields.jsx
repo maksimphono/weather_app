@@ -1,6 +1,6 @@
 import React, {useReducer, useState, useCallback} from "react"
 import style from "../css/Home.module.scss"
-
+//const style = {}
 
 class InputState {
     constructor(city, lat, lon) {
@@ -62,8 +62,20 @@ export default function InputFields() {
         event.preventDefault()
     }, [])
 
+    const handleCityChange = useCallback(({target}) => {
+        dispatch(cityAction(target.value))
+    }, [dispatch])
+
+    const handleLatChange = useCallback(({target}) => {
+        dispatch(latAction(target.value))
+    }, [dispatch])
+    
+    const handleLonChange = useCallback(({target}) => {
+        dispatch(lonAction(target.value))
+    }, [dispatch])
+
     return (
-        <form onSubmit = {handleSubmit} className={style["input__fields"]} style = {{"gridArea" : "input_fields", backgroundColor: "blue"}}>
+        <form onSubmit = {handleSubmit} className={style["input__fields"]} style = {{"gridArea" : "input_fields"}}>
             <div className = {style["input__switch"]}>
                 <label>
                     <input type = "radio" name = "input_mode" defaultChecked = {true} value = "city" onChange={({target}) => setSelectedMode(target.value)} />
@@ -89,7 +101,12 @@ export default function InputFields() {
             {(seletcedMode === "city") ? 
                 <label>
                     <button type = "submit" name = "Search">Search</button>
-                    <input data-testid = "cityinput" type="text" name = "city" value = {inputState.city} onChange = {({target}) => dispatch(cityAction(target.value))} />
+                    <input 
+                        data-testid = "cityinput" 
+                        type="text" 
+                        name = "city" 
+                        value = {inputState.city} 
+                        onChange = {handleCityChange} />
                 </label>
             : (seletcedMode === "coords") ?
                 <label>
@@ -97,13 +114,13 @@ export default function InputFields() {
                         type="number" 
                         name = "lat" 
                         value = {inputState.lat} 
-                        onChange = {({target}) => dispatch(latAction(target.value))}
+                        onChange = {handleLatChange}
                     />
                     <input data-testid = "loninput"
                         type="number" 
                         name = "lon" 
                         value = {inputState.lon} 
-                        onChange = {({target}) => dispatch(lonAction(target.value))}
+                        onChange = {handleLonChange}
                     />
                     <button type = "submit">Search</button>
                 </label>

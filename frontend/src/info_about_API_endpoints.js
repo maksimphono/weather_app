@@ -320,7 +320,7 @@ const info = {
     },
     "3-5 forecast" : {
         "info" : "Get weather forecast for 5 days by coordinates",
-        "structure" :"api.openweathermap.org/data/2.5/forecast?lat=44.34&lon=10.99&appid={API key}",
+        "structure" :"http://api.openweathermap.org/data/2.5/forecast?lat=44.34&lon=10.99&appid={API key}",
         "response" : {
           "cod": "200",
           "message": 0,

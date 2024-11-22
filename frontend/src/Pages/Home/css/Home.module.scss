@@ -16,15 +16,21 @@
             display: grid;
             height: 100%;
             width: 100%;
+            gap: 10px;
+            border-radius: inherit;
+            border-right: 1.5px solid #000;
+            border-top: 1px solid #000;
+            border-bottom: 1px solid #000;
+            overflow: hidden;
+            filter: blur(40%);
+
             grid-template-areas: 
                 "input_fields input_fields"
                 "temp feels_like"
                 "temp_min temp_max"
                 "pressure humidity"
-                "sea_level grnd_level"
-                "sinrise sunset"
             ;
-            grid-template-rows: 20% repeat(5, 1fr);
+            grid-template-rows: 25% repeat(3, 1fr) 15%;
 
             // <InputFields>
             .input__fields {
@@ -32,6 +38,8 @@
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
+                border-radius: inherit;
+                border-bottom: 1.5px solid #000;
         
                 .input__switch {
                     display: grid;
@@ -91,12 +99,53 @@
             }
         }
         .pretty__view {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            display: grid;
+            grid-template-areas:
+                "logo . . ."
+                "main main . ."
+                "name name . ."
+                "date date . ."
+                "timezone . . ."
+                "wind visibility sea_level grnd_level"
+            ;
+            grid-template-rows: 
+                10%
+                20%
+                20%
+                15%
+                15%
+                1fr
+            ;
+            grid-template-columns: repeat(4, 1fr);
 
-            
+            .smallWeatherData {
+                display: flex;
+                flex-direction: column !important;
+                height: 100%;
+                width: 100%;
+                word-wrap: break-word;
+                justify-content: center;
+                align-items: center;
+                padding-inline: 5%;
+                font-size: 1.4rem;
+
+                &.weather__main,
+                &.location__name,
+                &.date
+                 {
+                    align-items: start;
+                }
+
+                &.weather__main {
+                    font-size: 2.8rem;
+                }
+                &.location__name {
+                    font-size: 2.4rem
+                }
+                &.date {
+                    font-size: 2rem
+                }
+            }
         }
     }
 }
