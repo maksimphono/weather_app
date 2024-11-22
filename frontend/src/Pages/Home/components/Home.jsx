@@ -1,34 +1,14 @@
-import React, {useState} from 'react'
+import React, {useCallback, useReducer, useState} from 'react'
 import style from "../css/Home.module.scss"
+import InputFields from './InputFields.jsx'
+//const style = {}
 
 function SmallWeatherData({gridArea, value, children}) {
     return (
-        <div className = {style["smallWeatherData"]} style = {{"gridArea": gridArea, backgroundColor: "red"}}>
+        <div className = {style["smallWeatherData"]} style = {{"gridArea": gridArea}}>
             <span className = {style["text"]}>{children}</span>
             <span className = {style["value"]}>{value}</span>
         </div>
-    )
-}
-
-function InputFields() {
-    const [seletcedMode, setSelectedMode] = useState("city")
-
-    return (
-        <form className={style["input__fields"]} style = {{"gridArea" : "input_fields", backgroundColor: "blue"}}>
-            <div className = {style["input__switch"]}>
-                <label>
-                    <input type = "radio" name = "input_mode" defaultChecked = {true} value = "city" onChange={({target}) => setSelectedMode(target.value)} />
-                    <span style = {seletcedMode === "city"?{"color" : "var(--color-light)"}:{"color" : "var(--color-dark)"}}>City</span>
-                </label>
-                <label>
-                    <input type = "radio" name = "input_mode" value = "coords" onChange={({target}) => setSelectedMode(target.value)}/>
-                    <span style = {seletcedMode === "coords"?{"color" : "var(--color-light)"}:{"color" : "var(--color-dark)"}}>Coordinates</span>
-                </label>
-            </div>
-            <label htmlFor="">
-                <input type="text" />
-            </label>
-        </form>
     )
 }
 

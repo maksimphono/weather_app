@@ -2,11 +2,11 @@
   "name": "weather-app-frontend",
   "version": "0.0.1",
   "description": "",
-  "main" : "./index.js",
+  "main": "./index.js",
   "_main": "./src/main.js",
   "scripts": {
-    "test": "jest",
-    "desktop" : "webpack . && electron .",
+    "test": "jest --verbose=false",
+    "desktop": "webpack . && electron .",
     "start": "electron .",
     "dev": "webpack serve",
     "build": "webpack"
@@ -21,7 +21,7 @@
     "@babel/preset-env": "^7.23.9",
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
-    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^14.2.1",
     "babel-jest": "^29.7.0",
     "babel-loader": "^9.1.3",

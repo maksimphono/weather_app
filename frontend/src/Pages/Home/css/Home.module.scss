@@ -26,6 +26,7 @@
             ;
             grid-template-rows: 20% repeat(5, 1fr);
 
+            // <InputFields>
             .input__fields {
                 display: flex;
                 flex-direction: column;
@@ -43,8 +44,8 @@
                     overflow: hidden;
 
                     label {
-                        --color-dark: #222;
-                        --color-light: #fff;
+                        --color-dark: #333;
+                        --color-light: #eee;
                         position: relative;
 
                         span {
@@ -70,6 +71,7 @@
                 }
                 
             }
+            // </InputFields>
 
             .smallWeatherData {
                 display: flex;
