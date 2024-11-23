@@ -1,6 +1,8 @@
 import React, {useState, useRef, useCallback, useEffect} from "react"
 import style from "../css/Forecast.module.scss"
 import useFetchWeatherForecast from "../hooks/useFetchWeatherForecast"
+import useToggle from "../hooks/useToggle"
+import useTempAutoConvert, {CELSIUS_TEMP_UNIT, FAHRENHEIT_TEMP_UNIT, KELVIN_TEMP_UNIT} from "../hooks/useTempAutoConvert"
 
 /*
 {
@@ -37,7 +39,6 @@ import useFetchWeatherForecast from "../hooks/useFetchWeatherForecast"
 function DayWeather({weatherData, className, children}) {
     const classNames = (className !== undefined)?className.split(" "):[]
 
-    console.dir(weatherData)
     if (!weatherData) return <></>
     return(
         <div className = {[style["dayWeather"], ...classNames.map(n => style[n])].join(" ")}>
@@ -79,54 +80,6 @@ function DayWeather({weatherData, className, children}) {
         </div>
     )
 }
-
-function useToggle(items) {
-    const [state, setState] = useState(items[0])
-
-    const toggle = useCallback(() => {
-        const index = state === items[0]? 1 : 0
-        setState(items[index])
-    }, [items])
-
-    return [state, toggle]
-}
-
-
-const CELSIUS_TEMP_UNIT = "Celsius"
-const FAHRENHEIT_TEMP_UNIT = "Fahrenheit"
-const KELVIN_TEMP_UNIT = "Kelvin"
-
-function convertTemperature(kelvin, mode) {
-    
-    switch (mode) {
-        case CELSIUS_TEMP_UNIT:
-            return Math.round((kelvin - 273.15) * 100) / 100
-        case FAHRENHEIT_TEMP_UNIT:
-            return Math.round(((kelvin - 273.15) * 9/5 + 32) * 100) / 100
-        default:
-            return kelvin
-    }
-}
-
-function useTempAutoConvert(setWeatherForecast, tempUnits) {
-    useEffect(() => {
-        setWeatherForecast(val => {
-            console.log(Object.keys(val).length)
-            if (Object.keys(val).length === 0) return val
-            const copy = structuredClone(val)
-
-            return copy.map(dayForecast => {
-                const f = {...dayForecast}
-                f.main.temp = convertTemperature(f.init_main.temp, tempUnits)
-                f.main.feels_like = convertTemperature(f.init_main.feels_like, tempUnits)
-                f.main.temp_min = convertTemperature(f.init_main.temp_min, tempUnits)
-                f.main.temp_max = convertTemperature(f.init_main.temp_max, tempUnits)
-                return f
-            })
-        })
-    }, [tempUnits])
-}
-
 
 export default function Forecast() {
     const weatherViewRef = useRef()
