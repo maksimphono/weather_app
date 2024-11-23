@@ -179,6 +179,42 @@ export default class DataAdapter{
         })
         
     }
+
+    loadManyBy(indexName, value) {
+        return new Promise((resolve, reject) => {
+            const objectStore = this.getObjectStore("readwrite")
+            let myIndex = null
+            const resultList = []
+
+            try {
+                myIndex = objectStore.index(indexName);
+            }
+            catch (error) {
+                console.error(`Index ${indexName} does not exist in store ${this.name}`)
+                resolve(null)
+                return
+            }
+
+            const cursor = myIndex.openCursor()
+
+            cursor.onsuccess = (event) => {
+                const cursor = event.target.result;
+
+                if (cursor) {
+                    if (cursor.value[indexName] === value) {
+                        resultList.push(cursor.value)
+                    }
+                    cursor.continue();
+                } else {
+                    console.log("Entries all displayed.");
+                    resolve(resultList)
+                }
+            };
+            cursor.onerror = (reason) => {
+                reject(reason)
+            }
+        })
+    }
     _loadOne(id) {
         return new Promise((resolve, reject) => {
             const store = this.getObjectStore("readonly")
@@ -220,27 +256,58 @@ export default class DataAdapter{
 
             req.onsuccess = ({target}) => {
                 const cursor = target.result
-                let req;
 
                 if (cursor) {
-                    req = store.get(cursor.key)
-                    req.onsuccess = ({target}) => {
-                        if (target.result)
-                            records.push(target.result)
-                    }
-                    req.onerror = ({target}) => {
-                        console.error(target.errorCode)
-                    }
+                    records.push(cursor.value)
                     cursor.continue()
                 } else {
                     console.info("Loading records from DB:")
                     console.table(records)
                     resolve(records)
                 }
-
-                
             }
-            req.onerror = ({target}) => console.error(target.errorCode)
+            req.onerror = ({target}) => {
+                reject(target.errorCode)
+            }
+        })
+    }
+    
+    removeOneBy(indexName, value) {
+        return new Promise((resolve, reject) => {
+            const objectStore = this.getObjectStore("readwrite")
+            let myIndex = null
+            const keysToDelete = []
+
+            try {
+                myIndex = objectStore.index(indexName);
+            }
+            catch (error) {
+                console.error(`Index ${indexName} does not exist in store ${this.name}`)
+                resolve(null)
+                throw error
+            }
+
+            const cursor = objectStore.openCursor()
+
+            cursor.onsuccess = (event) => {
+                const cursor = event.target.result;
+
+                if (cursor) {
+                    if (cursor.value[indexName] === value) {
+                        const res = objectStore.delete(cursor.key)
+                        console.info("Deleting ", cursor.key)
+                        res.onsuccess = () => resolve(cursor.key)
+                        res.onerror = (error) => reject(error)
+                    }
+                    cursor.continue();
+                } else {
+                    console.log("Entries all displayed.");
+                    resolve(null)
+                }
+            };
+            cursor.onerror = (reason) => {
+                reject(reason)
+            }
         })
     }
     removeOne(id) {
