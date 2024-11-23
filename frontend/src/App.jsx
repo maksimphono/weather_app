@@ -6,13 +6,14 @@ import Forecast from './Pages/Home/components/Forecast.jsx'
 //import WeatherByCoordinates from './Pages/WaetherByCity/Components/WeatherByCoordinates.jsx'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import "./global.css"
+import Data from './Pages/Home/components/Data.jsx'
 
 export default function App() {
     return (
       <HashRouter>
         <Routes>
           <Route path = "/" element = {<Layout/>}>
-            <Route index element = {<Forecast />}/>
+            <Route index element = {<Data />}/>
           </Route>
           <Route path = "/tests">
             <Route index element = {<Forecast />}/>
