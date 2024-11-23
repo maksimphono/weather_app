@@ -6,7 +6,7 @@ export default function Data() {
         const adapter = new DataAdapter("mystore", [{name : "city"}, {name : "value"}])
         await adapter.openDB()
         await adapter.saveMany([{city : "London", vlue : "a"}, {city : "Paris", value : "b"}, {city : "Berlin", value : "c"}, {city : "Iuyt", value : "ce"}, {city : "MNHGlin", value : "c"}, {city : "B", value : "c"}])
-        console.info(await adapter.removeManyBy("value", "p"))
+        console.info(await adapter.removeManyBy("value", "ce"))
         console.info(await adapter.loadAll())
     })()}, [])
 
