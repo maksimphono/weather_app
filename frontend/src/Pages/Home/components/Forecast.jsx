@@ -92,18 +92,19 @@ function useToggle(items) {
 }
 
 
-const CELSIUS_TEMP_UNIT = Symbol("Celsius")
-const FAHRENHEIT_TEMP_UNIT = Symbol("Fahrenheit")
-const KELVIN_TEMP_UNIT = Symbol("Kelvin")
+const CELSIUS_TEMP_UNIT = "Celsius"
+const FAHRENHEIT_TEMP_UNIT = "Fahrenheit"
+const KELVIN_TEMP_UNIT = "Kelvin"
 
 function convertTemperature(kelvin, mode) {
+    
     switch (mode) {
         case CELSIUS_TEMP_UNIT:
             return Math.round((kelvin - 273.15) * 100) / 100
         case FAHRENHEIT_TEMP_UNIT:
-            return Math.round(((kelvin - 273.15) * 9/5 + 32)*100) / 100
+            return Math.round(((kelvin - 273.15) * 9/5 + 32) * 100) / 100
         default:
-            return Math.round(kelvin * 100) / 100
+            return kelvin
     }
 }
 
@@ -115,16 +116,12 @@ function useTempAutoConvert(setWeatherForecast, tempUnits) {
             const copy = structuredClone(val)
 
             return copy.map(dayForecast => {
-                return {
-                    ...dayForecast,
-                    main : {
-                        ...(dayForecast.main),
-                        temp : convertTemperature(dayForecast.main.temp, tempUnits),
-                        feels_like : convertTemperature(dayForecast.main.feels_like, tempUnits),
-                        temp_min : convertTemperature(dayForecast.main.temp_min, tempUnits),
-                        temp_max : convertTemperature(dayForecast.main.temp_max, tempUnits),
-                    }
-                }
+                const f = {...dayForecast}
+                f.main.temp = convertTemperature(f.init_main.temp, tempUnits)
+                f.main.feels_like = convertTemperature(f.init_main.feels_like, tempUnits)
+                f.main.temp_min = convertTemperature(f.init_main.temp_min, tempUnits)
+                f.main.temp_max = convertTemperature(f.init_main.temp_max, tempUnits)
+                return f
             })
         })
     }, [tempUnits])
@@ -140,7 +137,7 @@ export default function Forecast() {
 
     useEffect(() => {
         const data = fetchWeather()
-        setWeatherForecast(data)
+        setWeatherForecast(data.map(dayForecast => ({...dayForecast, init_main : {...dayForecast.main}})))
     }, [])
 
     useTempAutoConvert(setWeatherForecast, tempUnits)
@@ -149,9 +146,18 @@ export default function Forecast() {
         <div className = {style["home"]}>
             <div ref = {weatherViewRef} className = {style["weather__view"]}>
             <div className = {style["control__buttons"]}>
-                <input type = "radio" name="tempmode" />
-                <input type = "radio" name="tempmode" />
-                <input type = "radio" name="tempmode" />
+                <label>
+                    <i className = {style["icon"]} />
+                    <input type = "radio" name="tempmode" value = {CELSIUS_TEMP_UNIT} checked = {tempUnits === CELSIUS_TEMP_UNIT} onChange={({target}) => setTempUnits(target.value)} />
+                </label>
+                <label>
+                    <i className = {style["icon"]} />
+                    <input type = "radio" name="tempmode" value = {FAHRENHEIT_TEMP_UNIT} checked = {tempUnits === FAHRENHEIT_TEMP_UNIT} onChange={({target}) => setTempUnits(target.value)} />
+                </label>
+                <label>
+                    <i className = {style["icon"]} />
+                    <input type = "radio" name="tempmode" value = {KELVIN_TEMP_UNIT} checked = {tempUnits === KELVIN_TEMP_UNIT} onChange={({target}) => setTempUnits(target.value)} />
+                </label>
             </div>
                 {weatherForecast.map(weatherData => (
                     <DayWeather weatherData={weatherData} key = {weatherData.dt} />
