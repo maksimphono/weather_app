@@ -2,39 +2,7 @@ import React, {useState, useRef, useCallback, useEffect} from "react"
 import style from "../css/Forecast.module.scss"
 import useFetchWeatherForecast from "../hooks/useFetchWeatherForecast"
 import useToggle from "../hooks/useToggle"
-import useTempAutoConvert, {CELSIUS_TEMP_UNIT, FAHRENHEIT_TEMP_UNIT, KELVIN_TEMP_UNIT} from "../hooks/useTempAutoConvert"
-
-/*
-{
-      "dt": 1732276800,
-      "main": {
-        "temp": 279.77,
-        "feels_like": 275.72,
-        "temp_min": 279.46,
-        "temp_max": 279.77,
-        "pressure": 1004,
-        "sea_level": 1004,
-        "grnd_level": 936,
-        "humidity": 42,
-        "temp_kf": 0.31
-      },
-      "weather": [
-        {
-          "id": 802,
-          "main": "Clouds",
-          "description": "scattered clouds",
-          "icon": "03d"
-        }
-      ],
-      "clouds": { "all": 44 },
-      "wind": { "speed": 7.06, "deg": 303, "gust": 13.64 },
-      "visibility": 10000,
-      "pop": 0.32,
-      "sys": { "pod": "d" },
-      "dt_txt": "2024-11-22 12:00:00"
-    }
-*/
-
+import useTempAutoConvert, {CELSIUS_TEMP_UNIT, FAHRENHEIT_TEMP_UNIT, KELVIN_TEMP_UNIT} from "../hooks/useForecastTempAutoConvert"
 
 function DayWeather({weatherData, className, children}) {
     const classNames = (className !== undefined)?className.split(" "):[]
@@ -81,17 +49,22 @@ function DayWeather({weatherData, className, children}) {
     )
 }
 
+function TemperatureUnitsSwitch({value, tempUnits, setTempUnits}) {
+    return (
+        <label>
+            <i className = {style["icon"]} />
+            <input type = "radio" name="tempmode" value = {value} checked = {tempUnits === value} onChange={({target}) => setTempUnits(target.value)} />
+        </label>
+    )
+}
+
 export default function Forecast() {
     const weatherViewRef = useRef()
     const [tempUnits, setTempUnits] = useState(CELSIUS_TEMP_UNIT)
     const [weatherForecast, setWeatherForecast] = useState([])
     const [timeMode, toggleTimeMode] = useToggle(["Day", "Night"])
-    const fetchWeather = useFetchWeatherForecast()
 
-    useEffect(() => {
-        const data = fetchWeather()
-        setWeatherForecast(data.map(dayForecast => ({...dayForecast, init_main : {...dayForecast.main}})))
-    }, [])
+    useFetchWeatherForecast(setWeatherForecast)
 
     useTempAutoConvert(setWeatherForecast, tempUnits)
 
@@ -99,18 +72,9 @@ export default function Forecast() {
         <div className = {style["home"]}>
             <div ref = {weatherViewRef} className = {style["weather__view"]}>
             <div className = {style["control__buttons"]}>
-                <label>
-                    <i className = {style["icon"]} />
-                    <input type = "radio" name="tempmode" value = {CELSIUS_TEMP_UNIT} checked = {tempUnits === CELSIUS_TEMP_UNIT} onChange={({target}) => setTempUnits(target.value)} />
-                </label>
-                <label>
-                    <i className = {style["icon"]} />
-                    <input type = "radio" name="tempmode" value = {FAHRENHEIT_TEMP_UNIT} checked = {tempUnits === FAHRENHEIT_TEMP_UNIT} onChange={({target}) => setTempUnits(target.value)} />
-                </label>
-                <label>
-                    <i className = {style["icon"]} />
-                    <input type = "radio" name="tempmode" value = {KELVIN_TEMP_UNIT} checked = {tempUnits === KELVIN_TEMP_UNIT} onChange={({target}) => setTempUnits(target.value)} />
-                </label>
+                <TemperatureUnitsSwitch value = {CELSIUS_TEMP_UNIT} tempUnits={tempUnits} setTempUnits={setTempUnits}/>
+                <TemperatureUnitsSwitch value = {FAHRENHEIT_TEMP_UNIT} tempUnits={tempUnits} setTempUnits={setTempUnits}/>
+                <TemperatureUnitsSwitch value = {KELVIN_TEMP_UNIT} tempUnits={tempUnits} setTempUnits={setTempUnits}/>
             </div>
                 {weatherForecast.map(weatherData => (
                     <DayWeather weatherData={weatherData} key = {weatherData.dt} />

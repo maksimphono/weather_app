@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useState, useEffect} from "react"
 
 const forecast = [
     {
@@ -1132,13 +1132,13 @@ const forecast = [
   ]
 
 
-export default function useFetchWeatherForecast() {
-    return () => {
+export default function useFetchWeatherForecast(setWeatherForecast, dependencies = []) {
+    useEffect(() => {
         const result = []
 
         result[0] = forecast[0]
-        const filtered = forecast.filter(day => day.dt_txt.slice(day.dt_txt.length - 8, day.dt_txt.length - 6) === "12")
+        const data = forecast.filter(day => day.dt_txt.slice(day.dt_txt.length - 8, day.dt_txt.length - 6) === "12")
 
-        return filtered
-    }
+        setWeatherForecast(data.map(dayForecast => ({...dayForecast, init_main : {...dayForecast.main}})))
+    }, dependencies)
 }
