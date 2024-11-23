@@ -10,12 +10,13 @@ class ValidationError {
 };
 
 export default class DataAdapter{    
-    constructor(dbStoreName, fields, version = 1) {
+    constructor(dbStoreName, fields, keypath, version = 1) {
         this.name = dbStoreName
         this.version = version
         this.fields = structuredClone(fields)
         this.fieldNames = fields.map(field => field.name)
       	this.db = null
+        this.keyPath = keypath
         this.dbName = dbStoreName
     }
     validateBeforeSave(entry) {
@@ -47,7 +48,7 @@ export default class DataAdapter{
 
             req.onupgradeneeded = event => {
                 console.info("Creating new store", this.name)
-            	let store = event.currentTarget.result.createObjectStore(this.name, {keyPath : "city"})
+            	let store = event.currentTarget.result.createObjectStore(this.name, {keyPath : this.keyPath})
               	this.fields.forEach(field => store.createIndex(field.name, field.name, {unique : field.unique}))
             }
         })
@@ -108,13 +109,13 @@ export default class DataAdapter{
             }
         })
     }
-    saveOne(_entry) {
+    saveOne(entry) {
         return new Promise((resolve, reject) => {
             const store = this.getObjectStore("readwrite")
-            let entry = structuredClone(_entry)
-            entry.__proto__ = null
+            //let entry = structuredClone(_entry)
+            //entry.__proto__ = null
             let req = null
-
+            /*
             try {
                 console.info("Validating")
                 this.validateBeforeSave(entry)
@@ -125,15 +126,10 @@ export default class DataAdapter{
                     throw error
                 }
             }
-
-            try {
-                req = store.add(entry)
-                req.onsuccess = () => resolve("Added to ", this.name, this.dbName)
-                req.onerror = (event) => reject(event)
-            } catch(error) {
-                console.error(error)
-                throw error
-            }
+            */
+            req = store.add(entry)
+            req.onsuccess = () => resolve("Added to ", this.name, this.dbName)
+            req.onerror = ({target}) => {console.dir(target.error); reject(target.error)}
         })
     }
     loadOneBy(indexName, value) {

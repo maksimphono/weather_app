@@ -3,10 +3,11 @@ import DataAdapter from '../DataAdapter/DataAdapter'
 
 export default function Data() {
     useEffect(() => {(async () => {
-        const adapter = new DataAdapter("mystore", [{name : "city"}, {name : "value"}])
+        const adapter = new DataAdapter("Country codes", [{name : "code"}, {name : "country"}], "code")
         await adapter.openDB()
-        await adapter.saveMany([{city : "London", vlue : "a"}, {city : "Paris", value : "b"}, {city : "Berlin", value : "c"}, {city : "Iuyt", value : "ce"}, {city : "MNHGlin", value : "c"}, {city : "B", value : "c"}])
-        console.info(await adapter.removeManyBy("value", "ce"))
+        //await adapter.saveOne({"code": "RU", "country" : "Russia"})
+        await adapter.saveMany([{code: "RU", country : "Russia"}, {code: "CN", country : "China"}, {code: "US", country : "United States"}])
+        //console.info(await adapter.removeManyBy("value", "ce"))
         console.info(await adapter.loadAll())
     })()}, [])
 
