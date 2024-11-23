@@ -126,6 +126,7 @@ export default class DataAdapter{
                 console.error(error)
                 if (error instanceof ValidationError) {
                     error.got.forEach(field => entry[field] = undefined)
+                    throw error
                 }
             }
 
@@ -141,7 +142,44 @@ export default class DataAdapter{
             }
         })
     }
-    loadOne(id) {
+    loadOneBy(indexName, value) {
+        return new Promise((resolve, reject) => {
+            const objectStore = this.getObjectStore("readwrite")
+            let myIndex = null
+
+            try {
+                myIndex = objectStore.index(indexName);
+            }
+            catch (error) {
+                console.error(`Index ${indexName} does not exist in store ${this.name}`)
+                resolve(null)
+                return
+            }
+
+            const cursor = myIndex.openCursor()
+
+            cursor.onsuccess = (event) => {
+                const cursor = event.target.result;
+
+                if (cursor) {
+                    if (cursor.value[indexName] === value) {
+                        console.info(cursor.value)
+                        resolve(cursor.value)
+                        return cursor.value
+                    }
+                    cursor.continue();
+                } else {
+                    console.log("Entries all displayed.");
+                    resolve(null)
+                }
+            };
+            cursor.onerror = (reason) => {
+                reject(reason)
+            }
+        })
+        
+    }
+    _loadOne(id) {
         return new Promise((resolve, reject) => {
             const store = this.getObjectStore("readonly")
             let req = store.get(id)
