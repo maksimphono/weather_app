@@ -310,6 +310,49 @@ export default class DataAdapter{
             }
         })
     }
+    removeManyBy(indexName, value) {
+        return new Promise((resolve, reject) => {
+            const objectStore = this.getObjectStore("readwrite")
+            let myIndex = null
+            const keysToDelete = []
+
+            try {
+                myIndex = objectStore.index(indexName);
+            }
+            catch (error) {
+                console.error(`Index ${indexName} does not exist in store ${this.name}`)
+                resolve(null)
+                throw error
+            }
+
+            const cursor = objectStore.openCursor()
+
+            cursor.onsuccess = (event) => {
+                const cursor = event.target.result;
+
+                if (cursor) {
+                    if (cursor.value[indexName] === value) {
+                        keysToDelete.push(cursor.key)
+                    }
+                    cursor.continue();
+                } else {
+                    console.log("Entries all displayed.");
+                    keysToDelete.forEach(async (key) => {
+                        await new Promise((res, rej) => {
+                            const r = objectStore.delete(key)
+                            r.onsuccess = () => res()
+                            r.onerror = (event) => {throw event}
+                        })
+                    })
+                    resolve(keysToDelete)
+                }
+            };
+            cursor.onerror = (reason) => {
+                reject(reason)
+            }
+        })
+    }
+
     removeOne(id) {
         return new Promise((resolve, reject) => {
             const store = this.getObjectStore("readwrite")
