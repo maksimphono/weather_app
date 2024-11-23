@@ -12,7 +12,7 @@ export default function App() {
       <HashRouter>
         <Routes>
           <Route path = "/" element = {<Layout/>}>
-            <Route index element = {<Home />}/>
+            <Route index element = {<Forecast />}/>
           </Route>
           <Route path = "/tests">
             <Route index element = {<Forecast />}/>
