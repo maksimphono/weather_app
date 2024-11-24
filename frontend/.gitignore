@@ -1,6 +1,9 @@
 # env
 ./src/info_about_API_endpoints.json
 
+# backend
+../backend/*
+
 # Logs
 logs
 *.log
@@ -12,6 +15,7 @@ lerna-debug.log*
 
 public
 node_modules
+../node_modules/
 __mocks__
 dist
 dist-ssr

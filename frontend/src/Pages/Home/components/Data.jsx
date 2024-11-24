@@ -1,9 +1,11 @@
 import React, {useEffect} from 'react'
 import DataAdapter from '../DataAdapter/DataAdapter'
+import dataAdapterFactory from '../utils/DataAdapterFactory'
+
 
 export default function Data() {
     useEffect(() => {(async () => {
-        const adapter = new DataAdapter("Country codes", [{name : "code"}, {name : "country"}], "code")
+        const adapter = dataAdapterFactory.createCountryCodeAdapter()
         await adapter.openDB()
         //await adapter.saveOne({"code": "RU", "country" : "Russia"})
         await adapter.saveMany([{code: "RU", country : "Russia"}, {code: "CN", country : "China"}, {code: "US", country : "United States"}])

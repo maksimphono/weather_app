@@ -38,17 +38,15 @@ export default class DataAdapter{
     openDB() {
         return new Promise((resolve, reject) => {
             this.version++;
-            console.info("Opening DB", "; version : ", this.version)
             let req = indexedDB.open(this.dbName, this.version)
     	    req.onsuccess = async event => {
    		     	this.db = await req.result
-                resolve()
+                resolve(this.db)
     	    }
-		    req.onerror = event => reject()
+		    req.onerror = ({target}) => reject(target.error)
 
             req.onupgradeneeded = event => {
-                console.info("Creating new store", this.name)
-            	let store = event.currentTarget.result.createObjectStore(this.name, {keyPath : this.keyPath})
+                let store = event.currentTarget.result.createObjectStore(this.name, {keyPath : this.keyPath})
               	this.fields.forEach(field => store.createIndex(field.name, field.name, {unique : field.unique}))
             }
         })
@@ -65,7 +63,6 @@ export default class DataAdapter{
             return objectStore.index(indexName);
         }
         catch (error) {
-            console.error(`Index ${indexName} does not exist in store ${this.name}`)
             throw new Error(`Index ${indexName} does not exist in store ${this.name}`)
         }
     }
@@ -129,7 +126,7 @@ export default class DataAdapter{
             */
             req = store.put(entry)
             req.onsuccess = () => resolve("Added to ", this.name, this.dbName)
-            req.onerror = ({target}) => {console.dir(target.error); reject(target.error)}
+            req.onerror = ({target}) => reject(target.error)
         })
     }
     loadOneBy(indexName, value) {
