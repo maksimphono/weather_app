@@ -127,7 +127,7 @@ export default class DataAdapter{
                 }
             }
             */
-            req = store.add(entry)
+            req = store.put(entry)
             req.onsuccess = () => resolve("Added to ", this.name, this.dbName)
             req.onerror = ({target}) => {console.dir(target.error); reject(target.error)}
         })
