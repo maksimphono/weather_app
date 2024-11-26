@@ -3,7 +3,7 @@ import DataAdapter from "../DataAdapter/DataAdapter";
 class DataAdapterFactory {
     // Must be singleton
     static instance = null
-    
+
     constructor() {
         if (DataAdapterFactory.instance !== null) {
             return DataAdapterFactory.instance
@@ -22,6 +22,16 @@ class DataAdapterFactory {
         this.createdInstances.set("Country codes", adapter)
         return adapter
     }
+    createGeodecodeAdapter() {
+        const name = "Geodecode"
+        if (this.createdInstances.has(name)) {
+            return this.createdInstances.get(name)
+        }
+        const adapter = new DataAdapter(name, [{name : "id", unique : true}, {name : "name"}, {name : "country_code"}, {name : "state"}, {name : "lat"}, {name : "lon"}], "id")
+        this.createdInstances.set(name, adapter)
+        return adapter
+    }
+
     createUserDataAdapter() {
         // created data adapter, that will contain all user data: preferred temperature units, liked cities, etc...
         const name = "User data"

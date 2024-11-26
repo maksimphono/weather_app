@@ -10,7 +10,7 @@ class ValidationError {
 };
 
 export default class DataAdapter{    
-    constructor(dbStoreName, fields, keypath, version = 1) {
+    constructor(dbStoreName, fields, keypath = "", version = 1) {
         this.name = dbStoreName
         this.version = version
         this.fields = structuredClone(fields)
@@ -46,7 +46,13 @@ export default class DataAdapter{
 		    req.onerror = ({target}) => reject(target.error)
 
             req.onupgradeneeded = event => {
-                let store = event.currentTarget.result.createObjectStore(this.name, {keyPath : this.keyPath})
+                let store = null
+                if (this.keyPath.length) {
+                    store = event.currentTarget.result.createObjectStore(this.name, {keyPath : this.keyPath})
+                } else {
+                    store = event.currentTarget.result.createObjectStore(this.name)
+                }
+
               	this.fields.forEach(field => store.createIndex(field.name, field.name, {unique : field.unique}))
             }
         })
