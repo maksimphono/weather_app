@@ -56,7 +56,7 @@ class OneDayWeatherDataManager extends DataManager {
     getExpirationTime() {
         OneDayWeatherDataManager_class_Debugger.push("getExpirationTime")
         const newDate = new Date();
-        newDate.setHours(newDate.getHours() + WEATHER_DATA_EXPIRATION_TIME_HOURS);
+        newDate.setSeconds(newDate.getSeconds() + 30)//WEATHER_DATA_EXPIRATION_TIME_HOURS);
         OneDayWeatherDataManager_class_Debugger.pop()
         return newDate.getTime();
     }

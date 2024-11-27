@@ -98,7 +98,7 @@ export default class DataManager {
             } catch(error) {
                 console.error("Error in DataManager.getData")
                 console.dir(error)
-                throw new FetchError(error)
+                throw error
             }
         } else {
             return data
