@@ -1,55 +1,8 @@
 import dataAdapterFactory from "../utils/DataAdapterFactory.js"
-const API_KEY = "b2c7e53d740b18010af6e34dadf39662"
+import Debugger from "../../utils/Debugger.js"
+const API_KEY = process.env.REACT_APP_API_KEY;
 
-class Debugger {
-    constructor() {
-        this.enabled = true
-        this.callStack = []
-    }
-    enable() {
-        this.enabled = true
-    }
-    disable() {
-        this.enabled = false
-    }
-
-    push(name) {
-        if (!this.enabled) return;
-        this.callStack.push(name)
-    }
-    pop() {
-        if (!this.enabled) return;
-        this.callStack.pop()
-    }
-    report() {
-        if (!this.enabled) return;
-        console.log("Debugger report")
-        console.log("Call stack:")
-        this.callStack.forEach((entry) => {
-            console.log("-", entry)
-        })
-    }
-    /*
-        @param {function} codeBlock
-    */
-    async exec(codeBlock) {
-        if (this.enabled){
-            try {
-                await codeBlock()
-                console.info("Fetcher class Debugger execution completed!")
-            } catch(error) {
-                console.error("Fetcher class Debugger caught error: ", error)
-                throw error
-            } finally {
-                this.report()
-            }
-        } else {
-            await codeBlock()
-        }
-    }
-}
-
-export const Fetcher_class_Debugger = new Debugger()
+export const Fetcher_class_Debugger = new Debugger("Fetcher class Debugger")
 
 export class FetchError {
     constructor(body) {

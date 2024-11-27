@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
     entry: './src/index.js', // Entry point for React
@@ -32,11 +33,15 @@ module.exports = {
         ],
     },
     resolve: {
-        extensions : [".*", ".js", "jsx"], // Resolve JS and JSX extensions
+        extensions : [".*", ".js", ".jsx"], // Resolve JS and JSX extensions
     },
     plugins: [
         new HtmlWebpackPlugin({
             template: './public/index.html', // Path to HTML template
+        }),
+        new Dotenv({
+            path: './.env', // Path to the .env file
+            safe: true,     // (Optional) Verify that variables defined in .env.example are all set
         }),
     ],
     devServer: {

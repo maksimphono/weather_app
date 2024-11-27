@@ -1,5 +1,6 @@
 # env
 ./src/info_about_API_endpoints.jsonrrr
+.env
 
 # backend
 ../backend/*
