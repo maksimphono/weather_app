@@ -139,7 +139,7 @@ class GeodecodeFetcher extends Fetcher {
     // @override
     prepareFetchParams({cityName, countryCode}) {
         Fetcher_class_Debugger.push("GeodecodeFetcher.prepareFetchParams")
-        if (countryCode.length) {
+        if (countryCode?.length) {
             Fetcher_class_Debugger.pop()
             return {q : [cityName, countryCode].join(","), limit : 1}
         } else {
