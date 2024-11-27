@@ -24,7 +24,9 @@ export default class DataManager {
         }
     }
     isOverdue(entry) {
-        if (!entry.hasOwnProperty("due_dt")) return false
+        console.info("Now: ", Date.now())
+        console.info("Due: ", entry?.due_dt)
+        if (!entry?.due_dt) return false
         return entry.due_dt < Date.now()
     }
     setOverdue(date, entry) {

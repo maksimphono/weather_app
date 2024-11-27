@@ -2,13 +2,14 @@ import React, {useEffect} from 'react'
 import DataAdapter from '../DataAdapter/DataAdapter'
 import dataAdapterFactory from '../utils/DataAdapterFactory'
 import geodecodeDataManager, {GeodecodeDataManager_class_Debugger } from '../DataManager/GeodecodeDataManager.js'
+import oneDayWeatherDataManager, {OneDayWeatherDataManager_class_Debugger} from '../DataManager/OneDayWeatherDataManager.js'
 
 export default function Data() {
     useEffect(() => {(async () => {
-        GeodecodeDataManager_class_Debugger.exec(async () => {
-            const fetcher = geodecodeDataManager
-            console.log(fetcher.ready)
-            const res = await fetcher.getData({cityName : "Bangkok", countryCode : "TH"})
+        OneDayWeatherDataManager_class_Debugger.exec(async () => {
+            const manager = oneDayWeatherDataManager
+            console.log(manager.ready)
+            const res = await manager.getData({lat: 12.34567, lon : 42.98765})
             console.dir(res)
         })
 
