@@ -8,7 +8,7 @@ export default function Data() {
         GeodecodeDataManager_class_Debugger.exec(async () => {
             const fetcher = geodecodeDataManager
             console.log(fetcher.ready)
-            const res = await fetcher.getData({cityName : "Barcelona"})
+            const res = await fetcher.getData({cityName : "Bangkok", countryCode : "TH"})
             console.dir(res)
         })
 
