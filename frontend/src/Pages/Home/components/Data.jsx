@@ -9,7 +9,7 @@ export default function Data() {
         Fetcher_class_Debugger.exec(async () => {
             const fetcher = geodecodeFetcher
             console.log(fetcher.ready)
-            const res = await fetcher.getData({cityName : "莫斯科"})
+            const res = await fetcher.getData({cityName : "Moscow"})
             console.dir(res)
         })
         

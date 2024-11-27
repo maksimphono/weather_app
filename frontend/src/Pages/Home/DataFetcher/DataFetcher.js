@@ -121,6 +121,40 @@ class Fetcher {
     prepareFetchParams(params) {
         return new FormData(params)
     }
+    async getData(args) {
+        Fetcher_class_Debugger.push("Fetcher.getData")
+        
+        if (!this.ready) { 
+            Fetcher_class_Debugger.pop()
+            return null
+        }
+        let data = await this.loadOneBy(args) // TODO: complete data load
+        if (data == null || this.isOverdue(data)) {
+            // that city isn't in the database => fetch from API and save to the database
+            const params = this.prepareFetchParams(args)
+            try {
+                const response = await this.fetch(params)
+                if (response.ok) {
+                    const fetchedData = await response.json()
+                    data = this.processFetchedData(fetchedData)
+                    await this.saveOne(data)
+                    Fetcher_class_Debugger.pop()
+                    return data
+                } else {
+                    console.error("Failed to fetch data from API")
+                    console.dir(response)
+                    throw new FetchError(response)
+                }
+            } catch(error) {
+                console.error("Error in GeocodeFetcher.getData")
+                console.dir(error)
+                throw new FetchError(error)
+            }
+        } else {
+            Fetcher_class_Debugger.pop()
+            return data
+        }
+    }
 }
 
 class GeodecodeFetcher extends Fetcher {
@@ -183,40 +217,6 @@ class GeodecodeFetcher extends Fetcher {
             let results = await this.adapter.loadOneBy("name", cityName)
             Fetcher_class_Debugger.pop()
             return results
-        }
-    }
-    async getData(args) {
-        Fetcher_class_Debugger.push("GeodecodeFetcher.getData")
-        
-        if (!this.ready) { 
-            Fetcher_class_Debugger.pop()
-            return null
-        }
-        let data = await this.loadOneBy(args) // TODO: complete data load
-        if (data == null || this.isOverdue(data)) {
-            // that city isn't in the database => fetch from API and save to the database
-            const params = this.prepareFetchParams(args)
-            try {
-                const response = await this.fetch(params)
-                if (response.ok) {
-                    const fetchedData = await response.json()
-                    data = this.processFetchedData(fetchedData)
-                    await this.saveOne(data)
-                    Fetcher_class_Debugger.pop()
-                    return data
-                } else {
-                    console.error("Failed to fetch data from API")
-                    console.dir(response)
-                    throw new FetchError(response)
-                }
-            } catch(error) {
-                console.error("Error in GeocodeFetcher.getData")
-                console.dir(error)
-                throw new FetchError(error)
-            }
-        } else {
-            Fetcher_class_Debugger.pop()
-            return data
         }
     }
 }
