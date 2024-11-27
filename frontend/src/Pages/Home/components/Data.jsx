@@ -1,18 +1,17 @@
 import React, {useEffect} from 'react'
 import DataAdapter from '../DataAdapter/DataAdapter'
 import dataAdapterFactory from '../utils/DataAdapterFactory'
-import { Fetcher_class_Debugger, geodecodeFetcher } from '../DataFetcher/DataFetcher'
-
+import geodecodeDataManager, {GeodecodeDataManager_class_Debugger } from '../DataManager/GeodecodeDataManager.js'
 
 export default function Data() {
     useEffect(() => {(async () => {
-        Fetcher_class_Debugger.exec(async () => {
-            const fetcher = geodecodeFetcher
+        GeodecodeDataManager_class_Debugger.exec(async () => {
+            const fetcher = geodecodeDataManager
             console.log(fetcher.ready)
-            const res = await fetcher.getData({cityName : "Paris"})
+            const res = await fetcher.getData({cityName : "Barcelona"})
             console.dir(res)
         })
-        
+
         //await adapter.saveOne({"code": "RU", "country" : "Russia"})
         //await adapter.saveMany([{code: "RU", country : "Russia"}, {code: "CN", country : "China"}, {code: "US", country : "United States"}])
         //console.info(await adapter.removeManyBy("value", "ce"))

@@ -1,8 +1,7 @@
 import dataAdapterFactory from "../utils/DataAdapterFactory.js"
 import Debugger from "../../utils/Debugger.js"
+//export const DataManager_class_Debugger = new Debugger("DataManager class Debugger")
 const API_KEY = process.env.REACT_APP_API_KEY;
-
-export const Fetcher_class_Debugger = new Debugger("Fetcher class Debugger")
 
 export class FetchError {
     constructor(body) {
@@ -10,7 +9,7 @@ export class FetchError {
     }
 }
 
-class Fetcher {
+export default class DataManager {
     constructor(adapter = null, url = "") {
         this.adapter = adapter
         this.url = url
@@ -32,38 +31,32 @@ class Fetcher {
         return {...entry, due_dt : new Date(date)}
     }
     async fetch(params) {
-        Fetcher_class_Debugger.push("Fetcher.fetch")
         const query = new URLSearchParams({...params, appid : API_KEY})
 
         try {
             console.log("Fetching", [this.url, query.toString()].join("?"))
             const response = await fetch([this.url, query.toString()].join("?"))
 
-            Fetcher_class_Debugger.pop()
             return response
         } catch(error) {
-            console.error("Error in Fetcher.fetch()")
+            console.error("Error in DataManager.fetch()")
             throw error
         }
     }
     // @virtual
     async loadOneBy(indexName, value) {
-        Fetcher_class_Debugger.push("Fetcher.loadOneBy")
         try {
-            Fetcher_class_Debugger.pop()
             return await this.adapter.loadOneBy(indexName, value)
         } catch(error) {
-            console.error("Error in Fetcher.loadOneBy()")
+            console.error("Error in DataManager.loadOneBy()")
             throw error
         }
     }
     async saveOne(entry) {
-        Fetcher_class_Debugger.push("Fetcher.saveOne")
         try {
-            Fetcher_class_Debugger.pop()
             return await this.adapter.saveOne(entry)
         } catch(error) {
-            console.error("Error in Fetcher.saveOne()")
+            console.error("Error in DataManager.saveOne()")
             throw error
         }
     }
@@ -76,10 +69,7 @@ class Fetcher {
         return new FormData(params)
     }
     async getData(args) {
-        Fetcher_class_Debugger.push("Fetcher.getData")
-        
         if (!this.ready) { 
-            Fetcher_class_Debugger.pop()
             return null
         }
         let data = await this.loadOneBy(args) // TODO: complete data load
@@ -97,7 +87,6 @@ class Fetcher {
                         // fetch() returned empty object (most likely means that the data doesn't exist in OpenWeather DB)
                         data = null
                     }                 
-                    Fetcher_class_Debugger.pop()
                     return data
                 } else {
                     console.error("Failed to fetch data from API")
@@ -105,73 +94,12 @@ class Fetcher {
                     throw new FetchError(response)
                 }
             } catch(error) {
-                console.error("Error in GeocodeFetcher.getData")
+                console.error("Error in DataManager.getData")
                 console.dir(error)
                 throw new FetchError(error)
             }
         } else {
-            Fetcher_class_Debugger.pop()
             return data
         }
     }
 }
-
-class GeodecodeFetcher extends Fetcher {
-    constructor () {
-        super(
-            dataAdapterFactory.createGeodecodeAdapter(),   // adapter
-            "http://api.openweathermap.org/geo/1.0/direct" // url
-        )
-    }
-    // @override
-    prepareFetchParams({cityName, countryCode}) {
-        Fetcher_class_Debugger.push("GeodecodeFetcher.prepareFetchParams")
-        if (countryCode?.length) {
-            Fetcher_class_Debugger.pop()
-            return {q : [cityName, countryCode].join(","), limit : 1}
-        } else {
-            Fetcher_class_Debugger.pop()
-            return {q : cityName, limit : 1}
-        }
-    }
-    // @override
-    processFetchedData(data) {
-        Fetcher_class_Debugger.push("GeodecodeFetcher.processFetchedData")
-        if (!Object.keys(data).length) {
-            Fetcher_class_Debugger.pop()
-            return null
-        } 
-            
-        const res = data[0] 
-        Fetcher_class_Debugger.pop()
-        return {
-            id : [res.lat.toString(), res.lon.toString()].join(","),
-            name : res.name,
-            country_code : res.country,
-            lat : res.lat,
-            lon : res.lon,
-            state : res.state || null
-        }
-    }
-    // @override
-    async loadOneBy({cityName, countryCode}) {
-        Fetcher_class_Debugger.push("GeodecodeFetcher.loadOneBy")
-        if (countryCode) {
-            let results = await this.adapter.loadManyBy("name", cityName)
-            if (!results) {
-                Fetcher_class_Debugger.pop()
-                return null
-            } 
-
-            results = results.filter(entry => entry.country_code === countryCode)
-            Fetcher_class_Debugger.pop()
-            return results[0]
-        } else {
-            let results = await this.adapter.loadOneBy("name", cityName)
-            Fetcher_class_Debugger.pop()
-            return results
-        }
-    }
-}
-
-export const geodecodeFetcher = new GeodecodeFetcher()
