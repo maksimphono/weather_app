@@ -136,6 +136,10 @@ export default class DataAdapter{
         })
     }
     loadOneBy(indexName, value) {
+        /*
+        TODO: create functional so I can request value by it's primary key(keyPath),
+            so cursor shouldn't be created and iteration shouldn't be performed
+        */ 
         return new Promise((resolve, reject) => {
             const objectStore = this.getObjectStore("readwrite")
             let myIndex = this.getIndex(objectStore, indexName)
@@ -163,6 +167,7 @@ export default class DataAdapter{
     }
 
     loadManyBy(indexName, value) {
+        // TODO: realize same logic as in "loadOneBy" TODO
         return new Promise((resolve, reject) => {
             const resultList = []
             const objectStore = this.getObjectStore("readwrite")
