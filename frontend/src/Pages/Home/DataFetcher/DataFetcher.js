@@ -58,11 +58,18 @@ export class FetchError {
 }
 
 class Fetcher {
-    constructor(adapter, url = "") {
+    constructor(adapter = null, url = "") {
         this.adapter = adapter
         this.url = url
-        this._fetchParams = null
         this.ready = false
+        if (this.adapter) {
+            this.adapter
+                .openDB()
+                    .then(() => 
+                        this.ready = true
+                    )
+                    .catch((error) => {throw new Error(error)})
+        }
     }
     isOverdue(entry) {
         if (!entry.hasOwnProperty("due_dt")) return false
@@ -70,12 +77,6 @@ class Fetcher {
     }
     setOverdue(date, entry) {
         return {...entry, due_dt : new Date(date)}
-    }
-    set fetchParams(params) {
-        this._fetchParams = new FormData(params)
-    }
-    get fetchParams() {
-        return this._fetchParams
     }
     async fetch(params) {
         Fetcher_class_Debugger.push("Fetcher.fetch")
@@ -136,8 +137,13 @@ class Fetcher {
                 const response = await this.fetch(params)
                 if (response.ok) {
                     const fetchedData = await response.json()
-                    data = this.processFetchedData(fetchedData)
-                    await this.saveOne(data)
+                    if (Object.keys(fetchedData)?.length) {
+                        data = this.processFetchedData(fetchedData)
+                        await this.saveOne(data)
+                    } else {
+                        // fetch() returned empty object (most likely means that the data doesn't exist in OpenWeather DB)
+                        data = null
+                    }                 
                     Fetcher_class_Debugger.pop()
                     return data
                 } else {
@@ -163,12 +169,6 @@ class GeodecodeFetcher extends Fetcher {
             dataAdapterFactory.createGeodecodeAdapter(),   // adapter
             "http://api.openweathermap.org/geo/1.0/direct" // url
         )
-        this.adapter
-            .openDB()
-                .then(() => 
-                    this.ready = true
-                )
-                .catch((error) => {throw new Error(error)})
     }
     // @override
     prepareFetchParams({cityName, countryCode}) {
