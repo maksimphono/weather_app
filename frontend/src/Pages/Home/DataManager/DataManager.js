@@ -74,7 +74,7 @@ export default class DataManager {
         if (!this.ready) { 
             return null
         }
-        let data = await this.loadOneBy(args) // TODO: complete data load
+        let data = await this.loadOneBy(args)
         if (data == null || this.isOverdue(data)) {
             // that city isn't in the database => fetch from API and save to the database
             const params = this.prepareFetchParams(args)
