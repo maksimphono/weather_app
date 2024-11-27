@@ -88,7 +88,7 @@ export default class DataManager {
                     } else {
                         // fetch() returned empty object (most likely means that the data doesn't exist in OpenWeather DB)
                         data = null
-                    }                 
+                    }             
                     return data
                 } else {
                     console.error("Failed to fetch data from API")
