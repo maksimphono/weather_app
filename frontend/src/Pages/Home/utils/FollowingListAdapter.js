@@ -1,4 +1,5 @@
 import DataAdapter from "../DataAdapter/DataAdapter.js"
+import approximateCoordinates from "./approximateCoordinates.js"
 
 export class CustomError extends Error {
     constructor(type, body) {
@@ -45,7 +46,7 @@ export default class FollowingListAdapter extends DataAdapter {
     async load(coordinates) {
         if (!this.ready) return null
         try {
-            return await super.loadOneBy("coordinates", coordinates)
+            return await super.loadOneBy("coordinates", approximateCoordinates(coordinates))
         } catch(error) {
             console.error("LoadError")
             throw new LoadError(error)
@@ -54,7 +55,7 @@ export default class FollowingListAdapter extends DataAdapter {
     async save({coordinates, name, country_code}) {
         if (!this.ready) return null
         try {
-            return await super.saveOne({coordinates, name, country_code})
+            return await super.saveOne({coordinates : approximateCoordinates(coordinates), name, country_code})
         } catch(error) {
             throw new CustomError("Saving error", error)
         }
@@ -62,7 +63,7 @@ export default class FollowingListAdapter extends DataAdapter {
     async remove(coordinates) {
         if (!this.ready) return null
         try {
-            return await super.removeOneBy("coordinates", coordinates)
+            return await super.removeOneBy("coordinates", approximateCoordinates(coordinates))
         } catch(error) {
             console.error("LoadError")
             throw new LoadError(error)

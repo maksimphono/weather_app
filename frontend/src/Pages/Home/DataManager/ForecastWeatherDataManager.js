@@ -1,6 +1,7 @@
 import DataManager, { FetchError } from "./DataManager.js"
 import dataAdapterFactory from "../utils/DataAdapterFactory.js"
-import { approximateCoordinates } from "./OneDayWeatherDataManager.js"
+import approximateCoordinates from "../utils/approximateCoordinates.js"
+//import { approximateCoordinates } from "./OneDayWeatherDataManager.js"
 import Debugger from "../../utils/Debugger"
 export const ForecastWeatherDataManager_class_Debugger = new Debugger("ForecastWeatherDataManager_class_Debugger")
 
