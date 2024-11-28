@@ -136,12 +136,15 @@ export default class DataAdapter{
         })
     }
     loadOneBy(indexName, value) {
-        /*
-        TODO: create functional so I can request value by it's primary key(keyPath),
-            so cursor shouldn't be created and iteration shouldn't be performed
-        */ 
         return new Promise((resolve, reject) => {
             const objectStore = this.getObjectStore("readwrite")
+            if (indexName === objectStore.keyPath) {
+                const request = objectStore.get(value)
+                request.onsuccess = ({target}) => resolve(target.result)
+                request.onerror = ({target}) => reject(target.error)
+                return
+            }
+            
             let myIndex = this.getIndex(objectStore, indexName)
             const cursorReq = myIndex.openCursor()
 
@@ -167,7 +170,6 @@ export default class DataAdapter{
     }
 
     loadManyBy(indexName, value) {
-        // TODO: realize same logic as in "loadOneBy" TODO
         return new Promise((resolve, reject) => {
             const resultList = []
             const objectStore = this.getObjectStore("readwrite")

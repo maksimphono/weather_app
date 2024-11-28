@@ -12,7 +12,7 @@ export default function Data() {
             const manager = oneDayWeatherDataManager
             console.log(manager.ready)
             try {
-                let res = await manager.getData({lat: 12.34567, lon : 426666.98765})
+                let res = await manager.getData({lat: 12.34567, lon : 42.98765})
                 console.dir(res)
             }catch(error) {
                 if (error instanceof FetchError) {
