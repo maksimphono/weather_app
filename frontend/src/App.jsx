@@ -13,7 +13,7 @@ export default function App() {
       <HashRouter>
         <Routes>
           <Route path = "/" element = {<Layout/>}>
-            <Route index element = {<Data />}/>
+            <Route index element = {<Home />}/>
           </Route>
           <Route path = "/tests">
             <Route index element = {<Forecast />}/>

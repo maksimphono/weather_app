@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useReducer, useRef, useState} from 'react'
 import style from "../css/Home.module.scss"
 import InputFields from './InputFields.jsx'
+import oneDayWeatherDataManager from '../DataManager/OneDayWeatherDataManager.js'
 //const style = {}
 
 function SmallWeatherData({gridArea, value, className, children}) {
@@ -57,8 +58,20 @@ export default function Home() {
     const [followerCoords, setFollowerCoords] = useState({x: 0, y : 0})
     const weatherViewRef = useRef(null)
 
+    useEffect(() => (async () => {
+        const manager = oneDayWeatherDataManager
+
+        try {
+            let res = await manager.getData({lat:13.7487132, lon:100.5019723})
+            setWeatherData(res.data)
+        }catch(error) {
+            console.error(error)
+        }
+    })(), [])
+
     return (
         <div className = {style["home"]}>
+            {Object.keys(weatherData).length &&
             <div ref = {weatherViewRef} className = {style["weather__view"]}>
                 <i style = {{top: followerCoords.y, left: followerCoords.x}} className = {style["follower"]}></i>
                 <div className = {style["basic__info"]}>
@@ -79,7 +92,12 @@ export default function Home() {
                         <span>{weatherData.weather[0].description}</span>
                     </SmallWeatherData>
                     <SmallWeatherData gridArea = "name" className = {"location__name"}>
-                        {weatherData.name}, {weatherData.sys.country}
+                    {
+                        (weatherData.sys?.country && weatherData.name.length)?
+                            [weatherData.name, weatherData.sys.country].join(", ")
+                        :
+                            [weatherData.coord.lat, weatherData.coord.lon].join(", ")
+                    }
                     </SmallWeatherData>
                     <SmallWeatherData gridArea = "date" className = {"date"}>
                         {(new Date()).toISOString()}
@@ -107,6 +125,7 @@ export default function Home() {
                     </SmallWeatherData>
                 </div>
             </div>
+            }
         </div>
     )
 }
