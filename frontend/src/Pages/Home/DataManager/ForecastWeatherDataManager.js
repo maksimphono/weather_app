@@ -38,7 +38,6 @@ export function extractEveryDayData(list) {
         return null
     // Extracting data for noon of the next day (after anchor time)
     const anchorTime = get3hIntervalAfterAnchorTime()
-    console.log(anchorTime)
     const everyDayWeather = list.filter(day => day.dt_txt.slice(-8, -6) === anchorTime)
     const currentTimeWeather = list[0]
 
