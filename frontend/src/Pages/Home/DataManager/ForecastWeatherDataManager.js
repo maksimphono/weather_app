@@ -5,6 +5,7 @@ import Debugger from "../../utils/Debugger"
 export const ForecastWeatherDataManager_class_Debugger = new Debugger("ForecastWeatherDataManager_class_Debugger")
 
 const WEATHER_DATA_EXPIRATION_TIME_HOURS = 3
+const ANCHOR_TIME_HOURS = 12 // (set noon by default)
 
 
 export class CoordinatesError extends Error {
@@ -26,9 +27,8 @@ function get3hIntervalAfterAnchorTime() {
     const adjust = s => {if (s.length === 1) return "0" + s; else return s;}
     const nextNoon = new Date()
     nextNoon.setDate(nextNoon.getDate() + 1)
-    nextNoon.setHours(12, 0, 0, 0)
-    console.log(Math.ceil(parseInt(getISOHours(nextNoon.toISOString())) / 3))
-    return (nextNoon.toISOString().slice(0, 11) + adjust((3 * Math.ceil(parseInt(getISOHours(nextNoon.toISOString())) / 3)).toString()) + nextNoon.toISOString().slice(13)).replace("T", " ").slice(0, -5)
+    nextNoon.setHours(ANCHOR_TIME_HOURS, 0, 0, 0)
+    return adjust((3 * Math.ceil(parseInt(getISOHours(nextNoon.toISOString())) / 3)).toString())
 }
 
 export function extractEveryDayData(list) {
@@ -36,7 +36,7 @@ export function extractEveryDayData(list) {
     if (list.length !== 40) 
         // most likely the Open Weather API returned incorrect list for some reason
         return null
-    const anchorTime = get3hIntervalAfterAnchorTime().slice(-8, -6)
+    const anchorTime = get3hIntervalAfterAnchorTime()
     const everyDayWeather = list.filter(day => day.dt_txt.slice(-8, -6) === anchorTime)
     const currentTimeWeather = list[0]
 

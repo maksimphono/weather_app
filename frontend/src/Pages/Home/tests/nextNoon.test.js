@@ -1,4 +1,4 @@
-function adjust3hIntervalAfterAnchorTime() {
+function get3hIntervalAfterAnchorTime() {
     /* That function logic: 
         Take 12 AM (noon) of the next day (in locale form),
         calculate start time of the next 3-hours interval (in ISO format),
@@ -10,13 +10,11 @@ function adjust3hIntervalAfterAnchorTime() {
     const nextNoon = new Date()
     nextNoon.setDate(nextNoon.getDate() + 1)
     nextNoon.setHours(12, 0, 0, 0)
-    console.log(Math.ceil(parseInt(getISOHours(nextNoon.toISOString())) / 3))
-    return adjust((3 * Math.ceil(parseInt(getISOHours(nextNoon.toISOString())) / 3)).toString(
+    return adjust((3 * Math.ceil(parseInt(getISOHours(nextNoon.toISOString())) / 3)).toString())
 }
-
 describe("Teting nextNoon", () => {
     it("Test 1", () => {
-        const anchorTime = adjust3hIntervalAfterAnchorTime().slice(-8, -6)
+        const anchorTime = get3hIntervalAfterAnchorTime()
 
         expect(anchorTime).toBe("06")
     })
