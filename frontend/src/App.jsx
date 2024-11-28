@@ -1,6 +1,6 @@
 import React from 'react'
 import Layout from './Layout.jsx'
-import Home from './Pages/Home/components/Home.jsx'
+import WeatherForecast from './Pages/Home/components/WeatherForecast.jsx'
 import Forecast from './Pages/Home/components/Forecast.jsx'
 //import WeatherByCity from './Pages/WaetherByCity/Components/WeatherByCity.jsx'
 //import WeatherByCoordinates from './Pages/WaetherByCity/Components/WeatherByCoordinates.jsx'
@@ -13,7 +13,7 @@ export default function App() {
       <HashRouter>
         <Routes>
           <Route path = "/" element = {<Layout/>}>
-            <Route index element = {<Home />}/>
+            <Route index element = {<WeatherForecast />}/>
           </Route>
           <Route path = "/tests">
             <Route index element = {<Forecast />}/>

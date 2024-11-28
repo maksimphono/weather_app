@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useReducer, useRef, useState} from 'react'
 import style from "../css/Home.module.scss"
 import InputFields from './InputFields.jsx'
-import oneDayWeatherDataManager from '../DataManager/OneDayWeatherDataManager.js'
+import oneDayWeatherDataManager, { CoordinatesError } from '../DataManager/OneDayWeatherDataManager.js'
 //const style = {}
 
 function SmallWeatherData({gridArea, value, className, children}) {
@@ -53,21 +53,26 @@ const currentWeatherData = {
   }
   
 
-export default function Home() {
+export default function WeatherForecast() {
     const [weatherData, setWeatherData] = useState(currentWeatherData)
     const [followerCoords, setFollowerCoords] = useState({x: 0, y : 0})
     const weatherViewRef = useRef(null)
 
-    useEffect(() => (async () => {
+    useEffect(() => {(async () => {
         const manager = oneDayWeatherDataManager
 
         try {
             let res = await manager.getData({lat:13.7487132, lon:100.5019723})
             setWeatherData(res.data)
-        }catch(error) {
+        } catch(error) {
             console.error(error)
+            if (error instanceof CoordinatesError) {
+                alert("You likely provided wrong coordinates")
+            } else {
+                alert("Error while getting weather data")
+            }
         }
-    })(), [])
+    })()}, [])
 
     return (
         <div className = {style["home"]}>
@@ -100,7 +105,7 @@ export default function Home() {
                     }
                     </SmallWeatherData>
                     <SmallWeatherData gridArea = "date" className = {"date"}>
-                        {(new Date()).toISOString()}
+                        {(new Date()).toLocaleString().replaceAll("/", ".")}
                     </SmallWeatherData>
                     <SmallWeatherData gridArea = "timezone" className = {"timezone"}>
                         <span>Timezone</span>
