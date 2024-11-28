@@ -51,6 +51,15 @@ class DataAdapterFactory {
         this.createdInstances.set(name, adapter)
         return adapter
     }
+    createForecastWeatherAdapter() {
+        const name = "Forecast weather"
+        if (this.createdInstances.has(name)) {
+            return this.createdInstances.get(name)
+        }
+        const adapter = new DataAdapter(name, [{name : "coordinates"}, {name : "due_dt"}, {name : "data"}, {name : "lat"}, {name : "lon"}], "coordinates")
+        this.createdInstances.set(name, adapter)
+        return adapter
+    }
 }
 
 const factory  = new DataAdapterFactory()

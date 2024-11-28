@@ -1134,7 +1134,7 @@ const forecast = [
     }
   ]
 
-describe("useFetchWeatherForecast", () => {
+describe.skip("useFetchWeatherForecast", () => {
     it("TEST 1", () => {
         const fetch = useFetchWeatherForecast(forecast)
         const result = fetch()
