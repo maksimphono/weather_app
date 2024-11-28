@@ -221,6 +221,13 @@ export default class DataAdapter{
     removeOneBy(indexName, value) {
         return new Promise((resolve, reject) => {
             const objectStore = this.getObjectStore("readwrite")
+            if (indexName === objectStore.keyPath) {
+                // requesting value by key path (return directly without cursor)
+                const request = objectStore.delete(value)
+                request.onsuccess = ({target}) => resolve(target.result)
+                request.onerror = ({target}) => reject(target.error)
+                return
+            }
             const cursor = objectStore.openCursor()
 
             cursor.onsuccess = (event) => {
