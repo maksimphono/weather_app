@@ -8,23 +8,13 @@ import forecastWeatherDataManager from '../DataManager/ForecastWeatherDataManage
 
 export default function Data() {
     useEffect(() => {(async () => {
-        const manager = forecastWeatherDataManager
-        console.log(manager.ready)
-        try {
-            let res = await manager.getData({lat:13.7524938, lon:100.4935089})
-            console.dir(res)
-        }catch(error) {
-            if (error instanceof CoordinatesError) {
-                if (error.body.statusText === "Bad Request") {
-                    console.warn("Coordinates error");
-                }
-            } else {
-                if (error instanceof FetchError) {
-                    console.warn("Network error");
-                }
-            }
-        }
-
+        const adapter = dataAdapterFactory.createUserFollowingListAdapter()
+        await adapter.openDB()
+        await adapter.saveOne({coordinates : "13.7553925,95.9385771", name : "Bangkok", country_code : "TH"})
+        await adapter.saveOne({coordinates : "22.797401,108.1783688", name : "Nanning", country_code : "CN"})
+        await adapter.removeOneBy("coordinates", "22.797401,108.1783688")
+        console.table(await adapter.loadAll())
+        
         //await adapter.saveOne({"code": "RU", "country" : "Russia"})
         //await adapter.saveMany([{code: "RU", country : "Russia"}, {code: "CN", country : "China"}, {code: "US", country : "United States"}])
         //console.info(await adapter.removeManyBy("value", "ce"))

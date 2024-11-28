@@ -1,4 +1,5 @@
 import DataAdapter from "../DataAdapter/DataAdapter";
+import FollowingListAdapter from "./FollowingListAdapter";
 
 class DataAdapterFactory {
     // Must be singleton
@@ -39,6 +40,15 @@ class DataAdapterFactory {
             return this.createdInstances.get(name)
         }
         const adapter = new DataAdapter(name, [{name : "name"}, {name : "email"}, {name : "preffered_temp_units"}, {name : "followed_cities"}], "name")
+        this.createdInstances.set(name, adapter)
+        return adapter
+    }
+    createUserFollowingListAdapter() {
+        const name = "User following cities list"
+        if (this.createdInstances.has(name)) {
+            return this.createdInstances.get(name)
+        }
+        const adapter = new FollowingListAdapter(name)
         this.createdInstances.set(name, adapter)
         return adapter
     }
