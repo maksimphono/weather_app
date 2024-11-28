@@ -44,6 +44,7 @@ module.exports = {
             safe: true,     // (Optional) Verify that variables defined in .env.example are all set
         }),
     ],
+    devtool: "source-map",
     devServer: {
         static: './dist',
     },

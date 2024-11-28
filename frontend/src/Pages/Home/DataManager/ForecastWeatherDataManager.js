@@ -81,11 +81,10 @@ class ForecastWeatherDataManager extends DataManager {
             I need to get weather data for every day at the time, that is most close to the current time
             After that I need to store that resulting list to the indexedDB and set overdue time
         */
-        if (data?.list?.length === 0) {
-            throw new Error("Data must contain a list of days")
+        if (data?.list?.length === 0 || Object.keys(data?.city?.coord).length === 0) {
+            throw new Error("Data must contain a list of days and coordinates")
         }
 
-        ForecastWeatherDataManager_class_Debugger.log("Data fetched from OpenWeatherMap API:", data)
         const coordinates = approximateCoordinates({lat: data.city.coord.lat, lon: data.city.coord.lon})
         const dailyWeatherList = extractEveryDayData(data.list)
 
@@ -94,6 +93,7 @@ class ForecastWeatherDataManager extends DataManager {
                 coordinates,
                 data : {
                     ...data,
+                    cnt : dailyWeatherList.length,
                     list : dailyWeatherList
                 },
                 lat : data.city.coord.lat,
