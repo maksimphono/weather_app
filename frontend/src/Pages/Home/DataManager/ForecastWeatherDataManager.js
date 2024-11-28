@@ -36,6 +36,7 @@ export function extractEveryDayData(list) {
     if (list.length !== 40) 
         // most likely the Open Weather API returned incorrect list for some reason
         return null
+    // Extracting data for noon of the next day (after anchor time)
     const anchorTime = get3hIntervalAfterAnchorTime()
     console.log(anchorTime)
     const everyDayWeather = list.filter(day => day.dt_txt.slice(-8, -6) === anchorTime)
@@ -80,20 +81,27 @@ class ForecastWeatherDataManager extends DataManager {
             I need to get weather data for every day at the time, that is most close to the current time
             After that I need to store that resulting list to the indexedDB and set overdue time
         */
-       
-        const coordinates = approximateCoordinates({lat: data.city.coord.lat, lon: data.city.coord.lon})
+        if (data?.list?.length === 0) {
+            throw new Error("Data must contain a list of days")
+        }
 
+        ForecastWeatherDataManager_class_Debugger.log("Data fetched from OpenWeatherMap API:", data)
+        const coordinates = approximateCoordinates({lat: data.city.coord.lat, lon: data.city.coord.lon})
         const dailyWeatherList = extractEveryDayData(data.list)
 
-        return this.setOverdue({
-            coordinates,
-            data : {
-                ...data,
-                list : dailyWeatherList
-            },
-            lat : data.city.coord.lat,
-            lon : data.city.coord.lon,
-        });
+        if (dailyWeatherList?.length)
+            return this.setOverdue({
+                coordinates,
+                data : {
+                    ...data,
+                    list : dailyWeatherList
+                },
+                lat : data.city.coord.lat,
+                lon : data.city.coord.lon,
+            });
+        else
+            // most likely, means, that the OpenWeather api didn't send data with list of weather data for every day with length of 40
+            return null
     }
 
     getExpirationTime() {
