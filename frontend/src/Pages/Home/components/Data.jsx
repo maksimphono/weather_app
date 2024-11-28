@@ -3,7 +3,7 @@ import DataAdapter from '../DataAdapter/DataAdapter'
 import dataAdapterFactory from '../utils/DataAdapterFactory'
 import {FetchError} from "../DataManager/DataManager.js"
 import geodecodeDataManager, {GeodecodeDataManager_class_Debugger } from '../DataManager/GeodecodeDataManager.js'
-import oneDayWeatherDataManager, {OneDayWeatherDataManager_class_Debugger} from '../DataManager/OneDayWeatherDataManager.js'
+import oneDayWeatherDataManager, {CoordinatesError, OneDayWeatherDataManager_class_Debugger} from '../DataManager/OneDayWeatherDataManager.js'
 
 
 export default function Data() {
@@ -12,13 +12,15 @@ export default function Data() {
             const manager = oneDayWeatherDataManager
             console.log(manager.ready)
             try {
-                let res = await manager.getData({lat: 12.34567, lon : 42.98765})
+                let res = await manager.getData({lat: 12.34567, lon : 429999999.98765})
                 console.dir(res)
             }catch(error) {
-                if (error instanceof FetchError) {
+                if (error instanceof CoordinatesError) {
                     if (error.body.statusText === "Bad Request") {
                         console.warn("Coordinates error");
-                    } else {
+                    }
+                } else {
+                    if (error instanceof FetchError) {
                         console.warn("Network error");
                     }
                 }

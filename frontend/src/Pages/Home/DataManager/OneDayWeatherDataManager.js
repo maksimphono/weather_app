@@ -1,4 +1,20 @@
-import DataManager from "./DataManager.js"
+/*
+    _____                  ____            __            __        _   _               
+   |  __ \                |  _ \           \ \          / /       | | | |              
+   | |  | | __ _ _   _    | |_) | _   _     \ \        / /__  __ _| |_| |__   ___ _ __ 
+   | |  | |/ _` | | | |   |  _ < | | | |     \ \  /\  / / _ \/ _` | __| '_ \ / _ \ '__|
+   | |__| | (_| | |_| |   | |_) || |_| |      \ \/  \/ / |__/ (_| | |_| | | |  __/ |   
+   |_____/ \__,_|\__, |   |____/  \__, |       \__/\__/ \___|\__,_|\__|_| |_|\___|_|   
+                  __/ |            __/ |                                            
+                 |___/            |___/                                             
+    _____ _                    __  __                                   
+   |_   _(_)_ __ ___   ___    |  \/  | __ _ _ __   __ _  __ _  ___ _ __ 
+     | | | | '_ ` _ \ / _ \   | |\/| |/ _` | '_ \ / _` |/ _` |/ _ \ '__|
+     | | | | | | | | |  __/   | |  | | (_| | | | | (_| | (_| |  __/ |   
+     |_| |_|_| |_| |_|\___|   |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_|   
+                                                        |___/           
+*/
+import DataManager, { FetchError } from "./DataManager.js"
 import dataAdapterFactory from "../utils/DataAdapterFactory.js"
 
 import Debugger from "../../utils/Debugger"
@@ -9,6 +25,13 @@ const WEATHER_DATA_EXPIRATION_TIME_HOURS = 6
 export function approximateCoordinates({lat, lon}) {
     const floor2 = x => Math.floor(x * 100) / 100
     return `${floor2(lat)},${floor2(lon)}`
+}
+
+export class CoordinatesError extends Error {
+    constructor(body) {
+        super("Coordinates Error")
+        this.body = body
+    }
 }
 
 class OneDayWeatherDataManager extends DataManager {
@@ -61,6 +84,25 @@ class OneDayWeatherDataManager extends DataManager {
         } else {
             newDate.setHours(newDate.getHours() + WEATHER_DATA_EXPIRATION_TIME_HOURS);
             return newDate.getTime();
+        }
+    }
+    async getData({lat, lon}) {
+        /*
+            simple wrapper around getData method, 
+            because user can accedentally specify insufficient coordinates, so I need to catch FetchError and throw CoordinatesError
+        */
+        try {
+            return await super.getData({lat, lon})
+        } catch(error) {
+            if (error instanceof FetchError) {
+                if (error.body.statusText === "Bad Request") {
+                    // Bad Request most likely means, that user specified infufficient coordinates
+                    throw new CoordinatesError(error.body)
+                } else {
+                    // most likely is network error
+                    throw error
+                }
+            }
         }
     }
 }

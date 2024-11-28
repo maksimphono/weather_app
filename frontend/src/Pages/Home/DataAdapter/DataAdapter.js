@@ -139,6 +139,7 @@ export default class DataAdapter{
         return new Promise((resolve, reject) => {
             const objectStore = this.getObjectStore("readwrite")
             if (indexName === objectStore.keyPath) {
+                // requesting value by key path (return directly without cursor)
                 const request = objectStore.get(value)
                 request.onsuccess = ({target}) => resolve(target.result)
                 request.onerror = ({target}) => reject(target.error)

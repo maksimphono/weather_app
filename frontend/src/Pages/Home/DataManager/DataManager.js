@@ -3,8 +3,9 @@ import Debugger from "../../utils/Debugger.js"
 //export const DataManager_class_Debugger = new Debugger("DataManager class Debugger")
 const API_KEY = process.env.REACT_APP_API_KEY;
 
-export class FetchError {
+export class FetchError extends Error {
     constructor(body) {
+        super("FetchError")
         this.body = body
     }
 }
