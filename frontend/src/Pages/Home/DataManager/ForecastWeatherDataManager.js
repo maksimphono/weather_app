@@ -20,8 +20,8 @@ function get3hIntervalAfterAnchorTime() {
     /* That function logic: 
         Take 12 AM (noon) of the next day (in locale form),
         calculate start time of the next 3-hours interval (in ISO format),
-        and return string in form of "2024-11-22 06:00:00" so I can extract
-        starting time (in ISO format) of the 3-hours interval that comes after tomorrow's noon
+        and return string in form of "06" which is the
+        starting time (in ISO hours) of the 3-hours interval that comes after next day's noon
     */
     let getISOHours = (isodate) => isodate.slice(11, 13)
     const adjust = s => {if (s.length === 1) return "0" + s; else return s;}
@@ -37,10 +37,11 @@ export function extractEveryDayData(list) {
         // most likely the Open Weather API returned incorrect list for some reason
         return null
     const anchorTime = get3hIntervalAfterAnchorTime()
+    console.log(anchorTime)
     const everyDayWeather = list.filter(day => day.dt_txt.slice(-8, -6) === anchorTime)
     const currentTimeWeather = list[0]
 
-    if (parseInt(currentTimeWeather.dt_txt.slice(-8, -6)) <= 12) {
+    if (parseInt(currentTimeWeather.dt_txt.slice(-8, -6)) <= parseInt(anchorTime)) {
         return [currentTimeWeather, ...everyDayWeather.slice(-4)]
     } else {
         return [currentTimeWeather, ...everyDayWeather.slice(0, 4)]
