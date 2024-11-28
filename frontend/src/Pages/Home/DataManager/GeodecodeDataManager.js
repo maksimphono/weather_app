@@ -3,6 +3,7 @@ import dataAdapterFactory from "../utils/DataAdapterFactory.js"
 import Debugger from "../../utils/Debugger"
 export const GeodecodeDataManager_class_Debugger = new Debugger("GeodecodeGeodecodeDataManager_class_Debugger")
 
+
 class GeodecodeDataManager extends DataManager {
     constructor () {
         super(

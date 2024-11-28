@@ -1,15 +1,11 @@
 import DataManager from "./DataManager.js"
 import dataAdapterFactory from "../utils/DataAdapterFactory.js"
+import approximateCoordinates from "../utils/approximateCoordinates.js"
 
 //import Debugger from "../../utils/Debugger"
 //export const OneDayWeatherDataManager_class_Debugger = new Debugger("OneDayWeatherDataManager_class_Debugger")
 
 const WEATHER_DATA_EXPIRATION_TIME_HOURS = 6
-
-export function approximateCoordinates({lat, lon}) {
-    const floor2 = x => Math.floor(x * 100) / 100
-    return `${floor2(lat)},${floor2(lon)}`
-}
 
 class OneDayWeatherDataManager extends DataManager {
     constructor () {
