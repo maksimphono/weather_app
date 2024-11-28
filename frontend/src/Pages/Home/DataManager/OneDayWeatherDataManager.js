@@ -49,9 +49,19 @@ class OneDayWeatherDataManager extends DataManager {
     }
 
     getExpirationTime() {
+        const now = new Date();
         const newDate = new Date();
-        newDate.setHours(newDate.getHours() + WEATHER_DATA_EXPIRATION_TIME_HOURS);
-        return newDate.getTime();
+        const nextDay = new Date()
+
+        nextDay.setDate(nextDay.getDate() + 1)
+        nextDay.setHours(0, 0, 0, 0)
+        if ((nextDay - now) / 3.6e6 < WEATHER_DATA_EXPIRATION_TIME_HOURS) {
+            // New day will come sonner, than expiration time passes
+            return nextDay.getTime()
+        } else {
+            newDate.setHours(newDate.getHours() + WEATHER_DATA_EXPIRATION_TIME_HOURS);
+            return newDate.getTime();
+        }
     }
 }
 
