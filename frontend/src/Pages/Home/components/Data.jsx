@@ -15,8 +15,12 @@ export default function Data() {
                 let res = await manager.getData({lat: 12.34567, lon : 426666.98765})
                 console.dir(res)
             }catch(error) {
-                if (error instanceof FetchError && error.body.statusText === "Bad Request") {
-                    console.warn("Coordinates error");
+                if (error instanceof FetchError) {
+                    if (error.body.statusText === "Bad Request") {
+                        console.warn("Coordinates error");
+                    } else {
+                        console.warn("Network error");
+                    }
                 }
             }
         })

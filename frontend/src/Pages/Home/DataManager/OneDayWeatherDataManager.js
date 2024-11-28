@@ -1,8 +1,8 @@
 import DataManager from "./DataManager.js"
 import dataAdapterFactory from "../utils/DataAdapterFactory.js"
 
-//import Debugger from "../../utils/Debugger"
-//export const OneDayWeatherDataManager_class_Debugger = new Debugger("OneDayWeatherDataManager_class_Debugger")
+import Debugger from "../../utils/Debugger"
+export const OneDayWeatherDataManager_class_Debugger = new Debugger("OneDayWeatherDataManager_class_Debugger")
 
 const WEATHER_DATA_EXPIRATION_TIME_HOURS = 6
 

@@ -93,12 +93,12 @@ export default class DataManager {
                 } else {
                     console.error("Failed to fetch data from API")
                     console.dir(response)
-                    throw new FetchError(response)
+                    throw response
                 }
             } catch(error) {
                 console.error("Error in DataManager.getData")
                 console.dir(error)
-                throw error
+                throw new FetchError(error)
             }
         } else {
             return data
