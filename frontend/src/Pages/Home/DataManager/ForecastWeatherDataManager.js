@@ -15,13 +15,29 @@ export class CoordinatesError extends Error {
 }
 
 
+function get3hIntervalAfterAnchorTime() {
+    /* That function logic: 
+        Take 12 AM (noon) of the next day (in locale form),
+        calculate start time of the next 3-hours interval (in ISO format),
+        and return string in form of "2024-11-22 06:00:00" so I can extract
+        starting time (in ISO format) of the 3-hours interval that comes after tomorrow's noon
+    */
+    let getISOHours = (isodate) => isodate.slice(11, 13)
+    const adjust = s => {if (s.length === 1) return "0" + s; else return s;}
+    const nextNoon = new Date()
+    nextNoon.setDate(nextNoon.getDate() + 1)
+    nextNoon.setHours(12, 0, 0, 0)
+    console.log(Math.ceil(parseInt(getISOHours(nextNoon.toISOString())) / 3))
+    return (nextNoon.toISOString().slice(0, 11) + adjust((3 * Math.ceil(parseInt(getISOHours(nextNoon.toISOString())) / 3)).toString()) + nextNoon.toISOString().slice(13)).replace("T", " ").slice(0, -5)
+}
+
 export function extractEveryDayData(list) {
     // list[0] is the data for current day, closest time
     if (list.length !== 40) 
         // most likely the Open Weather API returned incorrect list for some reason
         return null
-    //const anchorTime = adjust3hIntervalAfterAnchorTime().slice(-8, -6)
-    const everyDayWeather = list.filter(day => day.dt_txt.slice(-8, -6) === "12")
+    const anchorTime = get3hIntervalAfterAnchorTime().slice(-8, -6)
+    const everyDayWeather = list.filter(day => day.dt_txt.slice(-8, -6) === anchorTime)
     const currentTimeWeather = list[0]
 
     if (parseInt(currentTimeWeather.dt_txt.slice(-8, -6)) <= 12) {
