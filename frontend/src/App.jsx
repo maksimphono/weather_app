@@ -1,7 +1,7 @@
 import React from 'react'
 import Layout from './Layout.jsx'
 import OneDayWeather from './Pages/Home/components/OneDayWeather.jsx'
-import Forecast from './Pages/Home/components/Forecast.jsx'
+import ForecastWeather from './Pages/Home/components/ForecastWeather.jsx'
 //import WeatherByCity from './Pages/WaetherByCity/Components/WeatherByCity.jsx'
 //import WeatherByCoordinates from './Pages/WaetherByCity/Components/WeatherByCoordinates.jsx'
 import { HashRouter, Route, Routes } from 'react-router-dom'
@@ -13,10 +13,10 @@ export default function App() {
       <HashRouter>
         <Routes>
           <Route path = "/" element = {<Layout/>}>
-            <Route index element = {<OneDayWeather />}/>
+            <Route index element = {<ForecastWeather inputState = {{city : "Moscow", country : "", lat : 0, lon : 0}} selectedMode = {"city"} enabled = {true} />}/>
           </Route>
           <Route path = "/tests">
-            <Route index element = {<Forecast />}/>
+            <Route index element = {<ForecastWeather />}/>
           </Route>
         </Routes>
       </HashRouter>

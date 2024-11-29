@@ -58,15 +58,15 @@ function TemperatureUnitsSwitch({value, tempUnits, setTempUnits}) {
     )
 }
 
-export default function Forecast() {
+export default function ForecastWeather({inputState, selectedMode, enabled}) {
     const weatherViewRef = useRef()
     const [tempUnits, setTempUnits] = useState(CELSIUS_TEMP_UNIT)
     const [weatherForecast, setWeatherForecast] = useState([])
     const [timeMode, toggleTimeMode] = useToggle(["Day", "Night"])
 
-    useFetchWeatherForecast(setWeatherForecast)
+    useFetchWeatherForecast(setWeatherForecast, inputState, selectedMode, enabled)
 
-    useTempAutoConvert(setWeatherForecast, tempUnits)
+    //useTempAutoConvert(setWeatherForecast, tempUnits)
 
     return (
         <div className = {style["home"]}>
