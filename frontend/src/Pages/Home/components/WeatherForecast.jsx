@@ -2,6 +2,7 @@ import React, {useCallback, useEffect, useReducer, useRef, useState} from 'react
 import style from "../css/Home.module.scss"
 import InputFields from './InputFields.jsx'
 import oneDayWeatherDataManager, { CoordinatesError } from '../DataManager/OneDayWeatherDataManager.js'
+import geodecodeDataManager from '../DataManager/GeodecodeDataManager.js'
 //const style = {}
 
 function SmallWeatherData({gridArea, value, className, children}) {
@@ -71,9 +72,10 @@ export default function WeatherForecast() {
     const handleSubmit = useCallback(async ({inputState, selectedMode}) => {
         console.log(`Submit`)
         console.dir(inputState)
+        let manager = null
         switch (selectedMode) {
             case "coords":
-                const manager = oneDayWeatherDataManager
+                manager = oneDayWeatherDataManager
 
                 try {
                     let res = await manager.getData({lat: inputState.lat, lon: inputState.lon})
@@ -88,6 +90,21 @@ export default function WeatherForecast() {
                 }
             break
             case "city": // TODO: add city submission support
+                const weatherManager = oneDayWeatherDataManager
+
+                console.dir(inputState.city)
+                try {
+                    let {lat, lon} = await geodecodeDataManager.getData({cityName : inputState.city, countryCode : ""})
+                    let res = await weatherManager.getData({lat, lon})
+                    setWeatherData(res.data)
+                } catch(error) {
+                    console.error(error)
+                    if (error instanceof CoordinatesError) {
+                        alert("You likely provided wrong coordinates")
+                    } else {
+                        alert("Error while getting weather data")
+                    }
+                }
             break
         }
     }, [])
@@ -126,7 +143,7 @@ export default function WeatherForecast() {
                     }
                     </SmallWeatherData>
                     <SmallWeatherData gridArea = "date" className = {"date"}>
-                        {(new Date()).toLocaleString().replaceAll("/", ".")}
+                        {(new Date()).toLocaleString().replaceAll("/", ".").slice(0,10)}
                     </SmallWeatherData>
                     <SmallWeatherData gridArea = "timezone" className = {"timezone"}>
                         <span>Timezone</span>
