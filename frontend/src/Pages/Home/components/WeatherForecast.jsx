@@ -56,23 +56,41 @@ const currentWeatherData = {
 export default function WeatherForecast() {
     const [weatherData, setWeatherData] = useState(currentWeatherData)
     const [followerCoords, setFollowerCoords] = useState({x: 0, y : 0})
+    const [inputState, setInputState] = useState({})
     const weatherViewRef = useRef(null)
 
     useEffect(() => {(async () => {
-        const manager = oneDayWeatherDataManager
-
-        try {
-            let res = await manager.getData({lat:13.7487132, lon:100.5019723})
-            setWeatherData(res.data)
-        } catch(error) {
-            console.error(error)
-            if (error instanceof CoordinatesError) {
-                alert("You likely provided wrong coordinates")
-            } else {
-                alert("Error while getting weather data")
-            }
-        }
+        
     })()}, [])
+
+    const handleInputChange = useCallback(({inputState, selectedMode}) => {
+        const newState = {...inputState, selectedMode}
+        setInputState(newState)
+    }, [])
+
+    const handleSubmit = useCallback(async ({inputState, selectedMode}) => {
+        console.log(`Submit`)
+        console.dir(inputState)
+        switch (selectedMode) {
+            case "coords":
+                const manager = oneDayWeatherDataManager
+
+                try {
+                    let res = await manager.getData({lat: inputState.lat, lon: inputState.lon})
+                    setWeatherData(res.data)
+                } catch(error) {
+                    console.error(error)
+                    if (error instanceof CoordinatesError) {
+                        alert("You likely provided wrong coordinates")
+                    } else {
+                        alert("Error while getting weather data")
+                    }
+                }
+            break
+            case "city": // TODO: add city submission support
+            break
+        }
+    }, [])
 
     return (
         <div className = {style["home"]}>
@@ -80,7 +98,10 @@ export default function WeatherForecast() {
             <div ref = {weatherViewRef} className = {style["weather__view"]}>
                 <i style = {{top: followerCoords.y, left: followerCoords.x}} className = {style["follower"]}></i>
                 <div className = {style["basic__info"]}>
-                    <InputFields />
+                    <InputFields
+                        onChange = {handleInputChange}
+                        onSubmit = {handleSubmit}
+                    />
                     <SmallWeatherData gridArea = "temp" value = {weatherData.main.temp}>Temperature</SmallWeatherData>
                     <SmallWeatherData gridArea = "feels_like" value = {weatherData.main.feels_like}>Feels like</SmallWeatherData>
 

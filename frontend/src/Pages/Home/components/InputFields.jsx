@@ -1,4 +1,4 @@
-import React, {useReducer, useState, useCallback} from "react"
+import React, {useReducer, useState, useCallback, useEffect} from "react"
 import style from "../css/Home.module.scss"
 //const style = {}
 
@@ -54,13 +54,14 @@ const cityAction = (val) => ({type : "city", city : val})
 const latAction = (val) => ({type : "lat", lat : val})
 const lonAction = (val) => ({type : "lon", lon : val})
 
-export default function InputFields() {
-    const [seletcedMode, setSelectedMode] = useState("city")
+export default function InputFields({onChange, onSubmit}) {
+    const [selectedMode, setSelectedMode] = useState("city")
     const [inputState, dispatch] = useReducer(inputReducer, initalInputState)
 
     const handleSubmit = useCallback((event) => {
         event.preventDefault()
-    }, [])
+        onSubmit({inputState, selectedMode})
+    }, [inputState, selectedMode])
 
     const handleCityChange = useCallback(({target}) => {
         dispatch(cityAction(target.value))
@@ -74,13 +75,17 @@ export default function InputFields() {
         dispatch(lonAction(target.value))
     }, [dispatch])
 
+    useEffect(() => {
+        onChange({inputState, selectedMode})
+    }, [inputState, selectedMode])
+
     return (
         <form onSubmit = {handleSubmit} className={style["input__fields"]} style = {{"gridArea" : "input_fields"}}>
             <div className = {style["input__switch"]}>
                 <label>
                     <input type = "radio" name = "input_mode" defaultChecked = {true} value = "city" onChange={({target}) => setSelectedMode(target.value)} />
                     <span 
-                        style = {seletcedMode === "city"?
+                        style = {selectedMode === "city"?
                             {"color" : "var(--color-light)"}:
                             {"color" : "var(--color-dark)"}}
                     >
@@ -90,7 +95,7 @@ export default function InputFields() {
                 <label>
                     <input type = "radio" name = "input_mode" value = "coords" onChange={({target}) => setSelectedMode(target.value)}/>
                     <span 
-                        style = {seletcedMode === "coords"?
+                        style = {selectedMode === "coords"?
                             {"color" : "var(--color-light)"}:
                             {"color" : "var(--color-dark)"}}
                     >
@@ -98,7 +103,7 @@ export default function InputFields() {
                     </span>
                 </label>
             </div>
-            {(seletcedMode === "city") ? 
+            {(selectedMode === "city") ? 
                 <label>
                     <button type = "submit" name = "Search">Search</button>
                     <input 
@@ -108,7 +113,7 @@ export default function InputFields() {
                         value = {inputState.city} 
                         onChange = {handleCityChange} />
                 </label>
-            : (seletcedMode === "coords") ?
+            : (selectedMode === "coords") ?
                 <label>
                     <input data-testid = "latinput"
                         type="number" 
