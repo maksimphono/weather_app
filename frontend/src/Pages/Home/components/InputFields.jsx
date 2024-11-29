@@ -58,16 +58,16 @@ function inputReducer(state, action) {
     }
 }
 
-const initalInputState = new InputState("Moscow", "RU", 0, 0)
+export const initalInputState = new InputState("Moscow", "RU", 0, 0)
 
 const countryAction = (val) => ({type : "country", country : val})
 const cityAction = (val) => ({type : "city", city : val})
 const latAction = (val) => ({type : "lat", lat : val})
 const lonAction = (val) => ({type : "lon", lon : val})
 
-export default function InputFields({onChange, onSubmit}) {
+export default function InputFields({onChange, onSubmit, defaultState}) {
     const [selectedMode, setSelectedMode] = useState("city")
-    const [inputState, dispatch] = useReducer(inputReducer, initalInputState)
+    const [inputState, dispatch] = useReducer(inputReducer, defaultState)
 
     const handleSubmit = useCallback(async (event) => {
         event.preventDefault()

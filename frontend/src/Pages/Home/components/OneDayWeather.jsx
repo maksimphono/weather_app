@@ -4,6 +4,8 @@ import InputFields from './InputFields.jsx'
 import oneDayWeatherDataManager, { CoordinatesError } from '../DataManager/OneDayWeatherDataManager.js'
 import geodecodeDataManager, {CityError} from '../DataManager/GeodecodeDataManager.js'
 import ForecastWeather from './ForecastWeather.jsx'
+import useGetOneDayWeatherData from '../hooks/useGetONeDayWeatherData.js'
+import {initalInputState} from "./InputFields.jsx"
 //const style = {}
 
 
@@ -55,7 +57,6 @@ const currentWeatherData = {
     "cod": 200
   }
 
-
 function OneDayWeather({inputState, selectedMode, onSubmit}) {
     const [weatherData, setWeatherData] = useState(currentWeatherData)
     const [followerCoords, setFollowerCoords] = useState({x: 0, y : 0})
@@ -69,47 +70,7 @@ function OneDayWeather({inputState, selectedMode, onSubmit}) {
     const handleInputChange = useCallback(({inputState, selectedMode}) => {
     }, [])
 
-    useEffect(() => {(async () => {
-        console.log(`Submit`)
-        console.dir(inputState)
-        let manager = null
-        switch (selectedMode) {
-            case "coords":
-                manager = oneDayWeatherDataManager
-
-                try {
-                    let res = await manager.getData({lat: inputState.lat, lon: inputState.lon})
-
-                    setWeatherData(res.data)
-                } catch(error) {
-                    console.error(error)
-                    if (error instanceof CoordinatesError) {
-                        alert("Looks like you provided wrong coordinates")
-                    } else {
-                        alert("Error while getting weather data")
-                    }
-                }
-            break
-            case "city":
-                try {
-                    let coords = await geodecodeDataManager.getData({cityName : inputState.city, countryCode : inputState.country})
-                    let res = await oneDayWeatherDataManager.getData({lat : coords.lat, lon : coords.lon})
-
-                    if (res.data.name.length && inputState.city) {
-                        res.data.name = inputState.city
-                    }
-                    setWeatherData(res.data)
-                } catch(error) {
-                    console.error(error)
-                    if (error instanceof CityError) {
-                        alert("Sorry, could not find the city you specified. Please, check the city name and country code, you've entered")
-                    } else {
-                        alert("Error while getting weather data")
-                    }
-                }
-            break
-        }
-    })()}, [inputState, selectedMode])
+    useGetOneDayWeatherData(setWeatherData, inputState, selectedMode)
 
     return (
         <div className = {style["home"]}>
@@ -120,6 +81,7 @@ function OneDayWeather({inputState, selectedMode, onSubmit}) {
                     <InputFields
                         onChange = {handleInputChange}
                         onSubmit = {onSubmit}
+                        defaultState = {inputState}
                     />
                     <SmallWeatherData gridArea = "temp" value = {weatherData.main.temp}>Temperature</SmallWeatherData>
                     <SmallWeatherData gridArea = "feels_like" value = {weatherData.main.feels_like}>Feels like</SmallWeatherData>
@@ -185,7 +147,7 @@ function OneDayWeather({inputState, selectedMode, onSubmit}) {
 
 export default function Home() {
     const [selectedMode, setSelectedMode] = useState("city") // "city" | "coordinates"
-    const [inputState, setInputState] = useState({})
+    const [inputState, setInputState] = useState(initalInputState)
     const [currentWeatherView, setCurrentWeatherView] = useState("today") // "today" | "forecast"
 
     const handleSubmit = useCallback(async ({inputState, selectedMode}) => {
@@ -199,11 +161,11 @@ export default function Home() {
         <>
             <label>
                 <span>Today</span>
-                <input type="radio" name = "View" value = {"today"} onChange={({target}) => setCurrentWeatherView(target.value)}/>
+                <input type="radio" name = "View" checked = {currentWeatherView === "today"} value = {"today"} onChange={({target}) => setCurrentWeatherView(target.value)}/>
             </label>
             <label>
                 <span>Forecast</span>
-                <input type="radio" name = "View" value = {"forecast"} onChange={({target}) => setCurrentWeatherView(target.value)}/>
+                <input type="radio" name = "View" checked = {currentWeatherView === "forecast"} value = {"forecast"} onChange={({target}) => setCurrentWeatherView(target.value)}/>
             </label>
             {(currentWeatherView === "today")?
                 <OneDayWeather inputState = {inputState} selectedMode={selectedMode} onSubmit = {handleSubmit}/>
