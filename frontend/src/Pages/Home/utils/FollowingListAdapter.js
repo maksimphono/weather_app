@@ -62,7 +62,7 @@ export default class FollowingListAdapter extends DataAdapter {
     async remove(coordinates) {
         if (!this.ready) return null
         try {
-            return await super.removeOneBy("coordinates", approximateCoordinates(coordinates))
+            return await super.removeOneBy("coordinates", coordinates)
         } catch(error) {
             console.error("LoadError")
             throw new LoadError(error)

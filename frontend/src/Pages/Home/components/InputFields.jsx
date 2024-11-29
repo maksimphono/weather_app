@@ -2,7 +2,7 @@ import React, {useReducer, useState, useCallback, useEffect} from "react"
 import style from "../css/Home.module.scss"
 //const style = {}
 
-class InputState {
+export class InputState {
     constructor(city, country, lat, lon) {
         this._country = country
         this._city = city
@@ -53,6 +53,12 @@ function inputReducer(state, action) {
             return state.deepcopy().setLat(action.lat)
         case "lon":
             return state.deepcopy().setLon(action.lon)
+        case "setAll":
+            return state.deepcopy()
+                .setLon(action.lon)
+                .setLat(action.lat)
+                .setCity(action.city)
+                .setCountry(action.country)
         default:
             return state
     }
@@ -64,6 +70,7 @@ const countryAction = (val) => ({type : "country", country : val})
 const cityAction = (val) => ({type : "city", city : val})
 const latAction = (val) => ({type : "lat", lat : val})
 const lonAction = (val) => ({type : "lon", lon : val})
+const setAllAction = (state) => ({type : "setAll", ...state})
 
 export default function InputFields({onChange, onSubmit, defaultState}) {
     const [selectedMode, setSelectedMode] = useState("city")
@@ -74,6 +81,10 @@ export default function InputFields({onChange, onSubmit, defaultState}) {
         console.dir(inputState)
         await onSubmit({inputState, selectedMode})
     }, [inputState, selectedMode])
+
+    useEffect(() => {
+        dispatch(setAllAction(defaultState))
+    }, [defaultState])
 
     useEffect(() => {
         console.info("Renew inputState")

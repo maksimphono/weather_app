@@ -71,11 +71,7 @@ export default function ForecastWeather({inputState, selectedMode, enabled}) {
     return (
         <div className = {style["home"]}>
             <div ref = {weatherViewRef} className = {style["weather__view"]}>
-            <div className = {style["control__buttons"]}>
-                <TemperatureUnitsSwitch value = {CELSIUS_TEMP_UNIT} tempUnits={tempUnits} setTempUnits={setTempUnits}/>
-                <TemperatureUnitsSwitch value = {FAHRENHEIT_TEMP_UNIT} tempUnits={tempUnits} setTempUnits={setTempUnits}/>
-                <TemperatureUnitsSwitch value = {KELVIN_TEMP_UNIT} tempUnits={tempUnits} setTempUnits={setTempUnits}/>
-            </div>
+            
                 {weatherForecast.map(weatherData => (
                     <DayWeather weatherData={weatherData} key = {weatherData.dt} />
                 ))}
@@ -83,3 +79,10 @@ export default function ForecastWeather({inputState, selectedMode, enabled}) {
         </div>
     )
 }
+/*
+<div className = {style["control__buttons"]}>
+                <TemperatureUnitsSwitch value = {CELSIUS_TEMP_UNIT} tempUnits={tempUnits} setTempUnits={setTempUnits}/>
+                <TemperatureUnitsSwitch value = {FAHRENHEIT_TEMP_UNIT} tempUnits={tempUnits} setTempUnits={setTempUnits}/>
+                <TemperatureUnitsSwitch value = {KELVIN_TEMP_UNIT} tempUnits={tempUnits} setTempUnits={setTempUnits}/>
+            </div>
+*/
