@@ -55,7 +55,7 @@ const currentWeatherData = {
   }
   
 
-export default function WeatherForecast() {
+export default function OneDayWeather() {
     const [weatherData, setWeatherData] = useState(currentWeatherData)
     const [followerCoords, setFollowerCoords] = useState({x: 0, y : 0})
     const [inputState, setInputState] = useState({})
