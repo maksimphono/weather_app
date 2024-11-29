@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from "react"
+import forecastWeatherDataManager from "../DataManager/ForecastWeatherDataManager"
 
 const forecast = [
     {
@@ -1133,12 +1134,21 @@ const forecast = [
 
 
 export default function useFetchWeatherForecast(setWeatherForecast, dependencies = []) {
-    useEffect(() => {
-        const result = []
-
-        result[0] = forecast[0]
-        const data = forecast.filter(day => day.dt_txt.slice(day.dt_txt.length - 8, day.dt_txt.length - 6) === "12")
-
-        setWeatherForecast(data.map(dayForecast => ({...dayForecast, init_main : {...dayForecast.main}})))
-    }, dependencies)
+    /* TODO: Complete, define data, that will be used as a forecast
+    */
+    useEffect(() => {(async () => {
+        try {
+            let res = await forecastWeatherDataManager.getData({lat: inputState.lat, lon: inputState.lon})
+            console.dir(res.data)
+            setWeatherForecast(res.data.list)
+        } catch(error) {
+            console.error(error)
+            if (error instanceof CoordinatesError) {
+                alert("Looks like you provided wrong coordinates")
+            } else {
+                alert("Error while getting weather data")
+            }
+        }
+          
+    })()}, dependencies)
 }

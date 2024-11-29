@@ -58,10 +58,16 @@ export default function InputFields({onChange, onSubmit}) {
     const [selectedMode, setSelectedMode] = useState("city")
     const [inputState, dispatch] = useReducer(inputReducer, initalInputState)
 
-    const handleSubmit = useCallback((event) => {
+    const handleSubmit = useCallback(async (event) => {
         event.preventDefault()
-        onSubmit({inputState, selectedMode})
+        console.dir(inputState)
+        await onSubmit({inputState, selectedMode})
     }, [inputState, selectedMode])
+
+    useEffect(() => {
+        console.info("Renew inputState")
+        console.dir(inputState)
+    }, [inputState])
 
     const handleCityChange = useCallback(({target}) => {
         dispatch(cityAction(target.value))

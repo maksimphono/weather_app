@@ -117,7 +117,7 @@
             grid-template-areas:
                 "logo . . ."
                 "main main main ."
-                "name name name ."
+                "name name name name"
                 "date date . ."
                 "timezone . . ."
                 "wind visibility sea_level grnd_level"
@@ -135,13 +135,13 @@
             .smallWeatherData {
                 position: relative;
                 display: flex;
-                flex-direction: column !important;
+                flex-direction: column;
                 height: 100%;
                 width: 100%;
                 word-wrap: break-word;
                 justify-content: center;
                 align-items: center;
-                padding-inline: 5%;
+                padding-inline: 20px;
                 font-size: 1.4rem;
 
                 &.weather__main,
@@ -155,10 +155,14 @@
                     font-size: 2.8rem;
                 }
                 &.location__name {
-                    font-size: 2.4rem
+                    font-size: 2.4rem;
+                    flex-direction: row;
+                    gap: 30px;
+                    justify-content: start;
+                    align-items: center;
                 }
                 &.date {
-                    font-size: 2rem
+                    font-size: 2rem;
                 }
                 &.wind__data::after,
                 &.visibility__data::after,

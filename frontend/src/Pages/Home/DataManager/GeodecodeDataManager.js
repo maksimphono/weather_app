@@ -2,7 +2,14 @@ import DataManager from "./DataManager.js"
 import dataAdapterFactory from "../utils/DataAdapterFactory.js"
 import Debugger from "../../utils/Debugger"
 export const GeodecodeDataManager_class_Debugger = new Debugger("GeodecodeGeodecodeDataManager_class_Debugger")
+import { FetchError } from "./DataManager.js"
 
+export class CityError extends Error {
+    constructor(body) {
+        super("City Error")
+        this.body = body
+    }
+}
 
 class GeodecodeDataManager extends DataManager {
     constructor () {
@@ -58,6 +65,29 @@ class GeodecodeDataManager extends DataManager {
             let results = await this.adapter.loadOneBy("name", cityName)
             GeodecodeDataManager_class_Debugger.pop()
             return results
+        }
+    }
+    async getData({cityName, countryCode}) {
+        /*
+            simple wrapper around getData method, 
+            because user can accedentally specify insufficient city, so I need to catch FetchError and throw CityError
+        */
+        try {
+            const result = await super.getData({cityName, countryCode})
+            if (result === null) {
+                // most likely means that the user provided non-existing city or OpenWeatheer doesn't know about it
+                throw new CityError(result)
+            } else {
+                return result
+            }
+        } catch(error) {
+            if (error instanceof FetchError) {
+                // most likely is network error
+                throw error
+            } else {
+                // most likely OpenWeather API does not know about that city 
+                throw error
+            }
         }
     }
 }

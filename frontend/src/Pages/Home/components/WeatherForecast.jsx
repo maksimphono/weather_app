@@ -1,9 +1,10 @@
-import React, {useCallback, useEffect, useReducer, useRef, useState} from 'react'
+import React, {useCallback, useEffect, useReducer, useRef, useState, useTransition} from 'react'
 import style from "../css/Home.module.scss"
 import InputFields from './InputFields.jsx'
 import oneDayWeatherDataManager, { CoordinatesError } from '../DataManager/OneDayWeatherDataManager.js'
-import geodecodeDataManager from '../DataManager/GeodecodeDataManager.js'
+import geodecodeDataManager, {CityError} from '../DataManager/GeodecodeDataManager.js'
 //const style = {}
+
 
 function SmallWeatherData({gridArea, value, className, children}) {
     const classNames = className !== undefined?className.split(" "):[]
@@ -56,6 +57,7 @@ const currentWeatherData = {
 
 export default function WeatherForecast() {
     const [weatherData, setWeatherData] = useState(currentWeatherData)
+    const [isPending, startTransition] = useTransition()
     const [followerCoords, setFollowerCoords] = useState({x: 0, y : 0})
     const [inputState, setInputState] = useState({})
     const weatherViewRef = useRef(null)
@@ -65,8 +67,7 @@ export default function WeatherForecast() {
     })()}, [])
 
     const handleInputChange = useCallback(({inputState, selectedMode}) => {
-        const newState = {...inputState, selectedMode}
-        setInputState(newState)
+        setInputState(inputState)
     }, [])
 
     const handleSubmit = useCallback(async ({inputState, selectedMode}) => {
@@ -79,28 +80,32 @@ export default function WeatherForecast() {
 
                 try {
                     let res = await manager.getData({lat: inputState.lat, lon: inputState.lon})
+
                     setWeatherData(res.data)
                 } catch(error) {
                     console.error(error)
                     if (error instanceof CoordinatesError) {
-                        alert("You likely provided wrong coordinates")
+                        alert("Looks like you provided wrong coordinates")
                     } else {
                         alert("Error while getting weather data")
                     }
                 }
             break
-            case "city": // TODO: add city submission support
-                const weatherManager = oneDayWeatherDataManager
-
+            case "city":
                 console.dir(inputState.city)
                 try {
-                    let {lat, lon} = await geodecodeDataManager.getData({cityName : inputState.city, countryCode : ""})
-                    let res = await weatherManager.getData({lat, lon})
+                    let coords = await geodecodeDataManager.getData({cityName : inputState.city, countryCode : ""})
+                    let res = await oneDayWeatherDataManager.getData({lat : coords.lat, lon : coords.lon})
+
+                    console.dir({lat : coords.lat, lon : coords.lon, data : res.data})
+                    if (res.data.name.length && inputState.city) {
+                        res.data.name = inputState.city
+                    }
                     setWeatherData(res.data)
                 } catch(error) {
                     console.error(error)
-                    if (error instanceof CoordinatesError) {
-                        alert("You likely provided wrong coordinates")
+                    if (error instanceof CityError) {
+                        alert("Sorry, could not find the city you specified")
                     } else {
                         alert("Error while getting weather data")
                     }
@@ -111,7 +116,8 @@ export default function WeatherForecast() {
 
     return (
         <div className = {style["home"]}>
-            {Object.keys(weatherData).length &&
+            {isPending && <div>Loading</div>}
+            {!isPending && Object.keys(weatherData).length &&
             <div ref = {weatherViewRef} className = {style["weather__view"]}>
                 <i style = {{top: followerCoords.y, left: followerCoords.x}} className = {style["follower"]}></i>
                 <div className = {style["basic__info"]}>
@@ -135,12 +141,20 @@ export default function WeatherForecast() {
                         <span>{weatherData.weather[0].description}</span>
                     </SmallWeatherData>
                     <SmallWeatherData gridArea = "name" className = {"location__name"}>
-                    {
-                        (weatherData.sys?.country && weatherData.name.length)?
-                            [weatherData.name, weatherData.sys.country].join(", ")
-                        :
-                            [weatherData.coord.lat, weatherData.coord.lon].join(", ")
-                    }
+                        <span>
+                            {
+                                (weatherData.sys?.country && weatherData.name.length)?
+                                    [weatherData.name, weatherData.sys.country].join(", ")
+                                :
+                                    "Unknown"
+                            }
+                        </span>
+                        <span>
+                            ({
+                                [weatherData.coord.lat, weatherData.coord.lon].join(", ")
+                            })
+                        </span>
+
                     </SmallWeatherData>
                     <SmallWeatherData gridArea = "date" className = {"date"}>
                         {(new Date()).toLocaleString().replaceAll("/", ".").slice(0,10)}

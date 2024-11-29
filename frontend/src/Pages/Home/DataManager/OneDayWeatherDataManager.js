@@ -30,6 +30,7 @@ export class CoordinatesError extends Error {
     }
 }
 
+
 class OneDayWeatherDataManager extends DataManager {
     constructor () {
         super(
@@ -88,7 +89,13 @@ class OneDayWeatherDataManager extends DataManager {
             because user can accedentally specify insufficient coordinates, so I need to catch FetchError and throw CoordinatesError
         */
         try {
-            return await super.getData({lat, lon})
+            const result = await super.getData({lat, lon})
+            console.log(result)
+            if (result === null) {
+                // most likely means that the user provided non-existing city or OpenWeatheer doesn't know about it
+                throw new CityError(result)
+            }
+            return result
         } catch(error) {
             if (error instanceof FetchError) {
                 if (error.body.statusText === "Bad Request") {
