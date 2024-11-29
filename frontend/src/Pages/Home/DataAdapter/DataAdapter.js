@@ -37,6 +37,7 @@ export default class DataAdapter{
     }
     openDB() {
         return new Promise((resolve, reject) => {
+            console.log("openDB")
             this.version++;
             let req = indexedDB.open(this.dbName, this.version)
     	    req.onsuccess = async event => {

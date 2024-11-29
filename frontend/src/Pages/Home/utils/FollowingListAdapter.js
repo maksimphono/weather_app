@@ -28,11 +28,10 @@ export default class FollowingListAdapter extends DataAdapter {
     constructor(name) {
         super(name, [{name : "coordinates"}, {name : "name"}, {name : "country_code"}], "coordinates")
         this.ready = false
-        this.openDB()
-            .then(() => {
-                this.ready = true
-            })
-            .catch(error => {throw new OpenError(error)})
+    }
+    async openDB() {
+        await super.openDB()
+        this.ready = true
     }
     async loadAll() {
         if (!this.ready) return null

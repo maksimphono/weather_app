@@ -6,6 +6,7 @@ import geodecodeDataManager, {CityError} from '../DataManager/GeodecodeDataManag
 import ForecastWeather from './ForecastWeather.jsx'
 import useGetOneDayWeatherData from '../hooks/useGetONeDayWeatherData.js'
 import {initalInputState} from "./InputFields.jsx"
+import dataAdapterFactory from "../utils/DataAdapterFactory.js"
 //const style = {}
 
 
@@ -70,6 +71,32 @@ function OneDayWeather({inputState, selectedMode, onSubmit}) {
     const handleInputChange = useCallback(({inputState, selectedMode}) => {
     }, [])
 
+    const handleLikeCity = useCallback(async () => {
+        const adapter = await dataAdapterFactory.createUserFollowingListAdapter()
+        let entry = null
+        switch(selectedMode) {
+            case "city":
+                entry = {
+                    coordinates : {lat : weatherData.coord.lat, lon : weatherData.coord.lon},
+                    name : inputState.city,
+                    country_code : weatherData.sys.country
+                }
+            break
+            case "coords":
+                entry = {
+                    coordinates : {lat : inputState.lat, lon : inputState.lon},
+                    name : weatherData.name || "Unknown",
+                    country_code : weatherData.sys.country || ""
+                }
+            break
+        }
+        try {
+            await adapter.save(entry)
+        } catch(error) {
+            alert("Error when adding city to the database")
+        }
+    }, [weatherData, selectedMode, inputState])
+
     useGetOneDayWeatherData(setWeatherData, inputState, selectedMode)
 
     return (
@@ -94,6 +121,7 @@ function OneDayWeather({inputState, selectedMode, onSubmit}) {
                 </div>
                 <div className = {style["pretty__view"]}>
                     <div id = "logo"></div>
+                    <button className = {style["like__button"]} onClick = {handleLikeCity}>O</button>
                     <SmallWeatherData gridArea = "main" className = {"weather__main"}>
                         <span>{weatherData.weather[0].main}</span>
                         <span>{weatherData.weather[0].description}</span>

@@ -43,13 +43,14 @@ class DataAdapterFactory {
         this.createdInstances.set(name, adapter)
         return adapter
     }
-    createUserFollowingListAdapter() {
+    async createUserFollowingListAdapter() {
         const name = "User following cities list"
         if (this.createdInstances.has(name)) {
             return this.createdInstances.get(name)
         }
         const adapter = new FollowingListAdapter(name)
         this.createdInstances.set(name, adapter)
+        await adapter.openDB()
         return adapter
     }
     createOneDayWeatherAdapter() {
