@@ -84,7 +84,7 @@ class GeodecodeDataManager extends DataManager {
             if (error instanceof FetchError) {
                 // most likely is network error
                 throw error
-            } else {
+            } else if (error instanceof CityError) {
                 // most likely OpenWeather API does not know about that city 
                 throw error
             }

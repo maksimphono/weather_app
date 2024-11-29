@@ -57,7 +57,6 @@ const currentWeatherData = {
 
 export default function WeatherForecast() {
     const [weatherData, setWeatherData] = useState(currentWeatherData)
-    const [isPending, startTransition] = useTransition()
     const [followerCoords, setFollowerCoords] = useState({x: 0, y : 0})
     const [inputState, setInputState] = useState({})
     const weatherViewRef = useRef(null)
@@ -114,8 +113,7 @@ export default function WeatherForecast() {
 
     return (
         <div className = {style["home"]}>
-            {isPending && <div>Loading</div>}
-            {!isPending && Object.keys(weatherData).length &&
+            {Object.keys(weatherData).length &&
             <div ref = {weatherViewRef} className = {style["weather__view"]}>
                 <i style = {{top: followerCoords.y, left: followerCoords.x}} className = {style["follower"]}></i>
                 <div className = {style["basic__info"]}>
