@@ -3,13 +3,14 @@ import style from "../css/Home.module.scss"
 //const style = {}
 
 class InputState {
-    constructor(city, lat, lon) {
+    constructor(city, country, lat, lon) {
+        this._country = country
         this._city = city
         this._lat = lat
         this._lon = lon
     }
     deepcopy() {
-        const copy = new InputState(this._city, this._lat, this._lon)
+        const copy = new InputState(this._city, this._country, this._lat, this._lon)
         return copy
     }
     get city() {
@@ -21,8 +22,15 @@ class InputState {
     get lon() {
         return this._lon
     }
+    get country() {
+        return this._country
+    }
     setCity(city) {
         this._city = city
+        return this
+    }
+    setCountry(country) {
+        this._country = country
         return this
     }
     setLat(val) {
@@ -37,6 +45,8 @@ class InputState {
 
 function inputReducer(state, action) {
     switch(action.type) {
+        case "country":
+            return state.deepcopy().setCountry(action.country)
         case "city":
             return state.deepcopy().setCity(action.city)
         case "lat":
@@ -48,8 +58,9 @@ function inputReducer(state, action) {
     }
 }
 
-const initalInputState = new InputState("Moscow", 0, 0)
+const initalInputState = new InputState("Moscow", "RU", 0, 0)
 
+const countryAction = (val) => ({type : "country", country : val})
 const cityAction = (val) => ({type : "city", city : val})
 const latAction = (val) => ({type : "lat", lat : val})
 const lonAction = (val) => ({type : "lon", lon : val})
@@ -68,6 +79,10 @@ export default function InputFields({onChange, onSubmit}) {
         console.info("Renew inputState")
         console.dir(inputState)
     }, [inputState])
+
+    const handleCountryChange = useCallback(({target}) => {
+        dispatch(countryAction(target.value))
+    }, [dispatch])
 
     const handleCityChange = useCallback(({target}) => {
         dispatch(cityAction(target.value))
@@ -118,6 +133,7 @@ export default function InputFields({onChange, onSubmit}) {
                         name = "city" 
                         value = {inputState.city} 
                         onChange = {handleCityChange} />
+                    <input type="text" value = {inputState.country} onChange = {handleCountryChange}/>
                 </label>
             : (selectedMode === "coords") ?
                 <label>

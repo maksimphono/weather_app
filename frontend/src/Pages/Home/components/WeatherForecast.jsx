@@ -92,12 +92,10 @@ export default function WeatherForecast() {
                 }
             break
             case "city":
-                console.dir(inputState.city)
                 try {
-                    let coords = await geodecodeDataManager.getData({cityName : inputState.city, countryCode : ""})
+                    let coords = await geodecodeDataManager.getData({cityName : inputState.city, countryCode : inputState.country})
                     let res = await oneDayWeatherDataManager.getData({lat : coords.lat, lon : coords.lon})
 
-                    console.dir({lat : coords.lat, lon : coords.lon, data : res.data})
                     if (res.data.name.length && inputState.city) {
                         res.data.name = inputState.city
                     }
@@ -105,7 +103,7 @@ export default function WeatherForecast() {
                 } catch(error) {
                     console.error(error)
                     if (error instanceof CityError) {
-                        alert("Sorry, could not find the city you specified")
+                        alert("Sorry, could not find the city you specified. Please, check the city name and country code, you've entered")
                     } else {
                         alert("Error while getting weather data")
                     }
@@ -146,7 +144,7 @@ export default function WeatherForecast() {
                                 (weatherData.sys?.country && weatherData.name.length)?
                                     [weatherData.name, weatherData.sys.country].join(", ")
                                 :
-                                    "Unknown"
+                                    "Unknown" // most likely means, that OpenWeather doesn't know about that city
                             }
                         </span>
                         <span>
