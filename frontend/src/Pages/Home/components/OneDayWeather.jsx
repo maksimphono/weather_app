@@ -3,6 +3,7 @@ import style from "../css/Home.module.scss"
 import InputFields from './InputFields.jsx'
 import oneDayWeatherDataManager, { CoordinatesError } from '../DataManager/OneDayWeatherDataManager.js'
 import geodecodeDataManager, {CityError} from '../DataManager/GeodecodeDataManager.js'
+import ForecastWeather from './ForecastWeather.jsx'
 //const style = {}
 
 
@@ -53,12 +54,12 @@ const currentWeatherData = {
     "name": "Texarkana",
     "cod": 200
   }
-  
 
-export default function OneDayWeather() {
+
+function OneDayWeather({inputState, selectedMode, onSubmit}) {
     const [weatherData, setWeatherData] = useState(currentWeatherData)
     const [followerCoords, setFollowerCoords] = useState({x: 0, y : 0})
-    const [inputState, setInputState] = useState({})
+    //const [inputState, setInputState] = useState({})
     const weatherViewRef = useRef(null)
 
     useEffect(() => {(async () => {
@@ -66,10 +67,9 @@ export default function OneDayWeather() {
     })()}, [])
 
     const handleInputChange = useCallback(({inputState, selectedMode}) => {
-        setInputState(inputState)
     }, [])
 
-    const handleSubmit = useCallback(async ({inputState, selectedMode}) => {
+    useEffect(() => {(async () => {
         console.log(`Submit`)
         console.dir(inputState)
         let manager = null
@@ -109,7 +109,7 @@ export default function OneDayWeather() {
                 }
             break
         }
-    }, [])
+    })()}, [inputState, selectedMode])
 
     return (
         <div className = {style["home"]}>
@@ -119,7 +119,7 @@ export default function OneDayWeather() {
                 <div className = {style["basic__info"]}>
                     <InputFields
                         onChange = {handleInputChange}
-                        onSubmit = {handleSubmit}
+                        onSubmit = {onSubmit}
                     />
                     <SmallWeatherData gridArea = "temp" value = {weatherData.main.temp}>Temperature</SmallWeatherData>
                     <SmallWeatherData gridArea = "feels_like" value = {weatherData.main.feels_like}>Feels like</SmallWeatherData>
@@ -180,6 +180,40 @@ export default function OneDayWeather() {
             </div>
             }
         </div>
+    )
+}
+
+export default function Home() {
+    const [selectedMode, setSelectedMode] = useState("city") // "city" | "coordinates"
+    const [inputState, setInputState] = useState({})
+    const [currentWeatherView, setCurrentWeatherView] = useState("today") // "today" | "forecast"
+
+    const handleSubmit = useCallback(async ({inputState, selectedMode}) => {
+        console.log(`Submit`)
+        console.dir(inputState)
+        setInputState(inputState)
+        setSelectedMode(selectedMode)
+    }, [])
+
+    return (
+        <>
+            <label>
+                <span>Today</span>
+                <input type="radio" name = "View" value = {"today"} onChange={({target}) => setCurrentWeatherView(target.value)}/>
+            </label>
+            <label>
+                <span>Forecast</span>
+                <input type="radio" name = "View" value = {"forecast"} onChange={({target}) => setCurrentWeatherView(target.value)}/>
+            </label>
+            {(currentWeatherView === "today")?
+                <OneDayWeather inputState = {inputState} selectedMode={selectedMode} onSubmit = {handleSubmit}/>
+            :(currentWeatherView === "forecast")?
+                <ForecastWeather inputState = {inputState} selectedMode={selectedMode} enabled={true}/>
+            :
+            <></>
+            }
+        </>
+        
     )
 }
 /*
