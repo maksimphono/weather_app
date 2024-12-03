@@ -1,6 +1,6 @@
 import React from 'react'
 import Layout from './Layout.jsx'
-import Home from './Pages/Home/components/OneDayWeather.jsx'
+import Home from './Pages/Home/components/Home.jsx'
 import ForecastWeather from './Pages/Home/components/ForecastWeather.jsx'
 //import WeatherByCity from './Pages/WaetherByCity/Components/WeatherByCity.jsx'
 //import WeatherByCoordinates from './Pages/WaetherByCity/Components/WeatherByCoordinates.jsx'

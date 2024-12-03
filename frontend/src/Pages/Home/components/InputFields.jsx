@@ -1,8 +1,6 @@
 import React, {useReducer, useState, useCallback, useEffect, useImperativeHandle, useContext} from "react"
 import style from "../css/Home.module.scss"
-import { useInputStateContext } from "./OneDayWeather"
-import { InputStateInterface } from "./OneDayWeather"
-//const style = {}
+import { InputStateInterface, OnSubmitContext } from "./Home"
 
 export class InputState {
     constructor(city, country, lat, lon) {
@@ -73,8 +71,6 @@ const cityAction = (val) => ({type : "city", city : val})
 const latAction = (val) => ({type : "lat", lat : val})
 const lonAction = (val) => ({type : "lon", lon : val})
 const setAllAction = (state) => ({type : "setAll", lon : state.lon, lat : state.lat, country : state.country, city : state.city})
-
-import { OnSubmitContext } from "./OneDayWeather"
 
 export default function InputFields() {
     const stateInterface = useContext(InputStateInterface)
