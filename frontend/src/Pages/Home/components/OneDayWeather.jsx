@@ -252,7 +252,6 @@ export default function Home() {
     }, [inputState])
 
     const handleRemoveFollowedCity = useCallback(async (coordinates) => {
-        console.log(`Remove ${id}`)
         const adapter = await dataAdapterFactory.createUserFollowingListAdapter();
 
         try {
@@ -306,7 +305,7 @@ export default function Home() {
                 {(currentWeatherView === "today")?
                     <OneDayWeather inputState = {inputState} selectedMode={selectedMode} fetchFollowedCities = {fetchFollowedCities} fetchEnabled = {fetchEnabled}/>
                 :(currentWeatherView === "forecast")?
-                    <ForecastWeather inputState = {inputState} selectedMode={selectedMode} enabled = {fetchEnabled}/>
+                    <ForecastWeather inputState = {inputState} selectedMode={selectedMode} enabled = {true}/>
                 :
                 <></>
                 }
