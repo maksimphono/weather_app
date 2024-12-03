@@ -5,8 +5,9 @@ export const KELVIN_TEMP_UNIT = KL
 export const CELSIUS_TEMP_UNIT = CS
 export const FAHRENHEIT_TEMP_UNIT = FH
 
-export default function useTempAutoConvert(setWeatherForecast, tempUnits) {
+export default function useTempAutoConvert(weatherForecast, setWeatherForecast, tempUnits) {
     useEffect(() => {
+        if (!weatherForecast.length) return;
         setWeatherForecast(data => {
             console.log(Object.keys(data).length)
             if (Object.keys(data).length === 0) return data
@@ -23,5 +24,5 @@ export default function useTempAutoConvert(setWeatherForecast, tempUnits) {
                 })
             )
         })
-    }, [tempUnits])
+    }, [weatherForecast, tempUnits])
 }

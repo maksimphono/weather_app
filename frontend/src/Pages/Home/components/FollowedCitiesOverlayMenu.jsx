@@ -33,7 +33,7 @@ export default function FollowedCitiesOverlayMenu({onClose}) {
             state = new InputState("", "", lat, lon)
         }
 
-        inputInterfaceRef.current.setInputState(state)
+        inputInterfaceRef?.current?.setInputState(state)
         onClose()
     }, [])
 

@@ -66,7 +66,7 @@ export default function ForecastWeather({inputState, selectedMode, enabled}) {
 
     useFetchWeatherForecast(setWeatherForecast, inputState, selectedMode, enabled)
 
-    //useTempAutoConvert(setWeatherForecast, tempUnits)
+    //useTempAutoConvert(weatherForecast, setWeatherForecast, tempUnits)
 
     return (
         <div className = {style["home"]}>
