@@ -6,7 +6,8 @@ import geodecodeDataManager, { CityError } from "../DataManager/GeodecodeDataMan
 
 export default function useGetOneDayWeatherData(setWeatherData, inputState, selectedMode) {
     useEffect(() => {(async () => {
-        console.log(`Submit`)
+        if (inputState === undefined) return;
+        console.log(`GetOneDayWeatherData`)
 
         switch (selectedMode) {
             case "coords":

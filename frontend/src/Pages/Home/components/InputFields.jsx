@@ -1,5 +1,7 @@
-import React, {useReducer, useState, useCallback, useEffect} from "react"
+import React, {useReducer, useState, useCallback, useEffect, useImperativeHandle, useContext} from "react"
 import style from "../css/Home.module.scss"
+import { useInputStateContext } from "./OneDayWeather"
+import { InputStateInterface } from "./OneDayWeather"
 //const style = {}
 
 export class InputState {
@@ -43,6 +45,8 @@ export class InputState {
     }
 }
 
+const initalInputState = new InputState("Moscow", "RU", 0, 0)
+
 function inputReducer(state, action) {
     switch(action.type) {
         case "country":
@@ -64,27 +68,35 @@ function inputReducer(state, action) {
     }
 }
 
-export const initalInputState = new InputState("Moscow", "RU", 0, 0)
-
 const countryAction = (val) => ({type : "country", country : val})
 const cityAction = (val) => ({type : "city", city : val})
 const latAction = (val) => ({type : "lat", lat : val})
 const lonAction = (val) => ({type : "lon", lon : val})
-const setAllAction = (state) => ({type : "setAll", ...state})
+const setAllAction = (state) => ({type : "setAll", lon : state.lon, lat : state.lat, country : state.country, city : state.city})
 
-export default function InputFields({onChange, onSubmit, defaultState}) {
+import { OnSubmitContext } from "./OneDayWeather"
+
+export default function InputFields() {
+    const stateInterface = useContext(InputStateInterface)
+    const onSubmit = useContext(OnSubmitContext)
     const [selectedMode, setSelectedMode] = useState("city")
-    const [inputState, dispatch] = useReducer(inputReducer, defaultState)
+    const [inputState, dispatch] = useReducer(inputReducer, initalInputState, () => initalInputState)
+
+    useImperativeHandle(stateInterface, () => ({
+        setInputState : (state) => {
+            dispatch(setAllAction(state))
+        }
+    }), [dispatch])
+
+    useEffect(() => {
+        dispatch(setAllAction(initalInputState))
+    }, [])
 
     const handleSubmit = useCallback(async (event) => {
         event.preventDefault()
         console.dir(inputState)
         await onSubmit({inputState, selectedMode})
     }, [inputState, selectedMode])
-
-    useEffect(() => {
-        dispatch(setAllAction(defaultState))
-    }, [defaultState])
 
     useEffect(() => {
         console.info("Renew inputState")
@@ -106,10 +118,6 @@ export default function InputFields({onChange, onSubmit, defaultState}) {
     const handleLonChange = useCallback(({target}) => {
         dispatch(lonAction(target.value))
     }, [dispatch])
-
-    useEffect(() => {
-        onChange({inputState, selectedMode})
-    }, [inputState, selectedMode])
 
     return (
         <form onSubmit = {handleSubmit} className={style["input__fields"]} style = {{"gridArea" : "input_fields"}}>

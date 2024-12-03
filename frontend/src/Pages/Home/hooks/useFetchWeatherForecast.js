@@ -1138,6 +1138,7 @@ const forecast = [
 
 
 export default function useFetchWeatherForecast(setWeatherForecast, inputState, selectedMode, enabled) {
+    if (inputState === undefined) return;
     useEffect(() => {(async () => {
         if (!enabled || !inputState) return []
         switch (selectedMode) {

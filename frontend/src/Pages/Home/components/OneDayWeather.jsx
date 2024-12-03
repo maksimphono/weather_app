@@ -1,11 +1,10 @@
-import React, {useCallback, useEffect, useReducer, useRef, useState, useTransition} from 'react'
+import React, {createContext, useCallback, useEffect, useReducer, useRef, useState, useTransition} from 'react'
 import style from "../css/Home.module.scss"
 import InputFields, { InputState } from './InputFields.jsx'
 import oneDayWeatherDataManager, { CoordinatesError } from '../DataManager/OneDayWeatherDataManager.js'
 import geodecodeDataManager, {CityError} from '../DataManager/GeodecodeDataManager.js'
 import ForecastWeather from './ForecastWeather.jsx'
 import useGetOneDayWeatherData from '../hooks/useGetONeDayWeatherData.js'
-import {initalInputState} from "./InputFields.jsx"
 import dataAdapterFactory from "../utils/DataAdapterFactory.js"
 //const style = {}
 
@@ -87,7 +86,7 @@ function OverLayMenu({items, onClose, onRemove, onSelect}) {
                                 <span>{item.name}</span>
                                 <span>{item.country_code}</span>
                                 <span>{item.coordinates}</span>
-                                <button onClick = {(e) => {e.preventDefault(); onRemove(item.coordinates);}}>X</button>
+                                <button onClick = {(e) => {e.preventDefault(); e.stopPropagation(); onRemove(item.coordinates);}}>X</button>
                             </li>
                         ) 
                 })
@@ -97,20 +96,15 @@ function OverLayMenu({items, onClose, onRemove, onSelect}) {
     )
 }
 
-function OneDayWeather({inputState, selectedMode, onSubmit, fetchEnabled}) {
+export const InputStateInterface = createContext()
+export const OnSubmitContext = createContext()
+
+function OneDayWeather({inputState, selectedMode, fetchFollowedCities}) {
     const [weatherData, setWeatherData] = useState(currentWeatherData)
     const [followerCoords, setFollowerCoords] = useState({x: 0, y : 0})
-    //const [inputState, setInputState] = useState({})
     const weatherViewRef = useRef(null)
 
-    useEffect(() => {(async () => {
-        
-    })()}, [])
-
-    const handleInputChange = useCallback(({inputState, selectedMode}) => {
-    }, [])
-
-    const handleLikeCity = useCallback(async () => {
+    const handleFollowCity = useCallback(async () => {
         const adapter = await dataAdapterFactory.createUserFollowingListAdapter()
         let entry = null
         switch(selectedMode) {
@@ -131,6 +125,9 @@ function OneDayWeather({inputState, selectedMode, onSubmit, fetchEnabled}) {
         }
         try {
             await adapter.save(entry)
+            fetchFollowedCities()
+            //entry.coordinates = `[${entry.coordinates.lat},${entry.coordinates.lon}]`
+            //setFollowedCities(cities => [...cities, entry])
         } catch(error) {
             alert("Error when adding city to the database")
         }
@@ -144,11 +141,7 @@ function OneDayWeather({inputState, selectedMode, onSubmit, fetchEnabled}) {
             <div ref = {weatherViewRef} className = {style["weather__view"]}>
                 <i style = {{top: followerCoords.y, left: followerCoords.x}} className = {style["follower"]}></i>
                 <div className = {style["basic__info"]}>
-                    <InputFields
-                        onChange = {handleInputChange}
-                        onSubmit = {onSubmit}
-                        defaultState = {inputState}
-                    />
+                    <InputFields />
                     <SmallWeatherData gridArea = "temp" value = {weatherData.main.temp}>Temperature</SmallWeatherData>
                     <SmallWeatherData gridArea = "feels_like" value = {weatherData.main.feels_like}>Feels like</SmallWeatherData>
 
@@ -160,7 +153,7 @@ function OneDayWeather({inputState, selectedMode, onSubmit, fetchEnabled}) {
                 </div>
                 <div className = {style["pretty__view"]}>
                     <div id = "logo"></div>
-                    <button className = {style["like__button"]} onClick = {handleLikeCity}>Follow</button>
+                    <button className = {style["like__button"]} onClick = {handleFollowCity}>Follow</button>
                     <SmallWeatherData gridArea = "main" className = {"weather__main"}>
                         <span>{weatherData.weather[0].main}</span>
                         <span>{weatherData.weather[0].description}</span>
@@ -212,13 +205,17 @@ function OneDayWeather({inputState, selectedMode, onSubmit, fetchEnabled}) {
     )
 }
 
+
+
+
 export default function Home() {
     const [selectedMode, setSelectedMode] = useState("city") // "city" | "coordinates"
-    const [inputState, setInputState] = useState(initalInputState)
+    const [inputState, setInputState] = useState()
     const [currentWeatherView, setCurrentWeatherView] = useState("today") // "today" | "forecast"
     const [overLayOpen, setOverLayOpen] = useState(false)
     const [followedCities, setFollowedCities] = useState([])
     const [fetchEnabled, setFetchEnabled] = useState(false)
+    const inputInterfaceRef = useRef()
 
     useEffect(() => {
         fetchFollowedCities()
@@ -240,13 +237,13 @@ export default function Home() {
         let state = {}
         let [lat, lon] = JSON.parse(item.coordinates)
         if (item.name !== "Unknown") {
-            state = new InputState(item.name, item.country, lat, lon)
+            state = new InputState(item.name, item.country_code, lat, lon)
         } else {
             state = new InputState("", "", lat, lon)
         }
 
-        setFetchEnabled(false)
-        setInputState(state)
+        //setFetchEnabled(false)
+        inputInterfaceRef.current.setInputState(state)
         setOverLayOpen(false)
     }, [])
 
@@ -273,37 +270,49 @@ export default function Home() {
         setSelectedMode(selectedMode)
     }, [])
 
-    return (
-        <div className = {style["home"]}>
-            <label>
-                <span>Today</span>
-                <input type="radio" name = "View" checked = {currentWeatherView === "today"} value = {"today"} onChange={({target}) => setCurrentWeatherView(target.value)}/>
-            </label>
-            <label>
-                <span>Forecast</span>
-                <input type="radio" name = "View" checked = {currentWeatherView === "forecast"} value = {"forecast"} onChange={({target}) => setCurrentWeatherView(target.value)}/>
-            </label>
+    useEffect(() => {
+        inputInterfaceRef.current.setInputState(new InputState("Moscow", "RU", 0, 0))
+    }, [])
 
-            <button type = "button" onClick = {(event) => {event.preventDefault(); setOverLayOpen(true);}}>Followed cities</button>
-            {overLayOpen?
-                <OverLayMenu
-                    items = {followedCities}
-                    onSelect = {handleItemSelect}
-                    onClose = {() => setOverLayOpen(false)}
-                    onRemove = {handleRemoveFollowedCity}
-                />
+    return (
+        <InputStateInterface.Provider 
+            value = {inputInterfaceRef}
+        >
+        <OnSubmitContext.Provider
+            value = {handleSubmit}
+        >
+            <div className = {style["home"]}>
+                <label>
+                    <span>Today</span>
+                    <input type="radio" name = "View" checked = {currentWeatherView === "today"} value = {"today"} onChange={({target}) => setCurrentWeatherView(target.value)}/>
+                </label>
+                <label>
+                    <span>Forecast</span>
+                    <input type="radio" name = "View" checked = {currentWeatherView === "forecast"} value = {"forecast"} onChange={({target}) => setCurrentWeatherView(target.value)}/>
+                </label>
+
+                <button type = "button" onClick = {(event) => {event.preventDefault(); setOverLayOpen(true);}}>Followed cities</button>
+                {overLayOpen?
+                    <OverLayMenu
+                        items = {followedCities}
+                        onSelect = {handleItemSelect}
+                        onClose = {() => setOverLayOpen(false)}
+                        onRemove = {handleRemoveFollowedCity}
+                    />
+                    :
+                    <></>
+                }
+
+                {(currentWeatherView === "today")?
+                    <OneDayWeather inputState = {inputState} selectedMode={selectedMode} fetchFollowedCities = {fetchFollowedCities} fetchEnabled = {fetchEnabled}/>
+                :(currentWeatherView === "forecast")?
+                    <ForecastWeather inputState = {inputState} selectedMode={selectedMode} enabled = {fetchEnabled}/>
                 :
                 <></>
-            }
-            
-            {(currentWeatherView === "today")?
-                <OneDayWeather inputState = {inputState} selectedMode={selectedMode} onSubmit = {handleSubmit} fetchEnabled = {fetchEnabled}/>
-            :(currentWeatherView === "forecast")?
-                <ForecastWeather inputState = {inputState} selectedMode={selectedMode} enabled = {fetchEnabled}/>
-            :
-            <></>
-            }
-        </div>
+                }
+            </div>
+        </OnSubmitContext.Provider>
+        </InputStateInterface.Provider>
     )
 }
 /*
