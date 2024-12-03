@@ -31,7 +31,7 @@ export default function Home() {
 
     return (
         <InputStateInterface.Provider 
-            value = {inputInterfaceRef}
+            value = {{inputInterfaceRef, masterState : inputState}}
         >
         <OnSubmitContext.Provider
             value = {handleSubmit}

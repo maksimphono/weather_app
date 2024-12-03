@@ -73,19 +73,22 @@ const lonAction = (val) => ({type : "lon", lon : val})
 const setAllAction = (state) => ({type : "setAll", lon : state.lon, lat : state.lat, country : state.country, city : state.city})
 
 export default function InputFields() {
-    const stateInterface = useContext(InputStateInterface)
+    const {inputInterfaceRef, masterState} = useContext(InputStateInterface)
     const onSubmit = useContext(OnSubmitContext)
     const [selectedMode, setSelectedMode] = useState("city")
     const [inputState, dispatch] = useReducer(inputReducer, initalInputState, () => initalInputState)
 
-    useImperativeHandle(stateInterface, () => ({
+    useImperativeHandle(inputInterfaceRef, () => ({
         setInputState : (state) => {
             dispatch(setAllAction(state))
         }
     }), [dispatch])
 
     useEffect(() => {
-        dispatch(setAllAction(initalInputState))
+        if (masterState)
+            dispatch(setAllAction(masterState))
+        else
+            dispatch(setAllAction(initalInputState))
     }, [])
 
     const handleSubmit = useCallback(async (event) => {

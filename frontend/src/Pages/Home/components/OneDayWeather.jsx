@@ -152,7 +152,7 @@ export default function OneDayWeather({inputState, selectedMode, fetchFollowedCi
 
 export function FollowedCitiesOverlayMenu({onClose}) {
     const [followedCities, setFollowedCities] = useState([])
-    const inputInterfaceRef = useContext(InputStateInterface)
+    const {inputInterfaceRef} = useContext(InputStateInterface)
 
     useEffect(() => {
         fetchFollowedCities()
