@@ -59,27 +59,39 @@ const currentWeatherData = {
   }
 
 function OverLayMenu({items, onClose, onRemove, onSelect}) {
-    useEffect(() => {
+    const [selectedItemIndex, setSelectedItemIndex] = useState(0)
 
-    })
+    const handleChange = useCallback((event) => {
+        event.preventDefault()
+        setSelectedItemIndex(event.target.value)
+        onSelect(items[event.target.value])
+    }, [])
+
+    useEffect(() => {
+        console.dir(items)
+        if (items.length)
+            setSelectedItemIndex(0)
+    }, [items])
 
     return (
         <div className = {style["overlaymenu"]}>
             <button onClick = {(e) => {e.preventDefault(); onClose();}}>X</button>
-            <ul>
-                {items.map(item => {
-                    return (
-                        <li 
-                            onClick = {(e) => {e.preventDefault(); onSelect(item);}}
-                            key = {item.coordinates}
-                        >
-                            <span>{item.name}</span>
-                            <span>{item.country_code}</span>
-                            <span>{item.coordinates}</span>
-                            <button onClick = {(e) => {e.preventDefault(); onRemove(item.coordinates);}}>X</button>
-                        </li>
-                    ) 
-                })}
+            <ul value = {selectedItemIndex}>
+                {items.map((item, index) => {
+                    if (item !== undefined)
+                        return (
+                            <li 
+                                onClick={e => {e.preventDefault(); onSelect(item);}}
+                                key = {item.coordinates}
+                            >
+                                <span>{item.name}</span>
+                                <span>{item.country_code}</span>
+                                <span>{item.coordinates}</span>
+                                <button onClick = {(e) => {e.preventDefault(); onRemove(item.coordinates);}}>X</button>
+                            </li>
+                        ) 
+                })
+                }
             </ul>
         </div>
     )
@@ -272,7 +284,7 @@ export default function Home() {
                 <input type="radio" name = "View" checked = {currentWeatherView === "forecast"} value = {"forecast"} onChange={({target}) => setCurrentWeatherView(target.value)}/>
             </label>
 
-            <button onClick = {() => setOverLayOpen(true)}>Followed cities</button>
+            <button type = "button" onClick = {(event) => {event.preventDefault(); setOverLayOpen(true);}}>Followed cities</button>
             {overLayOpen?
                 <OverLayMenu
                     items = {followedCities}

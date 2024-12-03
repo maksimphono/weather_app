@@ -2,12 +2,15 @@ import React, {useEffect} from "react"
 import oneDayWeatherDataManager from "../DataManager/OneDayWeatherDataManager.js"
 import { CoordinatesError } from "../DataManager/OneDayWeatherDataManager.js"
 import geodecodeDataManager, { CityError } from "../DataManager/GeodecodeDataManager.js"
+//import { unchangedTextChangeRange } from "typescript"
 
 export default function useGetOneDayWeatherData(setWeatherData, inputState, selectedMode) {
     useEffect(() => {(async () => {
         console.log(`Submit`)
+
         switch (selectedMode) {
             case "coords":
+                if (inputState?.lat === undefined || inputState?.lon === undefined) return;
                 try {
                     let res = await oneDayWeatherDataManager.getData({lat: inputState.lat, lon: inputState.lon})
 
@@ -22,6 +25,8 @@ export default function useGetOneDayWeatherData(setWeatherData, inputState, sele
                 }
             break
             case "city":
+                console.dir(inputState)
+                if (inputState?.city?.length === 0) return;
                 try {
                     let coords = await geodecodeDataManager.getData({cityName : inputState.city, countryCode : inputState.country})
                     let res = await oneDayWeatherDataManager.getData({lat : coords.lat, lon : coords.lon})

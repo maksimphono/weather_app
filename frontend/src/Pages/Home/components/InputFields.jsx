@@ -144,7 +144,11 @@ export default function InputFields({onChange, onSubmit, defaultState}) {
                         name = "city" 
                         value = {inputState.city} 
                         onChange = {handleCityChange} />
-                    <input type="text" value = {inputState.country} onChange = {handleCountryChange}/>
+                    <input 
+                        type="text" 
+                        value = {inputState.country} 
+                        onChange = {handleCountryChange}
+                    />
                 </label>
             : (selectedMode === "coords") ?
                 <label>
