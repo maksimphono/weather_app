@@ -4,15 +4,15 @@ import { InputState } from './InputFields.jsx'
 import dataAdapterFactory from "../utils/DataAdapterFactory.js"
 import { InputStateInterface } from './Home.jsx'
 
-export function FollowedCitiesOverlayMenu({onClose}) {
+export default function FollowedCitiesOverlayMenu({onClose}) {
     const [followedCities, setFollowedCities] = useState([])
     const {inputInterfaceRef} = useContext(InputStateInterface)
 
     useEffect(() => {
-        fetchFollowedCities()
+        loadFollowedCities()
     }, [])
 
-    const fetchFollowedCities = useCallback(async () => {
+    const loadFollowedCities = useCallback(async () => {
         const adapter = await dataAdapterFactory.createUserFollowingListAdapter();
 
         try {
@@ -71,3 +71,4 @@ export function FollowedCitiesOverlayMenu({onClose}) {
         </div>
     )
 }
+

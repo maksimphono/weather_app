@@ -3,10 +3,12 @@ import style from "../css/Home.module.scss"
 import { InputState } from './InputFields.jsx'
 import ForecastWeather from './ForecastWeather.jsx'
 import OneDayWeather from './OneDayWeather.jsx'
-import { FollowedCitiesOverlayMenu } from './OneDayWeather.jsx'
+import FollowedCitiesOverlayMenu from './FollowedCitiesOverlayMenu.jsx'
 
 export const InputStateInterface = createContext()
 export const OnSubmitContext = createContext()
+
+const defaultState = new InputState("Moscow", "RU", 55.75, 37.62)
 
 export default function Home() {
     const [selectedMode, setSelectedMode] = useState("city") // "city" | "coordinates"
@@ -24,9 +26,9 @@ export default function Home() {
 
     useEffect(() => {
         // set default input state
-        setInputState(new InputState("Moscow", "RU", 0, 0))
+        setInputState(defaultState)
         if (inputInterfaceRef.current)
-            inputInterfaceRef.current.setInputState(new InputState("Moscow", "RU", 0, 0))
+            inputInterfaceRef.current.setInputState(defaultState)
     }, [])
 
     return (
