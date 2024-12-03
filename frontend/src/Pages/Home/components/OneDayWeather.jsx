@@ -205,7 +205,9 @@ function OneDayWeather({inputState, selectedMode, fetchFollowedCities}) {
     )
 }
 
-
+function FollowedCitiesOverlaySelection() {
+    
+}
 
 
 export default function Home() {
@@ -214,7 +216,6 @@ export default function Home() {
     const [currentWeatherView, setCurrentWeatherView] = useState("today") // "today" | "forecast"
     const [overLayOpen, setOverLayOpen] = useState(false)
     const [followedCities, setFollowedCities] = useState([])
-    const [fetchEnabled, setFetchEnabled] = useState(false)
     const inputInterfaceRef = useRef()
 
     useEffect(() => {
@@ -242,14 +243,9 @@ export default function Home() {
             state = new InputState("", "", lat, lon)
         }
 
-        //setFetchEnabled(false)
         inputInterfaceRef.current.setInputState(state)
         setOverLayOpen(false)
     }, [])
-
-    useEffect(() => {
-        setFetchEnabled(true)
-    }, [inputState])
 
     const handleRemoveFollowedCity = useCallback(async (coordinates) => {
         const adapter = await dataAdapterFactory.createUserFollowingListAdapter();
@@ -303,7 +299,7 @@ export default function Home() {
                 }
 
                 {(currentWeatherView === "today")?
-                    <OneDayWeather inputState = {inputState} selectedMode={selectedMode} fetchFollowedCities = {fetchFollowedCities} fetchEnabled = {fetchEnabled}/>
+                    <OneDayWeather inputState = {inputState} selectedMode={selectedMode} fetchFollowedCities = {fetchFollowedCities} />
                 :(currentWeatherView === "forecast")?
                     <ForecastWeather inputState = {inputState} selectedMode={selectedMode} enabled = {true}/>
                 :
