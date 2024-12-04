@@ -1,5 +1,5 @@
 import React, {createContext, useCallback, useContext, useEffect, useReducer, useRef, useState, useTransition} from 'react'
-import style from "../css/Home.module.scss"
+import style from "../css/OneDay.module.scss"
 import InputFields, { InputState } from './InputFields.jsx'
 import useGetOneDayWeatherData from '../hooks/useGetONeDayWeatherData.js'
 import dataAdapterFactory from "../utils/DataAdapterFactory.js"

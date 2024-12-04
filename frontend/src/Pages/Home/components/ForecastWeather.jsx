@@ -1,5 +1,6 @@
 import React, {useState, useRef, useCallback, useEffect} from "react"
 import style from "../css/Forecast.module.scss"
+//import home from "../css/Home.module.scss"
 import useFetchWeatherForecast from "../hooks/useFetchWeatherForecast"
 import useToggle from "../hooks/useToggle"
 import useTempAutoConvert, {CELSIUS_TEMP_UNIT, FAHRENHEIT_TEMP_UNIT, KELVIN_TEMP_UNIT} from "../hooks/useForecastTempAutoConvert"
@@ -69,14 +70,15 @@ export default function ForecastWeather({inputState, selectedMode, enabled}) {
     //useTempAutoConvert(weatherForecast, setWeatherForecast, tempUnits)
 
     return (
-        <div className = {style["home"]}>
+        <>
+        {weatherForecast && Object.keys(weatherForecast).length &&
             <div ref = {weatherViewRef} className = {style["weather__view"]}>
-            
                 {weatherForecast.map(weatherData => (
                     <DayWeather weatherData={weatherData} key = {weatherData.dt} />
                 ))}
             </div>
-        </div>
+        }
+        </>
     )
 }
 /*

@@ -1,5 +1,5 @@
 import React, {useReducer, useState, useCallback, useEffect, useImperativeHandle, useContext} from "react"
-import style from "../css/Home.module.scss"
+import style from "../css/OneDay.module.scss"
 import { InputStateInterface, OnSubmitContext } from "./Home"
 
 export class InputState {
