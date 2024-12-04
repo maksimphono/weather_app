@@ -39,11 +39,11 @@ export default function Home() {
             value = {handleSubmit}
         >
             <div className = {style["home"]}>
-                <label>
+                <label className = {style["switch-mode-radio"]}>
                     <span>Today</span>
                     <input type="radio" name = "View" checked = {currentWeatherView === "today"} value = {"today"} onChange={({target}) => setCurrentWeatherView(target.value)}/>
                 </label>
-                <label>
+                <label className = {style["switch-mode-radio"]}>
                     <span>Forecast</span>
                     <input type="radio" name = "View" checked = {currentWeatherView === "forecast"} value = {"forecast"} onChange={({target}) => setCurrentWeatherView(target.value)}/>
                 </label>

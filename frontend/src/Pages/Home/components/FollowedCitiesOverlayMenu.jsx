@@ -62,7 +62,7 @@ export default function FollowedCitiesOverlayMenu({onClose}) {
                                 <span>{item.name}</span>
                                 <span>{item.country_code}</span>
                                 <span>{item.coordinates}</span>
-                                <button onClick = {(e) => {e.preventDefault(); e.stopPropagation(); handleRemoveFollowedCity(item.coordinates);}}>X</button>
+                                <button className = {style["remove-btn"]} onClick = {(e) => {e.preventDefault(); e.stopPropagation(); handleRemoveFollowedCity(item.coordinates);}}>X</button>
                             </li>
                         ) 
                 })
