@@ -1,11 +1,11 @@
-import React, {useState, useRef, useCallback, useEffect} from "react"
+import React, {useState, useRef} from "react"
+import PropTypes from 'prop-types'
 import style from "../css/Forecast.module.scss"
-//import home from "../css/Home.module.scss"
 import useFetchWeatherForecast from "../hooks/useFetchWeatherForecast"
 import useToggle from "../hooks/useToggle"
-import useTempAutoConvert, {CELSIUS_TEMP_UNIT, FAHRENHEIT_TEMP_UNIT, KELVIN_TEMP_UNIT} from "../hooks/useForecastTempAutoConvert"
+import {CELSIUS_TEMP_UNIT} from "../hooks/useForecastTempAutoConvert"
 
-function DayWeather({weatherData, className, children}) {
+function DayWeather({weatherData, className}) {
     const classNames = (className !== undefined)?className.split(" "):[]
 
     if (!weatherData) return <></>
@@ -50,6 +50,28 @@ function DayWeather({weatherData, className, children}) {
     )
 }
 
+// Add PropTypes validation for DayWeather component
+DayWeather.propTypes = {
+    weatherData: PropTypes.shape({
+        weather: PropTypes.arrayOf(PropTypes.shape({
+            main: PropTypes.string.isRequired,
+            description: PropTypes.string.isRequired
+        })).isRequired,
+        dt_txt: PropTypes.string.isRequired,
+        main: PropTypes.shape({
+            temp: PropTypes.number.isRequired,
+            feels_like: PropTypes.number.isRequired,
+            temp_min: PropTypes.number.isRequired,
+            temp_max: PropTypes.number.isRequired,
+            sea_level: PropTypes.number.isRequired,
+            grnd_level: PropTypes.number.isRequired
+        }).isRequired,
+        visibility: PropTypes.number.isRequired
+    }),
+    className: PropTypes.string
+}
+
+/* TODO : complete and include later
 function TemperatureUnitsSwitch({value, tempUnits, setTempUnits}) {
     return (
         <label>
@@ -58,8 +80,9 @@ function TemperatureUnitsSwitch({value, tempUnits, setTempUnits}) {
         </label>
     )
 }
+*/
 
-export default function ForecastWeather({inputState, selectedMode, enabled}) {
+function ForecastWeather({inputState, selectedMode, enabled}) {
     const weatherViewRef = useRef()
     const [tempUnits, setTempUnits] = useState(CELSIUS_TEMP_UNIT)
     const [weatherForecast, setWeatherForecast] = useState([])
@@ -81,7 +104,20 @@ export default function ForecastWeather({inputState, selectedMode, enabled}) {
         </>
     )
 }
-/*
+
+ForecastWeather.propTypes = {
+    inputState: PropTypes.shape({
+        lat: PropTypes.number,
+        lon: PropTypes.number,
+        city: PropTypes.string,
+        country: PropTypes.string
+    }),
+    selectedMode: PropTypes.oneOf(['coords', 'city']).isRequired,
+    enabled: PropTypes.bool.isRequired
+}
+
+export default ForecastWeather
+/* TODO : complete and include later
 <div className = {style["control__buttons"]}>
                 <TemperatureUnitsSwitch value = {CELSIUS_TEMP_UNIT} tempUnits={tempUnits} setTempUnits={setTempUnits}/>
                 <TemperatureUnitsSwitch value = {FAHRENHEIT_TEMP_UNIT} tempUnits={tempUnits} setTempUnits={setTempUnits}/>

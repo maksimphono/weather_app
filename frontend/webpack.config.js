@@ -37,9 +37,6 @@ module.exports = {
         extensions : [".*", ".js", ".jsx"], // Resolve JS and JSX extensions
     },
     plugins: [
-        new ESLintPlugin({
-            extensions : ["jx", "jsx"]
-        }),
         new HtmlWebpackPlugin({
             template: './public/index.html', // Path to HTML template
         }),

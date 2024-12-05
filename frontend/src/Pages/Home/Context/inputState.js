@@ -84,9 +84,3 @@ export const actions = {
     lon : (val) => ({type : "lon", lon : val}),
     setAll : (state) => ({type : "setAll", ...state}),
 }
-
-export default function useInputStateContext() {
-    const {state, dispatch} = useContext(InputStateContext)
-
-    return {state, dispatch}
-}

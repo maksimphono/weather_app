@@ -6,7 +6,7 @@ import ForecastWeather from './Pages/Home/components/ForecastWeather.jsx'
 //import WeatherByCoordinates from './Pages/WaetherByCity/Components/WeatherByCoordinates.jsx'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import "./global.css"
-import Data from './Pages/Home/components/Data.jsx'
+//import Data from './Pages/Home/components/Data.jsx'
 
 export default function App() {
     return (

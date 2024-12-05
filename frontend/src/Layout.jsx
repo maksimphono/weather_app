@@ -1,5 +1,4 @@
-import React, { memo, useRef, useEffect } from 'react'
-//import Navbar from './Navbar.jsx'
+import React from 'react'
 import {Outlet} from "react-router-dom"
 
 export default function Layout() {
@@ -7,6 +6,5 @@ export default function Layout() {
     <>
         <Outlet />
     </>
-    
   )
 }

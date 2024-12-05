@@ -1,5 +1,4 @@
-import dataAdapterFactory from "../utils/DataAdapterFactory.js"
-import Debugger from "../../utils/Debugger.js"
+//import Debugger from "../../utils/Debugger.js"
 //export const DataManager_class_Debugger = new Debugger("DataManager class Debugger")
 const API_KEY = process.env.REACT_APP_API_KEY;
 
