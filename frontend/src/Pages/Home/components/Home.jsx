@@ -48,12 +48,16 @@ export default function Home() {
                     <input type="radio" name = "View" checked = {currentWeatherView === "forecast"} value = {"forecast"} onChange={({target}) => setCurrentWeatherView(target.value)}/>
                 </label>
 
-                <button type = "button" onClick = {(event) => {event.preventDefault(); setOverLayOpen(true);}}>Followed cities</button>
-                {overLayOpen?
+                {(currentWeatherView === "today")?
+                    <button type = "button" onClick = {(event) => {event.preventDefault(); setOverLayOpen(true);}}>Followed cities</button>
+                :
+                    <></>
+                }
+                {(overLayOpen && currentWeatherView === "today")? // show that overlay menu only in "today" mode
                     <FollowedCitiesOverlayMenu
                         onClose = {() => setOverLayOpen(false)}
                     />
-                    :
+                :
                     <></>
                 }
 
