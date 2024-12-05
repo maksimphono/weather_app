@@ -1,8 +1,9 @@
-import React, {createContext, useCallback, useContext, useEffect, useReducer, useRef, useState, useTransition} from 'react'
-import style from "../css/OneDay.module.scss"
-import InputFields, { InputState } from './InputFields.jsx'
+import React, {useCallback, useRef, useState} from 'react'
+import PropTypes from "prop-types"
+import InputFields from './InputFields.jsx'
 import useGetOneDayWeatherData from '../hooks/useGetONeDayWeatherData.js'
 import dataAdapterFactory from "../utils/DataAdapterFactory.js"
+import style from "../css/OneDay.module.scss"
 
 function SmallWeatherData({gridArea, value, className, children}) {
     const classNames = className !== undefined?className.split(" "):[]
@@ -19,9 +20,15 @@ function SmallWeatherData({gridArea, value, className, children}) {
     )
 }
 
-export default function OneDayWeather({inputState, selectedMode, fetchFollowedCities}) {
+SmallWeatherData.propTypes = {
+    gridArea : PropTypes.string,
+    value : PropTypes.number,
+    children : PropTypes.oneOf([PropTypes.element, PropTypes.string]),
+    className : PropTypes.string
+}
+
+function OneDayWeather({inputState, selectedMode}) {
     const [weatherData, setWeatherData] = useState()
-    const [followerCoords, setFollowerCoords] = useState({x: 0, y : 0})
     const weatherViewRef = useRef(null)
 
     const handleFollowCity = useCallback(async () => {
@@ -52,12 +59,11 @@ export default function OneDayWeather({inputState, selectedMode, fetchFollowedCi
 
     useGetOneDayWeatherData(setWeatherData, inputState, selectedMode)
 
-    if (inputState === undefined) return <></>
+    if (weatherData === undefined) return <></>
     return (
         <>
         {weatherData && Object.keys(weatherData).length &&
             <div ref = {weatherViewRef} className = {style["weather__view"]}>
-                <i style = {{top: followerCoords.y, left: followerCoords.x}} className = {style["follower"]}></i>
                 <div className = {style["basic__info"]}>
                     <InputFields />
                     <SmallWeatherData gridArea = "temp" value = {weatherData.main.temp}>Temperature</SmallWeatherData>
@@ -122,3 +128,10 @@ export default function OneDayWeather({inputState, selectedMode, fetchFollowedCi
         </>
     )
 }
+
+OneDayWeather.propTypes = {
+    inputState : PropTypes.oneOf([PropTypes.object, PropTypes.undefined]),
+    selectedMode : PropTypes.string
+}
+
+export default OneDayWeather
