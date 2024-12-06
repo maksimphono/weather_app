@@ -1,0 +1,82 @@
+{
+    "0": {
+        "type": "error",
+        "Name": "for-direction",
+        "File": "D://Maksim//学习//2024秋//软件工程//工程1//Project//frontend//src//intentional_defect4.js ",
+        "Description": "The update clause in this loop moves the variable in the wrong direction",
+        "Line": 1,
+        "At": ""
+    },
+    "1": {
+        "type": "error",
+        "Name": "already-declared",
+        "File": "D://Maksim//学习//2024秋//软件工程//工程1//Project//frontend//src//intentional_defects1.js ",
+        "Description": "Parsing error: Identifier 'age' has already been declared",
+        "Line": 18,
+        "At": ""
+    },
+    "2": {
+        "type": "error",
+        "Name": "unexpected-token",
+        "File": "D://Maksim//学习//2024秋//软件工程//工程1//Project//frontend//src//intentional_defects10.js ",
+        "Description": "Parsing error: Unexpected token (",
+        "Line": 2,
+        "At": ""
+    },
+    "3": {
+        "type": "error",
+        "Name": "unexpected-token",
+        "File": "D://Maksim//学习//2024秋//软件工程//工程1//Project//frontend//src//intentional_defects2.js ",
+        "Description": "Parsing error: Unexpected token {",
+        "Line": 6,
+        "At": ""
+    },
+    "4": {
+        "type": "error",
+        "Name": "no-prototype-builtins",
+        "File": "D://Maksim//学习//2024秋//软件工程//工程1//Project//frontend//src//intentional_defects3.js ",
+        "Description": "Do not access Object.prototype method 'hasOwnProperty' from target object",
+        "Line": 1,
+        "At": ""
+    },
+    "5": {
+        "type": "error",
+        "Name": "no-undef",
+        "File": "D://Maksim//学习//2024秋//软件工程//工程1//Project//frontend//src//intentional_defects5.js ",
+        "Description": "'nonexistent' is not defined",
+        "Line": 1,
+        "At": ""
+    },
+    "6": {
+        "type": "error",
+        "Name": "unterminated",
+        "File": "D://Maksim//学习//2024秋//软件工程//工程1//Project//frontend//src//intentional_defects6.js ",
+        "Description": "Parsing error: Unterminated string constant",
+        "Line": 1,
+        "At": ""
+    },
+    "7": {
+        "type": "error",
+        "Name": "no-unused-vars",
+        "File": "D://Maksim//学习//2024秋//软件工程//工程1//Project//frontend//src//intentional_defects7.js ",
+        "Description": "'a' is assigned a value but never used",
+        "Line": 1,
+        "At": ""
+    },
+    "8": {
+        "type": "error",
+        "Name": "no-unused-labels",
+        "File": "D://Maksim//学习//2024秋//软件工程//工程1//Project//frontend//src//intentional_defects8.js ",
+        "Description": "'a:' is defined but never used",
+        "Line": 1,
+        "At": ""
+    },
+    "9": {
+        "type": "error",
+        "Name": "no-unde",
+        "File": "D://Maksim//学习//2024秋//软件工程//工程1//Project//frontend//src//intentional_defects8.js ",
+        "Description": "'a' is not defined",
+        "Line": 1,
+        "At": ""
+    }
+}

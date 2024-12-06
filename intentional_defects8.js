@@ -1,0 +1,1 @@
+{a : a} // unsafe Object creation
