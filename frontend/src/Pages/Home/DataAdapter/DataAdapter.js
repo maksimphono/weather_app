@@ -27,7 +27,7 @@ export default class DataAdapter{
                 {expected : this.fields.length, got : Object.keys(entry).length}
                 )
         
-        this.fields.forEach(({name}) => {if (!entry.hasOwnProperty(name)) missingFields.push(name)})
+        this.fields.forEach(({name}) => {if (entry[name] === undefined) missingFields.push(name)})
 
         if (missingFields.length)
             throw new ValidationError("Missing fields", {
@@ -40,7 +40,7 @@ export default class DataAdapter{
             console.log("openDB")
             this.version++;
             let req = indexedDB.open(this.dbName, this.version)
-    	    req.onsuccess = async event => {
+    	    req.onsuccess = async () => {
    		     	this.db = await req.result
                 resolve(this.db)
     	    }
@@ -69,7 +69,7 @@ export default class DataAdapter{
         try {
             return objectStore.index(indexName);
         }
-        catch (error) {
+        catch {
             throw new Error(`Index ${indexName} does not exist in store ${this.name}`)
         }
     }
@@ -84,7 +84,6 @@ export default class DataAdapter{
         })
     }
     async saveMany(entries) {
-        let req = null
         const validationErrors = []
         entries.forEach(async (entry) => {
             try {
@@ -108,7 +107,7 @@ export default class DataAdapter{
 
     fillEmptyFields(entry) {
         this.fieldNames.forEach(field => {
-            if (!entry.hasOwnProperty(field)) {
+            if (entry[field] === undefined) {
                 entry[field] = null
             }
         })

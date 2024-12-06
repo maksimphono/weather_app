@@ -1,8 +1,11 @@
 import DataManager, { FetchError } from "./DataManager.js"
 import dataAdapterFactory from "../utils/DataAdapterFactory.js"
 import { approximateCoordinates, CoordinatesError } from "./OneDayWeatherDataManager.js"
+/* for debug !!!
 import Debugger from "../../utils/Debugger"
 export const UserFollowingListDataManager_class_Debugger = new Debugger("UserFollowingListDataManager_class_Debugger")
+*/
+const WEATHER_DATA_EXPIRATION_TIME_HOURS = 3
 
 class UserFollowingListDataManager extends DataManager {
     constructor () {

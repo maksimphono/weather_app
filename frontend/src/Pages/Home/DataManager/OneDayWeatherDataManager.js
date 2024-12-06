@@ -17,11 +17,12 @@
 import DataManager, { FetchError } from "./DataManager.js"
 import dataAdapterFactory from "../utils/DataAdapterFactory.js"
 import approximateCoordinates from "../utils/approximateCoordinates.js"
+import { CityError } from "./GeodecodeDataManager.js"
 
 import Debugger from "../../utils/Debugger"
 export const OneDayWeatherDataManager_class_Debugger = new Debugger("OneDayWeatherDataManager_class_Debugger")
 
-const WEATHER_DATA_EXPIRATION_TIME_HOURS = 6
+const WEATHER_DATA_EXPIRATION_TIME_HOURS = 3
 
 export class CoordinatesError extends Error {
     constructor(body) {

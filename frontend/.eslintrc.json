@@ -1,0 +1,33 @@
+{
+    "env": {
+      "browser": true,
+      "es2021": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended"
+    ],
+    "parserOptions": {
+      "ecmaFeatures": {
+        "jsx": true
+      },
+      "ecmaVersion": 12,
+      "sourceType": "module"
+    },
+    "plugins": [
+      "react",
+      "react-hooks",
+      "jsx-a11y",
+      "import"
+    ],
+    "rules": {
+      "react/prop-types": "off", // Example: Disable prop-types rule if using TypeScript
+      "react/react-in-jsx-scope": "off" // Disable since React 17 no longer requires React in scope
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    }
+}
+  

@@ -3,6 +3,7 @@ import approximateCoordinates from "./approximateCoordinates.js"
 
 export class CustomError extends Error {
     constructor(type, body) {
+        super(body)
         this.type = type
         this.body = body
     } 

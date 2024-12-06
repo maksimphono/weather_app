@@ -1,10 +1,5 @@
 import React, {useEffect} from 'react'
-import DataAdapter from '../DataAdapter/DataAdapter'
 import dataAdapterFactory from '../utils/DataAdapterFactory'
-import {FetchError} from "../DataManager/DataManager.js"
-import geodecodeDataManager, {GeodecodeDataManager_class_Debugger } from '../DataManager/GeodecodeDataManager.js'
-import oneDayWeatherDataManager, {CoordinatesError, OneDayWeatherDataManager_class_Debugger} from '../DataManager/OneDayWeatherDataManager.js'
-import forecastWeatherDataManager from '../DataManager/ForecastWeatherDataManager.js'
 
 export default function Data() {
     useEffect(() => {(async () => {

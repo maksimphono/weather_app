@@ -28,6 +28,7 @@ export default class Debugger {
         this.callStack.forEach((entry) => {
             console.log("-", entry)
         })
+        // TODO : add output in JSON format
     }
     /*
         @param {function} codeBlock

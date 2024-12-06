@@ -1,10 +1,11 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 import style from "../css/Home.module.scss"
 import { InputState } from './InputFields.jsx'
 import dataAdapterFactory from "../utils/DataAdapterFactory.js"
 import { InputStateInterface } from './Home.jsx'
 
-export default function FollowedCitiesOverlayMenu({onClose}) {
+function FollowedCitiesOverlayMenu({onClose}) {
     const [followedCities, setFollowedCities] = useState([])
     const {inputInterfaceRef} = useContext(InputStateInterface)
 
@@ -18,7 +19,7 @@ export default function FollowedCitiesOverlayMenu({onClose}) {
         try {
             const cities = await adapter.loadAll();
             setFollowedCities(cities);
-        } catch (error) {
+        } catch {
             alert('Error when fetching followed cities');
         }
     }, [])
@@ -43,7 +44,7 @@ export default function FollowedCitiesOverlayMenu({onClose}) {
         try {
             await adapter.remove(coordinates)
             setFollowedCities(await adapter.loadAll())
-        } catch(error) {
+        } catch {
             alert("Error while removing item")
         }
     }, [])
@@ -52,7 +53,7 @@ export default function FollowedCitiesOverlayMenu({onClose}) {
         <div className = {style["overlaymenu"]}>
             <button onClick = {(e) => {e.preventDefault(); onClose();}}>X</button>
             <ul>
-                {followedCities.map((item, index) => {
+                {followedCities.map((item) => {
                     if (item !== undefined)
                         return (
                             <li 
@@ -72,3 +73,8 @@ export default function FollowedCitiesOverlayMenu({onClose}) {
     )
 }
 
+FollowedCitiesOverlayMenu.propTypes = {
+    onClose: PropTypes.func.isRequired,
+}
+
+export default FollowedCitiesOverlayMenu
