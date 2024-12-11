@@ -1,0 +1,1 @@
+Object({a : 8}).hasOwnProperty("a")
