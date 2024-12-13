@@ -1,5 +1,5 @@
 module.exports = {
-    testEnvironment : "jsdom",
+    testEnvironment : "node",
     moduleFileExtensions : ["js", "jsx"],
     moduleDirectories : ["node_modules"],
     moduleNameMapper: {

@@ -1,10 +1,5 @@
-import React, {createContext} from "react"
-
-export const InputStateContext = createContext()
-
 export class InputState {
     constructor(city, country, lat, lon) {
-        this._mode = "city"
         this._country = country
         this._city = city
         this._lat = lat
@@ -26,9 +21,6 @@ export class InputState {
     get country() {
         return this._country
     }
-    get selectedMode() {
-        return this._mode
-    }
     setCity(city) {
         this._city = city
         return this
@@ -45,35 +37,29 @@ export class InputState {
         this._lon = val
         return this
     }
-    setMode(val) {
-        this._mode = val
-    }
 }
 
 export function inputReducer(state, action) {
-    switch(action.type) {
-        case "mode":
-            return state.deepcopy().setMode(action.selectedMode)
-        case "country":
-            return state.deepcopy().setCountry(action.country)
-        case "city":
-            return state.deepcopy().setCity(action.city)
-        case "lat":
-            return state.deepcopy().setLat(action.lat)
-        case "lon":
-            return state.deepcopy().setLon(action.lon)
-        case "setAll":
-            return state.deepcopy()
-                .setLon(action.lon)
-                .setLat(action.lat)
-                .setCity(action.city)
-                .setCountry(action.country)
-                .setMode(action.selectedMode)
-        default:
-            return state
-    }
+  switch (action.type) {
+    case "country":
+      return state.deepcopy().setCountry(action.country);
+    case "city":
+      return state.deepcopy().setCity(action.city);
+    case "lat":
+      return state.deepcopy().setLat(action.lat);
+    case "lon":
+      return state.deepcopy().setLon(action.lon);
+    case "setAll":
+      return state
+        .deepcopy()
+        .setLon(action.lon)
+        .setLat(action.lat)
+        .setCity(action.city)
+        .setCountry(action.country);
+    default:
+      return state;
+  }
 }
-
 export const initalInputState = new InputState("Moscow", "RU", 0, 0)
 
 export const actions = {
@@ -82,5 +68,11 @@ export const actions = {
     city : (val) => ({type : "city", city : val}),
     lat : (val) => ({type : "lat", lat : val}),
     lon : (val) => ({type : "lon", lon : val}),
-    setAll : (state) => ({type : "setAll", ...state}),
+    setAll : (state) => ({
+        type : "setAll", 
+        lon: state.lon,
+        lat: state.lat,
+        country: state.country,
+        city: state.city
+    }),
 }
