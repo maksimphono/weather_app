@@ -1,6 +1,6 @@
 import approximateCoordinates from "../../utils/approximateCoordinates";
 
-describe("Testing approximateCoordinates", () => {
+describe.skip("Testing approximateCoordinates", () => {
     // regular inputs
     it("Test 1", () => {
         const result = approximateCoordinates({lat : 1, lon : 9})

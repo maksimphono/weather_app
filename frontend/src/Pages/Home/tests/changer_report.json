@@ -1,0 +1,18 @@
+{
+  "changes": [
+    {
+      "testFilePath": "approximateCoordinates.test.js",
+      "testsFalied": ["Test 7", "Test 8", "Test 9"],
+      "description": "Function must throw exception when lat or lon out of range (-90 < lat < 90, -180 < lon < 180)",
+      "alteredFiles": ["src/Pages/Home/utils/approximateCoordinates.js"],
+      "status": "IN PROCESS"
+    },
+    {
+      "testFilePath": "D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\src\\Pages\\Home\\tests\\unittests\\approximateCoordinates.test.js",
+      "testsFalied": ["Test 7", "Test 9", "Test 10 absolutely incorrect"],
+      "description": "",
+      "alteredFiles": [],
+      "status": "IN PROCESS"
+    }
+  ]
+}
