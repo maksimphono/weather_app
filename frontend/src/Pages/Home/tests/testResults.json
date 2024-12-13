@@ -1,0 +1,269 @@
+{
+  "numFailedTestSuites": 1,
+  "numFailedTests": 3,
+  "numPassedTestSuites": 0,
+  "numPassedTests": 7,
+  "numPendingTestSuites": 1,
+  "numPendingTests": 6,
+  "numRuntimeErrorTestSuites": 0,
+  "numTodoTests": 0,
+  "numTotalTestSuites": 2,
+  "numTotalTests": 16,
+  "openHandles": [],
+  "snapshot": {
+    "added": 0,
+    "didUpdate": false,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0
+  },
+  "startTime": 1734091710310,
+  "success": false,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Testing InputState class", "Testing creation"],
+          "duration": null,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Testing InputState class Testing creation Test 1 creation",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "pending",
+          "title": "Test 1 creation"
+        },
+        {
+          "ancestorTitles": ["Testing InputState class", "Testing methods"],
+          "duration": null,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Testing InputState class Testing methods Test 1 setCity",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "pending",
+          "title": "Test 1 setCity"
+        },
+        {
+          "ancestorTitles": ["Testing InputState class", "Testing methods"],
+          "duration": null,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Testing InputState class Testing methods Test 2 setCountry",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "pending",
+          "title": "Test 2 setCountry"
+        },
+        {
+          "ancestorTitles": ["Testing InputState class", "Testing methods"],
+          "duration": null,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Testing InputState class Testing methods Test 3 setLat",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "pending",
+          "title": "Test 3 setLat"
+        },
+        {
+          "ancestorTitles": ["Testing InputState class", "Testing methods"],
+          "duration": null,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Testing InputState class Testing methods Test 4 setLon",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "pending",
+          "title": "Test 4 setLon"
+        },
+        {
+          "ancestorTitles": ["Testing InputState class", "Test copy"],
+          "duration": null,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Testing InputState class Test copy Test 1 copy",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "pending",
+          "title": "Test 1 copy"
+        }
+      ],
+      "coverage": {},
+      "endTime": 1734091712828,
+      "message": "",
+      "name": "D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\src\\Pages\\Home\\tests\\unittests\\InputState.test.js",
+      "startTime": 1734091712828,
+      "status": "skipped",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Testing approximateCoordinates"],
+          "duration": 12,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Testing approximateCoordinates Test 1",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "Test 1"
+        },
+        {
+          "ancestorTitles": ["Testing approximateCoordinates"],
+          "duration": 0,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Testing approximateCoordinates Test 2",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "Test 2"
+        },
+        {
+          "ancestorTitles": ["Testing approximateCoordinates"],
+          "duration": 1,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Testing approximateCoordinates Test 3",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "Test 3"
+        },
+        {
+          "ancestorTitles": ["Testing approximateCoordinates"],
+          "duration": 0,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Testing approximateCoordinates Test 4",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "Test 4"
+        },
+        {
+          "ancestorTitles": ["Testing approximateCoordinates"],
+          "duration": 1,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Testing approximateCoordinates Test 5",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "Test 5"
+        },
+        {
+          "ancestorTitles": ["Testing approximateCoordinates"],
+          "duration": 0,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Testing approximateCoordinates Test 6",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "Test 6"
+        },
+        {
+          "ancestorTitles": ["Testing approximateCoordinates"],
+          "duration": 2,
+          "failureDetails": [{}],
+          "failureMessages": [
+            "ReferenceError: ValueError is not defined\n    at Object.ValueError (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\src\\Pages\\Home\\tests\\unittests\\approximateCoordinates.test.js:30:76)\n    at Promise.then.completed (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at _runTest (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-runner\\build\\runTest.js:444:34)\n    at Object.worker (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-runner\\build\\testWorker.js:106:12)"
+          ],
+          "fullName": "Testing approximateCoordinates Test 7",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "Test 7"
+        },
+        {
+          "ancestorTitles": ["Testing approximateCoordinates"],
+          "duration": 1,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Testing approximateCoordinates Test 8",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "Test 8"
+        },
+        {
+          "ancestorTitles": ["Testing approximateCoordinates"],
+          "duration": 1,
+          "failureDetails": [{}],
+          "failureMessages": [
+            "ReferenceError: ValueError is not defined\n    at Object.ValueError (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\src\\Pages\\Home\\tests\\unittests\\approximateCoordinates.test.js:36:76)\n    at Promise.then.completed (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at _runTest (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-runner\\build\\runTest.js:444:34)\n    at Object.worker (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-runner\\build\\testWorker.js:106:12)"
+          ],
+          "fullName": "Testing approximateCoordinates Test 9",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "Test 9"
+        },
+        {
+          "ancestorTitles": ["Testing approximateCoordinates"],
+          "duration": 0,
+          "failureDetails": [{}],
+          "failureMessages": [
+            "ReferenceError: ValueError is not defined\n    at Object.ValueError (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\src\\Pages\\Home\\tests\\unittests\\approximateCoordinates.test.js:39:77)\n    at Promise.then.completed (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at _runTest (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-runner\\build\\runTest.js:444:34)\n    at Object.worker (D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\node_modules\\jest-runner\\build\\testWorker.js:106:12)"
+          ],
+          "fullName": "Testing approximateCoordinates Test 10 absolutely incorrect",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "Test 10 absolutely incorrect"
+        }
+      ],
+      "endTime": 1734091712753,
+      "message": "\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mTesting approximateCoordinates › Test 7\u001b[39m\u001b[22m\n\n    ReferenceError: ValueError is not defined\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 28 |\u001b[39m     })\u001b[22m\n\u001b[2m     \u001b[90m 29 |\u001b[39m     it(\u001b[32m\"Test 7\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[22m\n\u001b[2m    \u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 30 |\u001b[39m         expect(approximateCoordinates({lat \u001b[33m:\u001b[39m \u001b[35m90.009\u001b[39m\u001b[33m,\u001b[39m lon \u001b[33m:\u001b[39m \u001b[33m-\u001b[39m\u001b[35m180\u001b[39m}))\u001b[33m.\u001b[39mtoThrow(\u001b[33mValueError\u001b[39m)\u001b[22m\n\u001b[2m     \u001b[90m    |\u001b[39m                                                                            \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 31 |\u001b[39m     })\u001b[22m\n\u001b[2m     \u001b[90m 32 |\u001b[39m     it(\u001b[32m\"Test 8\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[22m\n\u001b[2m     \u001b[90m 33 |\u001b[39m         expect(approximateCoordinates({lat \u001b[33m:\u001b[39m \u001b[35m90\u001b[39m\u001b[33m,\u001b[39m lon \u001b[33m:\u001b[39m \u001b[33m-\u001b[39m\u001b[35m180.004\u001b[39m}))\u001b[33m.\u001b[39mtoBe(\u001b[32m\"[90.00,-180.00]\"\u001b[39m)\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.ValueError (\u001b[22m\u001b[2m\u001b[0m\u001b[36msrc/Pages/Home/tests/unittests/approximateCoordinates.test.js\u001b[39m\u001b[0m\u001b[2m:30:76)\u001b[22m\u001b[2m\u001b[22m\n\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mTesting approximateCoordinates › Test 9\u001b[39m\u001b[22m\n\n    ReferenceError: ValueError is not defined\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 34 |\u001b[39m     })\u001b[22m\n\u001b[2m     \u001b[90m 35 |\u001b[39m     it(\u001b[32m\"Test 9\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[22m\n\u001b[2m    \u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 36 |\u001b[39m         expect(approximateCoordinates({lat \u001b[33m:\u001b[39m \u001b[35m90\u001b[39m\u001b[33m,\u001b[39m lon \u001b[33m:\u001b[39m \u001b[33m-\u001b[39m\u001b[35m180.005\u001b[39m}))\u001b[33m.\u001b[39mtoThrow(\u001b[33mValueError\u001b[39m)\u001b[22m\n\u001b[2m     \u001b[90m    |\u001b[39m                                                                            \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 37 |\u001b[39m     })\u001b[22m\n\u001b[2m     \u001b[90m 38 |\u001b[39m     it(\u001b[32m\"Test 10 absolutely incorrect\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[22m\n\u001b[2m     \u001b[90m 39 |\u001b[39m         expect(approximateCoordinates({lat \u001b[33m:\u001b[39m \u001b[35m190\u001b[39m\u001b[33m,\u001b[39m lon \u001b[33m:\u001b[39m \u001b[33m-\u001b[39m\u001b[35m280.005\u001b[39m}))\u001b[33m.\u001b[39mtoThrow(\u001b[33mValueError\u001b[39m)\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.ValueError (\u001b[22m\u001b[2m\u001b[0m\u001b[36msrc/Pages/Home/tests/unittests/approximateCoordinates.test.js\u001b[39m\u001b[0m\u001b[2m:36:76)\u001b[22m\u001b[2m\u001b[22m\n\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mTesting approximateCoordinates › Test 10 absolutely incorrect\u001b[39m\u001b[22m\n\n    ReferenceError: ValueError is not defined\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 37 |\u001b[39m     })\u001b[22m\n\u001b[2m     \u001b[90m 38 |\u001b[39m     it(\u001b[32m\"Test 10 absolutely incorrect\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[22m\n\u001b[2m    \u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 39 |\u001b[39m         expect(approximateCoordinates({lat \u001b[33m:\u001b[39m \u001b[35m190\u001b[39m\u001b[33m,\u001b[39m lon \u001b[33m:\u001b[39m \u001b[33m-\u001b[39m\u001b[35m280.005\u001b[39m}))\u001b[33m.\u001b[39mtoThrow(\u001b[33mValueError\u001b[39m)\u001b[22m\n\u001b[2m     \u001b[90m    |\u001b[39m                                                                             \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 40 |\u001b[39m     })\u001b[22m\n\u001b[2m     \u001b[90m 41 |\u001b[39m })\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.ValueError (\u001b[22m\u001b[2m\u001b[0m\u001b[36msrc/Pages/Home/tests/unittests/approximateCoordinates.test.js\u001b[39m\u001b[0m\u001b[2m:39:77)\u001b[22m\u001b[2m\u001b[22m\n",
+      "name": "D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\src\\Pages\\Home\\tests\\unittests\\approximateCoordinates.test.js",
+      "startTime": 1734091710771,
+      "status": "failed",
+      "summary": ""
+    }
+  ],
+  "wasInterrupted": false
+}

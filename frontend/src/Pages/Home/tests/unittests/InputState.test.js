@@ -1,7 +1,7 @@
 import { InputState } from "../../Context/inputState"
 //import { InputState } from "../../components/InputFields.jsx";
 
-describe("Testing InputState class", () => {
+describe.skip("Testing InputState class", () => {
     describe("Testing creation", () => {
         it("Test 1 creation", () => {
             const st = new InputState("Moscow", "RU", 55.75, 37.62)

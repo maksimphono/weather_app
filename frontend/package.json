@@ -5,7 +5,7 @@
 	"main": "./index.js",
 	"_main": "./src/main.js",
 	"scripts": {
-		"test": "jest --verbose=false",
+		"test": "jest --verbose=false --json --outputFile=./src/Pages/Home/tests/testResults.json",
 		"desktop": "webpack . && electron .",
 		"start": "electron .",
 		"dev": "webpack serve",
