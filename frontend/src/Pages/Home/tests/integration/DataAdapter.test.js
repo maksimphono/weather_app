@@ -1,12 +1,13 @@
 import DataAdapter from "../../DataAdapter/DataAdapter";
 
 describe("Testing DataAdapter", () => {
+    const onsuccessMock = jest.fn()
     beforeAll(() => {
         // Mock the global indexedDB.open
         global.indexedDB = {
             open : jest.fn().mockImplementation(() => ({
                 onupgradeneeded: null,
-                onsuccess: null,
+                onsuccess: onsuccessMock,
                 onerror: null,
                 result: {
                   transaction: jest.fn(() => ({
@@ -26,7 +27,7 @@ describe("Testing DataAdapter", () => {
         it("Test 1 creation", () => {
             const openRequest = indexedDB.open("DB name", 9)//.mock.results[0].value;
             const expectedShape = {
-                onsuccess : null,
+                onsuccess : expect.any(Function),
                 onerror : null,
                 onupgradeneeded : null,
                 result : {
@@ -85,6 +86,19 @@ describe("Testing DataAdapter", () => {
             expect(mockStoreAdd).toHaveBeenCalledWith({ name: 'John Doe' });
             */
         });
+    })
+    describe("Testing openning", () => {
+        it("Regular openDB", async () => {
+            global.indexedDB.open.mockClear()
+            const adapter = new DataAdapter("DB name in openDB", [{name : "field1", unique : true}, {name : "field2", unique : false}], "field1", 1)
+            const promise = adapter.openDB()
+
+            console.dir(global.indexedDB.open.mock.results[0])
+            await global.indexedDB.open.mock.results[0].value.onsuccess() // immitate slow openning of indexedDB
+
+            expect(adapter.db).toBeDefined()
+            expect(adapter.db.transaction).toBeDefined()
+        })
     })
     describe("Testing methods", () => {
 
