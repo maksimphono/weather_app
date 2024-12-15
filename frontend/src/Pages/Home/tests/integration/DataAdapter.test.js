@@ -88,17 +88,47 @@ describe("Testing DataAdapter", () => {
         });
     })
     describe("Testing openning", () => {
-        it("Regular openDB", async () => {
+        let upgradeneededEventMock = {
+            currentTarget : {
+                result : {
+                    createObjectStore : jest.fn()
+                }
+            }
+        }
+        beforeAll(() => {
             global.indexedDB.open.mockClear()
+        })
+        it("Regular open only", async () => {
             const adapter = new DataAdapter("DB name in openDB", [{name : "field1", unique : true}, {name : "field2", unique : false}], "field1", 1)
-            const promise = adapter.openDB()
+            adapter.openDB()
 
-            console.dir(global.indexedDB.open.mock.results[0])
-            await global.indexedDB.open.mock.results[0].value.onsuccess() // immitate slow openning of indexedDB
+            console.dir(global.indexedDB.open.mock.results[0]) // immitate slow openning of indexedDB
+            await global.indexedDB.open.mock.results[0].value.onsuccess()
 
             expect(adapter.db).toBeDefined()
             expect(adapter.db.transaction).toBeDefined()
+            expect(adapter.db.transaction).not.toBe(null)
         })
+        it("Regular open and upgradeneeded", async () => {
+            const createIndexMock = jest.fn().mockImplementationOnce(() => "indexObject")
+            upgradeneededEventMock.currentTarget.result.createObjectStore.mockImplementationOnce(() => ({createIndex : createIndexMock}))
+            const adapter = new DataAdapter("Regular open and upgradeneeded", [{name : "field1", unique : true}, {name : "field2", unique : false}], "field1", 1)
+            const db = adapter.openDB()
+
+            global.indexedDB.open.mock.results.at(-1).value.onupgradeneeded(upgradeneededEventMock)
+            await global.indexedDB.open.mock.results.at(-1).value.onsuccess()
+
+            expect(db).resolves.toBeDefined()
+            expect(db).resolves.toBe(adapter.db)
+            expect(adapter.version).toBe(2)
+            expect(upgradeneededEventMock.currentTarget.result.createObjectStore.mock.calls.length).toBe(1)
+            expect(upgradeneededEventMock.currentTarget.result.createObjectStore.mock.calls.at(-1)[0]).toBe("Regular open and upgradeneeded")
+            expect(upgradeneededEventMock.currentTarget.result.createObjectStore.mock.calls.at(-1)[1]).toEqual({keyPath: "field1"})
+            expect(createIndexMock.mock.calls.length).toBe(2)
+            expect(createIndexMock.mock.calls[0]).toEqual(["field1", "field1", {unique: true}])
+            expect(createIndexMock.mock.calls[1]).toEqual(["field2", "field2", {unique: false}])
+        })
+        //it("Regular open and onupgradeneeded (without)")
     })
     describe("Testing methods", () => {
 
