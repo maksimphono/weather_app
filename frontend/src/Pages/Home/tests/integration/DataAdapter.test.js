@@ -2,13 +2,14 @@ import DataAdapter from "../../DataAdapter/DataAdapter";
 
 describe("Testing DataAdapter", () => {
     const onsuccessMock = jest.fn()
+    const onerrorMock = jest.fn()
     beforeAll(() => {
         // Mock the global indexedDB.open
         global.indexedDB = {
             open : jest.fn().mockImplementation(() => ({
                 onupgradeneeded: null,
                 onsuccess: onsuccessMock,
-                onerror: null,
+                onerror: onerrorMock,
                 result: {
                   transaction: jest.fn(() => ({
                     objectStore: jest.fn(() => ({
@@ -28,7 +29,7 @@ describe("Testing DataAdapter", () => {
             const openRequest = indexedDB.open("DB name", 9)//.mock.results[0].value;
             const expectedShape = {
                 onsuccess : expect.any(Function),
-                onerror : null,
+                onerror : expect.any(Function),
                 onupgradeneeded : null,
                 result : {
                     transaction: expect.any(Function),
@@ -154,8 +155,36 @@ describe("Testing DataAdapter", () => {
             expect(createIndexMock.mock.calls[0]).toEqual(["field1", "field1", {unique: true}])
             expect(createIndexMock.mock.calls[1]).toEqual(["field2", "field2", {unique: false}])
         })
-        it("Regular open and onupgradeneeded (with error)", () => {
+        it("Regular open and onupgradeneeded (with error)", async () => {
+            // prepare mocks:
+            const errorMock = {target : { error : "Error when opening the indexedDB"}}
+            const createIndexMock = jest.fn().mockImplementationOnce(() => "indexObject")
+            upgradeneededEventMock.currentTarget.result.createObjectStore.mockClear()
+            upgradeneededEventMock.currentTarget.result.createObjectStore.mockImplementationOnce(() => ({createIndex : createIndexMock}))            
+            // call tested methods:
+            const adapter = new DataAdapter("Regular open and onupgradeneeded (with error)", [{name : "field1", unique : true}, {name : "field2", unique : false}])
+            const db = adapter.openDB()
+
+            global.indexedDB.open.mock.results.at(-1).value.onupgradeneeded(upgradeneededEventMock)            
+            try {
+                global.indexedDB.open.mock.results.at(-1).value.onerror(errorMock)
+                await db
+            } catch(reason) {
+                expect(reason).toBe(errorMock.target.error)
+            }
             
+
+            //expect(onerrorMock).toHaveBeenCalledTimes(1)
+            //expect(db).rejects.toBe(errorMock.target.error)
+            // even though the creation was failed with error, objects stores still have to be created, since onupgradeneeded method still was called:
+            expect(adapter.keyPath).toBe("")
+            expect(adapter.version).toBe(2)
+            expect(upgradeneededEventMock.currentTarget.result.createObjectStore).toHaveBeenCalledTimes(1) // method was called only once
+            expect(upgradeneededEventMock.currentTarget.result.createObjectStore.mock.calls.at(-1).length).toBe(1) // method was called only with one argument
+            expect(upgradeneededEventMock.currentTarget.result.createObjectStore.mock.calls.at(-1)[0]).toBe("Regular open and onupgradeneeded (with error)") // that one argument was the name of the object store
+            expect(createIndexMock.mock.calls.length).toBe(2)
+            expect(createIndexMock.mock.calls[0]).toEqual(["field1", "field1", {unique: true}])
+            expect(createIndexMock.mock.calls[1]).toEqual(["field2", "field2", {unique: false}])
         })
     })
     describe("Testing methods", () => {
