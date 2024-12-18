@@ -238,5 +238,53 @@ describe("Testing DataAdapter", () => {
             expect(adapter.db.transaction.mock.calls.at(-1)[0]).toBe("Testing getObjectStore (readwrite)") // first agrumnet was name
             expect(adapter.db.transaction.mock.calls.at(-1)[1]).toBe("readwrite") // second agrumnet was mode
         })
+        it("Testing getIndex()", async () => {
+            // preparing mocks:
+            objectStoreMock.mockClear()
+            objectStoreMock.mockImplementation(() => ({index : jest.fn()}))
+            upgradeneededEventMock.currentTarget.result.createObjectStore.mockClear()
+            upgradeneededEventMock.currentTarget.result.createObjectStore.mockImplementationOnce(() => ({createIndex : jest.fn()}))
+            // calling tested methods:
+            const adapter = new DataAdapter("Testing getObjectStore (readwrite)", [{name : "field1", unique : true}, {name : "field2", unique : false}])
+            const db = adapter.openDB()
+
+            global.indexedDB.open.mock.results.at(-1).value.onupgradeneeded(upgradeneededEventMock)
+            await global.indexedDB.open.mock.results.at(-1).value.onsuccess()
+            global.indexedDB.open.mock.results.at(-1).value.result.transaction.mockClear()
+        
+            const store = adapter.getObjectStore("readwrite")
+            const index = adapter.getIndex(store, "field1")
+            // testing results:
+            const indexMock = objectStoreMock.mock.results.at(-1).value.index
+            expect(indexMock).toHaveBeenCalledTimes(1)
+            expect(indexMock.mock.calls.at(-1)[0]).toBe("field1")
+        })
+        it("Testing getIndex() (with error)", async () => {
+            // preparing mocks:
+            const indexMock = jest.fn()
+            indexMock.mockImplementationOnce(() => {throw "<Tag Error>"})
+            objectStoreMock.mockClear()
+            objectStoreMock.mockImplementation(() => ({index : indexMock}))
+            upgradeneededEventMock.currentTarget.result.createObjectStore.mockClear()
+            upgradeneededEventMock.currentTarget.result.createObjectStore.mockImplementationOnce(() => ({createIndex : jest.fn()}))
+            // calling tested methods:
+            const adapter = new DataAdapter("Testing getIndex() (with error)", [{name : "field1", unique : true}, {name : "field2", unique : false}])
+            const db = adapter.openDB()
+
+            global.indexedDB.open.mock.results.at(-1).value.onupgradeneeded(upgradeneededEventMock)
+            await global.indexedDB.open.mock.results.at(-1).value.onsuccess()
+            global.indexedDB.open.mock.results.at(-1).value.result.transaction.mockClear()
+        
+            const store = adapter.getObjectStore("readwrite")
+            // testing results:
+            try {
+                adapter.getIndex(store, "field1")
+            } catch (error) {
+                expect(error).toEqual(new Error("Index field1 does not exist in store Testing getIndex() (with error)"))
+            }
+
+            //expect(indexMock).toHaveBeenCalledTimes(1)
+            //expect(indexMock.mock.calls.at(-1)[0]).toBe("field1")
+        })
     })
 })
