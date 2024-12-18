@@ -109,26 +109,54 @@ describe("Testing DataAdapter", () => {
             expect(adapter.db.transaction).toBeDefined()
             expect(adapter.db.transaction).not.toBe(null)
         })
-        it("Regular open and upgradeneeded", async () => {
+        it("Regular open and upgradeneeded (with keypath)", async () => {
+            // prepare mocks:
             const createIndexMock = jest.fn().mockImplementationOnce(() => "indexObject")
+            upgradeneededEventMock.currentTarget.result.createObjectStore.mockClear()
             upgradeneededEventMock.currentTarget.result.createObjectStore.mockImplementationOnce(() => ({createIndex : createIndexMock}))
+            // call tested methods:
             const adapter = new DataAdapter("Regular open and upgradeneeded", [{name : "field1", unique : true}, {name : "field2", unique : false}], "field1", 1)
             const db = adapter.openDB()
 
             global.indexedDB.open.mock.results.at(-1).value.onupgradeneeded(upgradeneededEventMock)
             await global.indexedDB.open.mock.results.at(-1).value.onsuccess()
-
+            // tests results:
             expect(db).resolves.toBeDefined()
             expect(db).resolves.toBe(adapter.db)
             expect(adapter.version).toBe(2)
-            expect(upgradeneededEventMock.currentTarget.result.createObjectStore.mock.calls.length).toBe(1)
+            expect(upgradeneededEventMock.currentTarget.result.createObjectStore).toHaveBeenCalledTimes(1) // method was called only once
             expect(upgradeneededEventMock.currentTarget.result.createObjectStore.mock.calls.at(-1)[0]).toBe("Regular open and upgradeneeded")
             expect(upgradeneededEventMock.currentTarget.result.createObjectStore.mock.calls.at(-1)[1]).toEqual({keyPath: "field1"})
             expect(createIndexMock.mock.calls.length).toBe(2)
             expect(createIndexMock.mock.calls[0]).toEqual(["field1", "field1", {unique: true}])
             expect(createIndexMock.mock.calls[1]).toEqual(["field2", "field2", {unique: false}])
         })
-        //it("Regular open and onupgradeneeded (without)")
+        it("Regular open and upgradeneeded (without keypath)", async () => {
+            // prepare mocks:
+            const createIndexMock = jest.fn().mockImplementationOnce(() => "indexObject")
+            upgradeneededEventMock.currentTarget.result.createObjectStore.mockClear()
+            upgradeneededEventMock.currentTarget.result.createObjectStore.mockImplementationOnce(() => ({createIndex : createIndexMock}))
+            // call tested methods:
+            const adapter = new DataAdapter("Regular open and upgradeneeded (without keypath)", [{name : "field1", unique : true}, {name : "field2", unique : false}])
+            const db = adapter.openDB()
+
+            global.indexedDB.open.mock.results.at(-1).value.onupgradeneeded(upgradeneededEventMock)
+            await global.indexedDB.open.mock.results.at(-1).value.onsuccess()
+            // test results:
+            expect(db).resolves.toBeDefined()
+            expect(db).resolves.toBe(adapter.db)
+            expect(adapter.keyPath).toBe("")
+            expect(adapter.version).toBe(2)
+            expect(upgradeneededEventMock.currentTarget.result.createObjectStore).toHaveBeenCalledTimes(1) // method was called only once
+            expect(upgradeneededEventMock.currentTarget.result.createObjectStore.mock.calls.at(-1).length).toBe(1) // method was called only with one argument
+            expect(upgradeneededEventMock.currentTarget.result.createObjectStore.mock.calls.at(-1)[0]).toBe("Regular open and upgradeneeded (without keypath)") // that one argument was the name of the object store
+            expect(createIndexMock.mock.calls.length).toBe(2)
+            expect(createIndexMock.mock.calls[0]).toEqual(["field1", "field1", {unique: true}])
+            expect(createIndexMock.mock.calls[1]).toEqual(["field2", "field2", {unique: false}])
+        })
+        it("Regular open and onupgradeneeded (with error)", () => {
+            
+        })
     })
     describe("Testing methods", () => {
 
