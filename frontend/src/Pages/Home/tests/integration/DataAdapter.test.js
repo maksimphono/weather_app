@@ -3,6 +3,7 @@ import DataAdapter from "../../DataAdapter/DataAdapter";
 describe("Testing DataAdapter", () => {
     const onsuccessMock = jest.fn()
     const onerrorMock = jest.fn()
+    const objectStoreMock = jest.fn()
     beforeAll(() => {
         // Mock the global indexedDB.open
         global.indexedDB = {
@@ -12,9 +13,7 @@ describe("Testing DataAdapter", () => {
                 onerror: onerrorMock,
                 result: {
                   transaction: jest.fn(() => ({
-                    objectStore: jest.fn(() => ({
-                      add: jest.fn((data) => `Added: ${JSON.stringify(data)}`),
-                    })),
+                    objectStore: objectStoreMock,
                   })),
                 },
             })),
@@ -188,6 +187,56 @@ describe("Testing DataAdapter", () => {
         })
     })
     describe("Testing methods", () => {
+        let upgradeneededEventMock = {
+            currentTarget : {
+                result : {
+                    createObjectStore : jest.fn()
+                }
+            }
+        }
+        it("Testing getObjectStore (readonly)", async () => {
+            // preparing mocks
+            const createIndexMock = jest.fn().mockImplementationOnce(() => "indexObject")
+            objectStoreMock.mockClear()
+            upgradeneededEventMock.currentTarget.result.createObjectStore.mockClear()
+            upgradeneededEventMock.currentTarget.result.createObjectStore.mockImplementationOnce(() => ({createIndex : createIndexMock}))
+            // calling tested methods:
+            const adapter = new DataAdapter("Testing getObjectStore (readonly)", [{name : "field1", unique : true}, {name : "field2", unique : false}])
+            const db = adapter.openDB()
 
+            global.indexedDB.open.mock.results.at(-1).value.onupgradeneeded(upgradeneededEventMock)
+            await global.indexedDB.open.mock.results.at(-1).value.onsuccess()
+
+            const store = adapter.getObjectStore("readonly")
+            // testing results:
+            expect(adapter.db.transaction).toBeDefined()
+            expect(adapter.db.transaction).toHaveBeenCalledTimes(1) // transcation was called only once
+            expect(adapter.db.transaction.mock.calls.at(-1)[0]).toBe("Testing getObjectStore (readonly)") // first agrumnet was name
+            expect(adapter.db.transaction.mock.calls.at(-1)[1]).toBe("readonly") // second agrumnet was mode
+            expect(objectStoreMock).toHaveBeenCalledTimes(1)
+            expect(objectStoreMock.mock.calls.at(-1)[0]).toBe("Testing getObjectStore (readonly)") // was called with a single argument : name
+            expect(objectStoreMock.mock.results.at(-1).value).toBe(store)
+        })
+        it("Testing getObjectStore (readwrite)", async () => {
+            // preparing mocks
+            const createIndexMock = jest.fn().mockImplementationOnce(() => "indexObject")
+            objectStoreMock.mockClear()
+            upgradeneededEventMock.currentTarget.result.createObjectStore.mockClear()
+            upgradeneededEventMock.currentTarget.result.createObjectStore.mockImplementationOnce(() => ({createIndex : createIndexMock}))
+            // calling tested methods:
+            const adapter = new DataAdapter("Testing getObjectStore (readwrite)", [{name : "field1", unique : true}, {name : "field2", unique : false}])
+            const db = adapter.openDB()
+
+            global.indexedDB.open.mock.results.at(-1).value.onupgradeneeded(upgradeneededEventMock)
+            await global.indexedDB.open.mock.results.at(-1).value.onsuccess()
+            global.indexedDB.open.mock.results.at(-1).value.result.transaction.mockClear()
+            
+            const store = adapter.getObjectStore("readwrite")
+            // testing results:
+            expect(adapter.db.transaction).toBeDefined()
+            expect(adapter.db.transaction).toHaveBeenCalledTimes(1) // transcation was called only once
+            expect(adapter.db.transaction.mock.calls.at(-1)[0]).toBe("Testing getObjectStore (readwrite)") // first agrumnet was name
+            expect(adapter.db.transaction.mock.calls.at(-1)[1]).toBe("readwrite") // second agrumnet was mode
+        })
     })
 })

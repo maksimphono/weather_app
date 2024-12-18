@@ -62,7 +62,6 @@ export default class DataAdapter{
 	getObjectStore(mode) {
         console.log("Getting object store")
         let tx = this.db.transaction(this.name, mode)
-        console.log(tx.objectStore(this.name))
         return tx.objectStore(this.name)
     }
     getIndex(objectStore, indexName) {
