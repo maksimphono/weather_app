@@ -262,7 +262,7 @@ describe("Testing DataAdapter", () => {
         it("Testing getIndex() (with error)", async () => {
             // preparing mocks:
             const indexMock = jest.fn()
-            indexMock.mockImplementationOnce(() => {throw "<Tag Error>"})
+            indexMock.mockImplementationOnce(() => {throw "<TAG ERROR>"})
             objectStoreMock.mockClear()
             objectStoreMock.mockImplementation(() => ({index : indexMock}))
             upgradeneededEventMock.currentTarget.result.createObjectStore.mockClear()
@@ -282,9 +282,56 @@ describe("Testing DataAdapter", () => {
             } catch (error) {
                 expect(error).toEqual(new Error("Index field1 does not exist in store Testing getIndex() (with error)"))
             }
+        })
+        it("Testing clearData()", async () => {
+            // preparing mocks:
+            indexedDBClearMethodMock = jest.fn().mockImplementation(() => ({onsuccess : null, onerror : null}))
+            objectStoreMock.mockClear()
+            objectStoreMock.mockImplementation(() => ({clear : jest.fn()}))
+            upgradeneededEventMock.currentTarget.result.createObjectStore.mockClear()
+            upgradeneededEventMock.currentTarget.result.createObjectStore.mockImplementationOnce(() => ({createIndex : jest.fn()}))
+            // calling tested methods:
+            const adapter = new DataAdapter("Testing clearData()", [{name : "field1", unique : true}, {name : "field2", unique : false}])
+            const db = adapter.openDB()
 
-            //expect(indexMock).toHaveBeenCalledTimes(1)
-            //expect(indexMock.mock.calls.at(-1)[0]).toBe("field1")
+            global.indexedDB.open.mock.results.at(-1).value.onupgradeneeded(upgradeneededEventMock)
+            await global.indexedDB.open.mock.results.at(-1).value.onsuccess()
+
+            adapter.getObjectStore = jest.fn(() => ({clear : indexedDBClearMethodMock}))
+            const clearDataPromise = adapter.clearData()
+            // testing results:
+            expect(adapter.getObjectStore).toHaveBeenCalledTimes(1)
+            expect(indexedDBClearMethodMock).toHaveBeenCalledTimes(1)
+            indexedDBClearMethodMock.mock.results.at(-1).value.onsuccess()
+            expect(clearDataPromise).resolves.toBe(undefined) // promise, that was returned from the "clearData" method must be resolved (because "onsuccess" was called)
+        })
+        it("Testing clearData() (with error)", async () => {
+            // preparing mocks:
+            const errorTag = new Error("<TAG ERROR>")
+            indexedDBClearMethodMock = jest.fn().mockImplementation(() => ({onsuccess : null, onerror : null}))
+            objectStoreMock.mockClear()
+            objectStoreMock.mockImplementation(() => ({clear : jest.fn()}))
+            upgradeneededEventMock.currentTarget.result.createObjectStore.mockClear()
+            upgradeneededEventMock.currentTarget.result.createObjectStore.mockImplementationOnce(() => ({createIndex : jest.fn()}))
+            // calling tested methods:
+            const adapter = new DataAdapter("Testing clearData() (with error)", [{name : "field1", unique : true}, {name : "field2", unique : false}])
+            const db = adapter.openDB()
+
+            global.indexedDB.open.mock.results.at(-1).value.onupgradeneeded(upgradeneededEventMock)
+            await global.indexedDB.open.mock.results.at(-1).value.onsuccess()
+
+            adapter.getObjectStore = jest.fn(() => ({clear : indexedDBClearMethodMock}))
+            const clearDataPromise = adapter.clearData()
+            // testing results:
+            expect(adapter.getObjectStore).toHaveBeenCalledTimes(1)
+            expect(indexedDBClearMethodMock).toHaveBeenCalledTimes(1)
+            try {
+                indexedDBClearMethodMock.mock.results.at(-1).value.onerror(errorTag)
+                await clearDataPromise
+            } catch(reason) {
+                // handling error properly (rejecting promise, returned from "clearData()" method")
+                expect(reason).toBe(errorTag)
+            }
         })
     })
 })
