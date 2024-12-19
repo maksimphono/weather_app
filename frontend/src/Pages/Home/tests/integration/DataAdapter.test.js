@@ -837,5 +837,25 @@ describe("Testing DataAdapter", () => {
             }
             //expect(removeManyBy_promise).resolves.toEqual(["one1", "one2"])
         })
+        it("Testing removeManyBy() (with error)", async () => {
+            // preparing mocks:
+            const cursorContinueMock = jest.fn()
+            const deleteMoethodMock = jest.fn(() => ({onsuccess : null, onerror : null}))
+            const openCursorMock = jest.fn(() => ({onsuccess : null, onerror : null}))
+            const getObjectStoreMock = jest.fn(() => ({keyPath : "field1", openCursor : openCursorMock, delete : deleteMoethodMock}))// calling tested methods:
+            // calling tested methods:
+            const adapter = await createAndOpenAdapter("Testing loadOneBy() (by keypath with error)")
+            adapter.getObjectStore = getObjectStoreMock
+            const removeManyBy_promise = adapter.removeManyBy("field2", "two")
+
+            expect(getObjectStoreMock).toHaveBeenCalledTimes(1)
+            expect(openCursorMock).toHaveBeenCalledTimes(1)
+            try {
+                openCursorMock.mock.results[0].value.onerror("<TAG ERROR>")
+                await removeManyBy_promise
+            } catch(reason) {
+                expect(reason).toBe("<TAG ERROR>")
+            }
+        })
     })
 })
