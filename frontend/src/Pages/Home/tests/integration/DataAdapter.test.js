@@ -510,5 +510,80 @@ describe("Testing DataAdapter", () => {
                 expect(cursorContinueMock).toHaveBeenCalledTimes(1)
             }
         })
+        it("Testing loadAll() (with success)", async () => {
+            // preparing mocks:
+            const cursorContinueMock = jest.fn()
+            const openCursorSuccessEvents = [
+                {
+                    target: { 
+                        result: { 
+                            value: { 
+                                field1: "one1",
+                                field2: "two"
+                            },
+                            continue : cursorContinueMock
+                        }
+                    },
+                },
+                {
+                    target: { 
+                        result: { 
+                            value: { 
+                                field1: "one2",
+                                field2: "tw"
+                            },
+                            continue : cursorContinueMock
+                        }
+                    },
+                },
+                {
+                    target: { 
+                        result: null
+                    },
+                }
+            ]
+            const openCursorMock = jest.fn(() => ({onsuccess : null, onerror : null}))
+            const getObjectStoreMock = jest.fn(() => ({keyPath : "field1", openCursor : openCursorMock}))
+            // calling tested methods:
+            const adapter = await createAndOpenAdapter("Testing loadAll() (with success)")
+            adapter.getObjectStore = getObjectStoreMock
+            const loadAllPromise = adapter.loadAll()
+
+            // check if internal methods were called correctly:
+            expect(getObjectStoreMock).toHaveBeenCalledTimes(1)
+            expect(openCursorMock).toHaveBeenCalledTimes(1)
+            // imitate cursor behaviour:
+            for (let event of openCursorSuccessEvents) {
+                openCursorMock.mock.results[0].value.onsuccess(event)
+            }
+            // check if resolved value is correct
+            expect(cursorContinueMock).toHaveBeenCalledTimes(2)
+            expect(loadAllPromise).resolves.toEqual([openCursorSuccessEvents[0].target.result.value, openCursorSuccessEvents[1].target.result.value]);
+        })
+        it("Testing loadAll() (with success and error)", async () => {
+            // preparing mocks:
+            const cursorContinueMock = jest.fn()
+            const openCursorSuccessEvent = { target: {  result: {  value: {  field1: "one1", field2: "two" }, continue : cursorContinueMock } },}
+            const openCursorMock = jest.fn(() => ({onsuccess : null, onerror : null}))
+            const getObjectStoreMock = jest.fn(() => ({keyPath : "field1", openCursor : openCursorMock}))
+            // calling tested methods:
+            const adapter = await createAndOpenAdapter("Testing loadAll() (with success)")
+            adapter.getObjectStore = getObjectStoreMock
+            const loadAllPromise = adapter.loadAll()
+
+            // check if internal methods were called correctly:
+            expect(getObjectStoreMock).toHaveBeenCalledTimes(1)
+            expect(openCursorMock).toHaveBeenCalledTimes(1)
+            // imitate cursor behaviour:
+            openCursorMock.mock.results[0].value.onsuccess(openCursorSuccessEvent)
+            try {
+                openCursorMock.mock.results[0].value.onerror({target : "<TAG ERROR>"})
+                await loadAllPromise
+            } catch(reason) {
+                // check if resolved value is correct
+                expect(cursorContinueMock).toHaveBeenCalledTimes(1)
+                expect(reason).toBe("<TAG ERROR>")
+            }
+        })
     })
 })
