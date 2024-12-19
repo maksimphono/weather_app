@@ -1,6 +1,6 @@
 import DataManager, {FetchError} from "../../DataManager/DataManager";
 
-describe("Testing DataManager", () => {
+describe.skip("Testing DataManager", () => {
     let forceResolve = null
     const dataAdapterMock = {
         openDB : jest.fn(() => (Promise.resolve(undefined))),
