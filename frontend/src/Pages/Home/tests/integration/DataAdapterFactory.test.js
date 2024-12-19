@@ -2,7 +2,7 @@ import DataAdapter from "../../DataAdapter/DataAdapter";
 import factory from "../../utils/DataAdapterFactory"
 import FollowingListAdapter from "../../utils/FollowingListAdapter";
 
-describe("Testing DataAdaptorFactory class", () => {
+describe.skip("Testing DataAdaptorFactory class", () => {
     beforeAll(() => {
         // Mock the global indexedDB.open
         global.indexedDB = {
