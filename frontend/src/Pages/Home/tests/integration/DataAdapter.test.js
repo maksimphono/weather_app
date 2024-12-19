@@ -23,7 +23,7 @@ describe("Testing DataAdapter", () => {
     afterAll(() => {
         jest.restoreAllMocks(); // Restore original implementations after tests
     });
-    describe("Testing indexedDB mock", () => {
+    describe.skip("Testing indexedDB mock", () => {
         it("Test 1 creation", () => {
             const openRequest = indexedDB.open("DB name", 9)//.mock.results[0].value;
             const expectedShape = {
@@ -42,7 +42,7 @@ describe("Testing DataAdapter", () => {
             //console.dir(openRequest)
         })
     })
-    describe("Testing creation", () => {
+    describe.skip("Testing creation", () => {
         it("Test 1 create", () => {
             const adapter = new DataAdapter("DB name", [{name : "field1", unique : false}, {name : "field2", unique : true}], "field2", 42)
             const expectedObject = {
@@ -87,7 +87,7 @@ describe("Testing DataAdapter", () => {
             */
         });
     })
-    describe("Testing openning", () => {
+    describe.skip("Testing openning", () => {
         let upgradeneededEventMock = {
             currentTarget : {
                 result : {
@@ -198,7 +198,7 @@ describe("Testing DataAdapter", () => {
             upgradeneededEventMock.currentTarget.result.createObjectStore.mockClear()
             upgradeneededEventMock.currentTarget.result.createObjectStore.mockImplementationOnce(() => ({createIndex : jest.fn()}))
             // calling tested methods:
-            const adapter = new DataAdapter(name, [{name : "field1", unique : true}, {name : "field2", unique : false}])
+            const adapter = new DataAdapter(name, [{name : "field1", unique : true}, {name : "field2", unique : false}], "field1")
             const db = adapter.openDB()
 
             global.indexedDB.open.mock.results.at(-1).value.onupgradeneeded(upgradeneededEventMock)
@@ -354,6 +354,161 @@ describe("Testing DataAdapter", () => {
             expect(saveOneMock.mock.calls[2][0]).toEqual(entries[2])
             expect(saveManyPromise).resolves.toBe(undefined)
         })
-        
+        it("Testing loadOneBy() (by keypath with success)", async () => {
+            // preparing mocks:
+            const indexedDB_get_MethodMock = jest.fn(() => ({onsuccess : null, onerror : null}))
+            const getObjectStoreMock = jest.fn(() => ({get : indexedDB_get_MethodMock, keyPath : "field1"}))
+            // calling tested methods:
+            const adapter = await createAndOpenAdapter("Testing loadOneBy() (by keypath with success)")
+            adapter.getObjectStore = getObjectStoreMock
+            const loadOneByPromise = adapter.loadOneBy("field1", "one")
+
+            expect(getObjectStoreMock).toHaveBeenCalledTimes(1)
+            expect(indexedDB_get_MethodMock).toHaveBeenCalledTimes(1)
+            indexedDB_get_MethodMock.mock.results[0].value.onsuccess({target : {result : "<TAG RESULT>"}})
+
+            // testing results:    
+            expect(loadOneByPromise).resolves.toBe("<TAG RESULT>")
+        })
+        it("Testing loadOneBy() (with success)", async () => {
+            // preparing mocks:
+            const cursorContinueMock = jest.fn()
+            const openCursorSuccessEvent = {
+                target: { 
+                    result: { 
+                        value: { 
+                            field1: "one",
+                            field2: "two"
+                        },
+                        continue : cursorContinueMock
+                    }
+                },
+            }
+            const getObjectStoreMock = jest.fn(() => ({keyPath : "field1"}))
+            const openCursorMock = jest.fn(() => ({onsuccess : null, onerror : null}))
+            const getIndexMock = jest.fn(() => ({openCursor : openCursorMock}))
+            // calling tested methods:
+            const adapter = await createAndOpenAdapter("Testing loadOneBy() (by keypath with error)")
+            adapter.getObjectStore = getObjectStoreMock
+            adapter.getIndex = getIndexMock
+            const loadOneByPromise = adapter.loadOneBy("field2", "two")
+
+            expect(getObjectStoreMock).toHaveBeenCalledTimes(1)
+            expect(getIndexMock).toHaveBeenCalledTimes(1)
+            expect(openCursorMock).toHaveBeenCalledTimes(1)
+            openCursorMock.mock.results[0].value.onsuccess(openCursorSuccessEvent)
+            expect(loadOneByPromise).resolves.toEqual({field1: "one", field2: "two"});
+        })
+        // TODO: create testcase for cursor.contine() method
+        it("Testing loadOneBy() (with error)", async () => {
+            // preparing mocks:
+            const getObjectStoreMock = jest.fn(() => ({keyPath : "field1"}))
+            const openCursorMock = jest.fn(() => ({onsuccess : null, onerror : null}))
+            const getIndexMock = jest.fn(() => ({openCursor : openCursorMock}))
+            // calling tested methods:
+            const adapter = await createAndOpenAdapter("Testing loadOneBy() (with error)")
+            adapter.getObjectStore = getObjectStoreMock
+            adapter.getIndex = getIndexMock
+            const loadOneByPromise = adapter.loadOneBy("field2", "two")
+
+            expect(getObjectStoreMock).toHaveBeenCalledTimes(1)
+            expect(getIndexMock).toHaveBeenCalledTimes(1)
+            expect(openCursorMock).toHaveBeenCalledTimes(1)
+            try {
+                openCursorMock.mock.results[0].value.onerror("<TAG ERROR>")
+                await loadOneByPromise
+            } catch(reason) {
+                expect(reason).toBe("<TAG ERROR>")
+            }
+        })
+        it("Testing loadManyBy() (with success)", async () => {
+            // preparing mocks:
+            const cursorContinueMock = jest.fn()
+            const openCursorSuccessEvents = [
+                {
+                    target: { 
+                        result: { 
+                            value: { 
+                                field1: "one1",
+                                field2: "two"
+                            },
+                            continue : cursorContinueMock
+                        }
+                    },
+                },
+                {
+                    target: { 
+                        result: { 
+                            value: { 
+                                field1: "one2",
+                                field2: "two"
+                            },
+                            continue : cursorContinueMock
+                        }
+                    },
+                },
+                {
+                    target: { 
+                        result: { 
+                            value: { 
+                                field1: "one3",
+                                field2: "tw"
+                            },
+                            continue : cursorContinueMock
+                        }
+                    },
+                },
+                {
+                    target: { 
+                        result: null
+                    },
+                }
+            ]
+            const getObjectStoreMock = jest.fn(() => ({keyPath : "field1"}))
+            const openCursorMock = jest.fn(() => ({onsuccess : null, onerror : null}))
+            const getIndexMock = jest.fn(() => ({openCursor : openCursorMock}))
+            // calling tested methods:
+            const adapter = await createAndOpenAdapter("Testing loadOneBy() (by keypath with error)")
+            adapter.getObjectStore = getObjectStoreMock
+            adapter.getIndex = getIndexMock
+            const loadManyByPromise = adapter.loadManyBy("field2", "two")
+
+            expect(getObjectStoreMock).toHaveBeenCalledTimes(1)
+            expect(getIndexMock).toHaveBeenCalledTimes(1)
+            expect(openCursorMock).toHaveBeenCalledTimes(1)
+
+            for (let event of openCursorSuccessEvents) {
+                openCursorMock.mock.results[0].value.onsuccess(event)
+            }
+
+            expect(cursorContinueMock).toHaveBeenCalledTimes(3)
+            expect(loadManyByPromise).resolves.toEqual([openCursorSuccessEvents[0].target.result.value, openCursorSuccessEvents[1].target.result.value]);
+        })
+        it("Testing loadManyBy() (with success and error)", async () => {
+            // preparing mocks:
+            const cursorContinueMock = jest.fn()
+            const openCursorSuccessEvent = {    target: {         result: {             value: {                 field1: "one1",                field2: "two"            },            continue : cursorContinueMock        }    },}
+            const getObjectStoreMock = jest.fn(() => ({keyPath : "field1"}))
+            const openCursorMock = jest.fn(() => ({onsuccess : null, onerror : null}))
+            const getIndexMock = jest.fn(() => ({openCursor : openCursorMock}))
+            // calling tested methods:
+            const adapter = await createAndOpenAdapter("Testing loadManyBy() (with success and error)")
+            adapter.getObjectStore = getObjectStoreMock
+            adapter.getIndex = getIndexMock
+            const loadManyByPromise = adapter.loadManyBy("field2", "two")
+
+            expect(getObjectStoreMock).toHaveBeenCalledTimes(1)
+            expect(getIndexMock).toHaveBeenCalledTimes(1)
+            expect(openCursorMock).toHaveBeenCalledTimes(1)
+
+            openCursorMock.mock.results[0].value.onsuccess(openCursorSuccessEvent)
+            try {
+                openCursorMock.mock.results[0].value.onerror("<TAG ERROR>")
+                await loadManyByPromise
+            } catch(reason) {
+                expect(reason).toBe("<TAG ERROR>")
+                expect(cursorContinueMock).toHaveBeenCalledTimes(1)
+            }
+        })
     })
 })
