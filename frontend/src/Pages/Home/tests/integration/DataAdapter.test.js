@@ -194,18 +194,25 @@ describe("Testing DataAdapter", () => {
                 }
             }
         }
-        it("Testing getObjectStore (readonly)", async () => {
-            // preparing mocks
-            const createIndexMock = jest.fn().mockImplementationOnce(() => "indexObject")
-            objectStoreMock.mockClear()
+        const createAndOpenAdapter = async (name) => {
             upgradeneededEventMock.currentTarget.result.createObjectStore.mockClear()
-            upgradeneededEventMock.currentTarget.result.createObjectStore.mockImplementationOnce(() => ({createIndex : createIndexMock}))
+            upgradeneededEventMock.currentTarget.result.createObjectStore.mockImplementationOnce(() => ({createIndex : jest.fn()}))
             // calling tested methods:
-            const adapter = new DataAdapter("Testing getObjectStore (readonly)", [{name : "field1", unique : true}, {name : "field2", unique : false}])
+            const adapter = new DataAdapter(name, [{name : "field1", unique : true}, {name : "field2", unique : false}])
             const db = adapter.openDB()
 
             global.indexedDB.open.mock.results.at(-1).value.onupgradeneeded(upgradeneededEventMock)
             await global.indexedDB.open.mock.results.at(-1).value.onsuccess()
+            global.indexedDB.open.mock.results.at(-1).value.result.transaction.mockClear() // clear the transcation
+
+            return adapter
+        }
+        it("Testing getObjectStore (readonly)", async () => {
+            // preparing mocks
+            const createIndexMock = jest.fn().mockImplementationOnce(() => "indexObject")
+            objectStoreMock.mockClear()
+            
+            const adapter = await createAndOpenAdapter("Testing getObjectStore (readonly)")
 
             const store = adapter.getObjectStore("readonly")
             // testing results:
@@ -218,19 +225,11 @@ describe("Testing DataAdapter", () => {
             expect(objectStoreMock.mock.results.at(-1).value).toBe(store)
         })
         it("Testing getObjectStore (readwrite)", async () => {
-            // preparing mocks
-            const createIndexMock = jest.fn().mockImplementationOnce(() => "indexObject")
+            // preparing mocks:
             objectStoreMock.mockClear()
-            upgradeneededEventMock.currentTarget.result.createObjectStore.mockClear()
-            upgradeneededEventMock.currentTarget.result.createObjectStore.mockImplementationOnce(() => ({createIndex : createIndexMock}))
             // calling tested methods:
-            const adapter = new DataAdapter("Testing getObjectStore (readwrite)", [{name : "field1", unique : true}, {name : "field2", unique : false}])
-            const db = adapter.openDB()
+            const adapter = await createAndOpenAdapter("Testing getObjectStore (readwrite)")
 
-            global.indexedDB.open.mock.results.at(-1).value.onupgradeneeded(upgradeneededEventMock)
-            await global.indexedDB.open.mock.results.at(-1).value.onsuccess()
-            global.indexedDB.open.mock.results.at(-1).value.result.transaction.mockClear()
-            
             const store = adapter.getObjectStore("readwrite")
             // testing results:
             expect(adapter.db.transaction).toBeDefined()
@@ -242,65 +241,41 @@ describe("Testing DataAdapter", () => {
             // preparing mocks:
             objectStoreMock.mockClear()
             objectStoreMock.mockImplementation(() => ({index : jest.fn()}))
-            upgradeneededEventMock.currentTarget.result.createObjectStore.mockClear()
-            upgradeneededEventMock.currentTarget.result.createObjectStore.mockImplementationOnce(() => ({createIndex : jest.fn()}))
             // calling tested methods:
-            const adapter = new DataAdapter("Testing getObjectStore (readwrite)", [{name : "field1", unique : true}, {name : "field2", unique : false}])
-            const db = adapter.openDB()
-
-            global.indexedDB.open.mock.results.at(-1).value.onupgradeneeded(upgradeneededEventMock)
-            await global.indexedDB.open.mock.results.at(-1).value.onsuccess()
-            global.indexedDB.open.mock.results.at(-1).value.result.transaction.mockClear()
-        
+            const adapter = await createAndOpenAdapter("Testing getIndex()")
             const store = adapter.getObjectStore("readwrite")
             const index = adapter.getIndex(store, "field1")
             // testing results:
-            const indexMock = objectStoreMock.mock.results.at(-1).value.index
+            const indexMock = objectStoreMock.mock.results.at(-1).value.index // just so I don't have to write this sequence every time
             expect(indexMock).toHaveBeenCalledTimes(1)
             expect(indexMock.mock.calls.at(-1)[0]).toBe("field1")
         })
         it("Testing getIndex() (with error)", async () => {
             // preparing mocks:
-            const indexMock = jest.fn()
-            indexMock.mockImplementationOnce(() => {throw "<TAG ERROR>"})
             objectStoreMock.mockClear()
-            objectStoreMock.mockImplementation(() => ({index : indexMock}))
-            upgradeneededEventMock.currentTarget.result.createObjectStore.mockClear()
-            upgradeneededEventMock.currentTarget.result.createObjectStore.mockImplementationOnce(() => ({createIndex : jest.fn()}))
+            objectStoreMock.mockImplementation(() => ({index : jest.fn(() => {throw "<TAG ERROR>"})}))
             // calling tested methods:
-            const adapter = new DataAdapter("Testing getIndex() (with error)", [{name : "field1", unique : true}, {name : "field2", unique : false}])
-            const db = adapter.openDB()
 
-            global.indexedDB.open.mock.results.at(-1).value.onupgradeneeded(upgradeneededEventMock)
-            await global.indexedDB.open.mock.results.at(-1).value.onsuccess()
-            global.indexedDB.open.mock.results.at(-1).value.result.transaction.mockClear()
-        
+            const adapter = await createAndOpenAdapter("Testing getIndex() (with error)")
             const store = adapter.getObjectStore("readwrite")
-            // testing results:
             try {
                 adapter.getIndex(store, "field1")
             } catch (error) {
+                // testing results:
                 expect(error).toEqual(new Error("Index field1 does not exist in store Testing getIndex() (with error)"))
             }
         })
         it("Testing clearData()", async () => {
             // preparing mocks:
-            indexedDBClearMethodMock = jest.fn().mockImplementation(() => ({onsuccess : null, onerror : null}))
-            objectStoreMock.mockClear()
-            objectStoreMock.mockImplementation(() => ({clear : jest.fn()}))
-            upgradeneededEventMock.currentTarget.result.createObjectStore.mockClear()
-            upgradeneededEventMock.currentTarget.result.createObjectStore.mockImplementationOnce(() => ({createIndex : jest.fn()}))
-            // calling tested methods:
-            const adapter = new DataAdapter("Testing clearData()", [{name : "field1", unique : true}, {name : "field2", unique : false}])
-            const db = adapter.openDB()
+            const indexedDBClearMethodMock = jest.fn(() => ({onsuccess : null, onerror : null}))
+            const getObjectStoreMock = jest.fn(() => ({clear : indexedDBClearMethodMock}))
+            // calling tetsed methods:
+            const adapter = await createAndOpenAdapter("Testing clearData()")
 
-            global.indexedDB.open.mock.results.at(-1).value.onupgradeneeded(upgradeneededEventMock)
-            await global.indexedDB.open.mock.results.at(-1).value.onsuccess()
-
-            adapter.getObjectStore = jest.fn(() => ({clear : indexedDBClearMethodMock}))
+            adapter.getObjectStore = getObjectStoreMock
             const clearDataPromise = adapter.clearData()
             // testing results:
-            expect(adapter.getObjectStore).toHaveBeenCalledTimes(1)
+            expect(getObjectStoreMock).toHaveBeenCalledTimes(1)
             expect(indexedDBClearMethodMock).toHaveBeenCalledTimes(1)
             indexedDBClearMethodMock.mock.results.at(-1).value.onsuccess()
             expect(clearDataPromise).resolves.toBe(undefined) // promise, that was returned from the "clearData" method must be resolved (because "onsuccess" was called)
@@ -308,22 +283,14 @@ describe("Testing DataAdapter", () => {
         it("Testing clearData() (with error)", async () => {
             // preparing mocks:
             const errorTag = new Error("<TAG ERROR>")
-            indexedDBClearMethodMock = jest.fn().mockImplementation(() => ({onsuccess : null, onerror : null}))
-            objectStoreMock.mockClear()
-            objectStoreMock.mockImplementation(() => ({clear : jest.fn()}))
-            upgradeneededEventMock.currentTarget.result.createObjectStore.mockClear()
-            upgradeneededEventMock.currentTarget.result.createObjectStore.mockImplementationOnce(() => ({createIndex : jest.fn()}))
+            const indexedDBClearMethodMock = jest.fn(() => ({onsuccess : null, onerror : null}))
+            const getObjectStoreMock = jest.fn(() => ({clear : indexedDBClearMethodMock}))
             // calling tested methods:
-            const adapter = new DataAdapter("Testing clearData() (with error)", [{name : "field1", unique : true}, {name : "field2", unique : false}])
-            const db = adapter.openDB()
-
-            global.indexedDB.open.mock.results.at(-1).value.onupgradeneeded(upgradeneededEventMock)
-            await global.indexedDB.open.mock.results.at(-1).value.onsuccess()
-
-            adapter.getObjectStore = jest.fn(() => ({clear : indexedDBClearMethodMock}))
+            const adapter = await createAndOpenAdapter("Testing clearData() (with error)")
+            adapter.getObjectStore = getObjectStoreMock
             const clearDataPromise = adapter.clearData()
             // testing results:
-            expect(adapter.getObjectStore).toHaveBeenCalledTimes(1)
+            expect(getObjectStoreMock).toHaveBeenCalledTimes(1)
             expect(indexedDBClearMethodMock).toHaveBeenCalledTimes(1)
             try {
                 indexedDBClearMethodMock.mock.results.at(-1).value.onerror(errorTag)
