@@ -339,5 +339,21 @@ describe("Testing DataAdapter", () => {
                 expect(reason).toBe(errorTag.target.error)
             }
         })
+        it("Testing saveMany()", async () => {
+            // preparing mocks:
+            const entries = [{field1 : "one1", field2 : "two1"}, {field1 : "one2", field2 : "two2"},{field1 : "one3", field2 : "two3"}]
+            const saveOneMock = jest.fn().mockResolvedValue()
+            // calling tested methods:
+            const adapter = await createAndOpenAdapter("Testing saveMany()")
+            adapter.saveOne = saveOneMock
+            const saveManyPromise = adapter.saveMany(entries)
+            // testing results:
+            expect(saveOneMock).toHaveBeenCalledTimes(3)
+            expect(saveOneMock.mock.calls[0][0]).toEqual(entries[0])
+            expect(saveOneMock.mock.calls[1][0]).toEqual(entries[1])
+            expect(saveOneMock.mock.calls[2][0]).toEqual(entries[2])
+            expect(saveManyPromise).resolves.toBe(undefined)
+        })
+        
     })
 })
