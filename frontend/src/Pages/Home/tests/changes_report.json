@@ -4,8 +4,17 @@
             "testFilePath" : "approximateCoordinates.test.js",
             "testsFalied" : ["Test 7", "Test 8", "Test 9"],
             "description" : "Function must throw exception when lat or lon out of range (-90 < lat < 90, -180 < lon < 180)",
+            "fix_description" : "",
             "alteredFiles" : ["src/Pages/Home/utils/approximateCoordinates.js"],
             "status" : "IN PROCESS"
+        },
+        {
+            "testFilePath": "D:\\Maksim\\学习\\2024秋\\软件工程\\工程1\\Project\\frontend\\src\\Pages\\Home\\tests\\integration\\DataAdapter.test.js",
+            "testsFalied": ["Testing removeManyBy() (with success and error when deleting)"],
+            "description": "In method removeManyBy I must handle case when the promise in cursor.onsuccess() is rejected while deleting something from indexedDB",
+            "fix_description" : "Added try/catch block to handle when promise gets rejected due to error",
+            "alteredFiles": ["DataAdapter.js"],
+            "status": "IN PROCESS"
         }
     ]
 }

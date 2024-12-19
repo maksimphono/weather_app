@@ -726,5 +726,116 @@ describe("Testing DataAdapter", () => {
                 expect(reason).toBe("<TAG ERROR>")
             }
         })
+        it("Testing removeManyBy() (with success and success when deleting)", async () => {
+            // preparing mocks:
+            const cursorContinueMock = jest.fn()
+            const openCursorSuccessEvents = [
+                { 
+                    target: {  
+                        result: {  
+                            value: {  
+                                field1: "one1", 
+                                field2: "two" 
+                            }, 
+                            continue : cursorContinueMock,
+                            key : "one1"
+                        } 
+                    },
+                },
+                { 
+                    target: {  
+                        result: {  
+                            value: {  
+                                field1: "one2", 
+                                field2: "two" 
+                            }, 
+                            continue : cursorContinueMock,
+                            key : "one2"
+                        } 
+                    },
+                },
+                { 
+                    target: {  
+                        result: null
+                    },
+                },
+            ]
+            const deleteMoethodMock = jest.fn(() => ({onsuccess : null, onerror : null}))
+            const openCursorMock = jest.fn(() => ({onsuccess : null, onerror : null}))
+            const getObjectStoreMock = jest.fn(() => ({keyPath : "field1", openCursor : openCursorMock, delete : deleteMoethodMock}))// calling tested methods:
+            // calling tested methods:
+            const adapter = await createAndOpenAdapter("Testing loadOneBy() (by keypath with error)")
+            adapter.getObjectStore = getObjectStoreMock
+            const removeManyBy_promise = adapter.removeManyBy("field2", "two")
+
+            expect(getObjectStoreMock).toHaveBeenCalledTimes(1)
+            expect(openCursorMock).toHaveBeenCalledTimes(1)
+            for (let event of openCursorSuccessEvents) {
+                openCursorMock.mock.results[0].value.onsuccess(event)
+            }
+            expect(cursorContinueMock).toHaveBeenCalledTimes(2)
+            expect(deleteMoethodMock).toHaveBeenCalledTimes(2)
+            deleteMoethodMock.mock.results[0].value.onsuccess()
+            deleteMoethodMock.mock.results[1].value.onsuccess()
+            expect(removeManyBy_promise).resolves.toEqual(["one1", "one2"])
+        })
+        it("Testing removeManyBy() (with success and error when deleting)", async () => {
+            // preparing mocks:
+            const cursorContinueMock = jest.fn()
+            const openCursorSuccessEvents = [
+                { 
+                    target: {  
+                        result: {  
+                            value: {  
+                                field1: "one1", 
+                                field2: "two" 
+                            }, 
+                            continue : cursorContinueMock,
+                            key : "one1"
+                        } 
+                    },
+                },
+                { 
+                    target: {  
+                        result: {  
+                            value: {  
+                                field1: "one2", 
+                                field2: "two" 
+                            }, 
+                            continue : cursorContinueMock,
+                            key : "one2"
+                        } 
+                    },
+                },
+                { 
+                    target: {  
+                        result: null
+                    },
+                },
+            ]
+            const deleteMoethodMock = jest.fn(() => ({onsuccess : null, onerror : null}))
+            const openCursorMock = jest.fn(() => ({onsuccess : null, onerror : null}))
+            const getObjectStoreMock = jest.fn(() => ({keyPath : "field1", openCursor : openCursorMock, delete : deleteMoethodMock}))// calling tested methods:
+            // calling tested methods:
+            const adapter = await createAndOpenAdapter("Testing loadOneBy() (by keypath with error)")
+            adapter.getObjectStore = getObjectStoreMock
+            const removeManyBy_promise = adapter.removeManyBy("field2", "two")
+
+            expect(getObjectStoreMock).toHaveBeenCalledTimes(1)
+            expect(openCursorMock).toHaveBeenCalledTimes(1)
+            for (let event of openCursorSuccessEvents) {
+                openCursorMock.mock.results[0].value.onsuccess(event)
+            }
+            expect(cursorContinueMock).toHaveBeenCalledTimes(2)
+            expect(deleteMoethodMock).toHaveBeenCalledTimes(2)
+            deleteMoethodMock.mock.results[0].value.onsuccess()
+            try {
+                deleteMoethodMock.mock.results[1].value.onerror("<TAG ERROR>")
+                await removeManyBy_promise
+            } catch(reason) {
+                expect(reason).toBe("<TAG ERROR>")
+            }
+            //expect(removeManyBy_promise).resolves.toEqual(["one1", "one2"])
+        })
     })
 })

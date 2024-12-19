@@ -268,11 +268,16 @@ export default class DataAdapter{
                 } else {
                     // Entries all collected.
                     keysToDelete.forEach(async (key) => {
-                        await new Promise((res, rej) => {
-                            const req = objectStore.delete(key)
-                            req.onsuccess = () => res(key)
-                            req.onerror = (event) => rej(event)
-                        })
+                        try {
+                            await new Promise((res, rej) => {
+                                const req = objectStore.delete(key)
+                                req.onsuccess = () => res(key)
+                                req.onerror = (event) => rej(event)
+                            })
+                        } catch (reason) {
+                            reject(reason)
+                        }
+                        
                     })
                     resolve(keysToDelete)
                 }
