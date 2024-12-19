@@ -300,5 +300,44 @@ describe("Testing DataAdapter", () => {
                 expect(reason).toBe(errorTag)
             }
         })
+        it("Testing saveOne()", async () => {
+            // preparing mocks:
+            const entry = {field1 : "one", field2 : "two"}
+            const indexedDB_put_MethodMock = jest.fn(() => ({onsuccess : null, onerror : null}))
+            const getObjectStoreMock = jest.fn(() => ({put : indexedDB_put_MethodMock}))
+            // calling tested methods:
+            const adapter = await createAndOpenAdapter("Testing saveOne()")
+            adapter.getObjectStore = getObjectStoreMock
+            const saveOnePromise = adapter.saveOne(entry)
+            // testing results:
+            expect(getObjectStoreMock).toHaveBeenCalledTimes(1)
+            expect(indexedDB_put_MethodMock).toHaveBeenCalledTimes(1)
+            expect(getObjectStoreMock.mock.calls[0][0]).toBe("readwrite")
+            expect(indexedDB_put_MethodMock.mock.calls[0][0]).toEqual(entry)
+            indexedDB_put_MethodMock.mock.results.at(-1).value.onsuccess()
+            expect(saveOnePromise).resolves.toBeDefined()
+        })
+        it("Testing saveOne() (with error)", async () => {
+            // preparing mocks:
+            const errorTag = {target : {error : "<TAG ERROR>"}}
+            const entry = {field1 : "one", field3 : "two"}
+            const indexedDB_put_MethodMock = jest.fn(() => ({onsuccess : null, onerror : null}))
+            const getObjectStoreMock = jest.fn(() => ({put : indexedDB_put_MethodMock}))
+            // calling tested methods:
+            const adapter = await createAndOpenAdapter("Testing saveOne() (with error)")
+            adapter.getObjectStore = getObjectStoreMock
+            const saveOnePromise = adapter.saveOne(entry)
+            // testing results:
+            expect(getObjectStoreMock).toHaveBeenCalledTimes(1)
+            expect(indexedDB_put_MethodMock).toHaveBeenCalledTimes(1)
+            expect(getObjectStoreMock.mock.calls[0][0]).toBe("readwrite")
+            expect(indexedDB_put_MethodMock.mock.calls[0][0]).toEqual(entry)
+            try {
+                indexedDB_put_MethodMock.mock.results.at(-1).value.onerror(errorTag)
+                await saveOnePromise
+            } catch(reason) {
+                expect(reason).toBe(errorTag.target.error)
+            }
+        })
     })
 })
