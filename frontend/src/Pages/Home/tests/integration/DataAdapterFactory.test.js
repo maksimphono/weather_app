@@ -2,8 +2,24 @@ import DataAdapter from "../../DataAdapter/DataAdapter";
 import factory from "../../utils/DataAdapterFactory"
 import FollowingListAdapter from "../../utils/FollowingListAdapter";
 
-describe.skip("Testing DataAdaptorFactory class", () => {
-    describe("Methods", () => {
+describe("Testing DataAdaptorFactory class", () => {
+    beforeAll(() => {
+        // Mock the global indexedDB.open
+        global.indexedDB = {
+            open : jest.fn(() => ({
+                onupgradeneeded: null,
+                onsuccess: null,
+                onerror: null,
+                result: {
+                  transaction: jest.fn(() => ({
+                    objectStore: jest.fn(),
+                  })),
+                },
+            })),
+            deleteDatabase : jest.fn(() => console.log("Database deleted"))
+        }
+    });
+    describe("Teating methods", () => {
         it("Test 1 createCountryCodeAdapter", () => {
             const expected = new DataAdapter("Country codes", [{name : "code"}, {name : "country"}], "code")
             const adapter = factory.createCountryCodeAdapter()
@@ -17,12 +33,27 @@ describe.skip("Testing DataAdaptorFactory class", () => {
 
             expect(adapter).toEqual(expected)
         })
-        it("Test 3 createUserFollowingListAdapter", () => {
-            const name = "User data"
-            const expected = new FollowingListAdapter(name)
-            const adapter = factory.createUserFollowingListAdapter()
-
-            expect(adapter).toEqual(expected)
+        it("Test 3 createUserFollowingListAdapter", async () => {
+            let upgradeneededEventMock = {
+                currentTarget : {
+                    result : {
+                        createObjectStore : jest.fn(() => ({
+                            createIndex : jest.fn()
+                        }))
+                    }
+                }
+            }
+            try {
+                const promise = factory.createUserFollowingListAdapter()
+                global.indexedDB.open.mock.results.at(-1).value.onupgradeneeded(upgradeneededEventMock)
+                await global.indexedDB.open.mock.results.at(-1).value.onsuccess()
+                const adapter = await promise
+                expect(adapter.ready).toBe(true)
+                expect(adapter.fields).toEqual([{name : "coordinates"}, {name : "name"}, {name : "country_code"}])
+                expect(adapter.keyPath).toBe("coordinates")
+            } catch(reason) {
+                expect(reason).toBeNull()
+            }
         })
         it("Test 4 createOneDayWeatherAdapter", () => {
             const name = "One day weather"

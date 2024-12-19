@@ -1,6 +1,6 @@
 import DataAdapter from "../../DataAdapter/DataAdapter";
 
-describe("Testing DataAdapter", () => {
+describe.skip("Testing DataAdapter", () => {
     const onsuccessMock = jest.fn()
     const onerrorMock = jest.fn()
     const objectStoreMock = jest.fn()
@@ -23,8 +23,8 @@ describe("Testing DataAdapter", () => {
     afterAll(() => {
         jest.restoreAllMocks(); // Restore original implementations after tests
     });
-    describe.skip("Testing indexedDB mock", () => {
-        it.skip("Test 1 creation", () => {
+    describe("Testing indexedDB mock", () => {
+        it("Test 1 creation", () => {
             const openRequest = indexedDB.open("DB name", 9)//.mock.results[0].value;
             const expectedShape = {
                 onsuccess : expect.any(Function),
@@ -42,8 +42,8 @@ describe("Testing DataAdapter", () => {
             //console.dir(openRequest)
         })
     })
-    describe.skip("Testing creation", () => {
-        it.skip("Test 1 create", () => {
+    describe("Testing creation", () => {
+        it("Test 1 create", () => {
             const adapter = new DataAdapter("DB name", [{name : "field1", unique : false}, {name : "field2", unique : true}], "field2", 42)
             const expectedObject = {
                 name : "DB name",
@@ -58,7 +58,7 @@ describe("Testing DataAdapter", () => {
             expect(adapter).toBeDefined()
             expect(adapter).toEqual(expectedObject)
         })
-        it.skip('should successfully save data to IndexedDB', async () => {
+        it('should successfully save data to IndexedDB', async () => {
             /*
             const mockStoreAdd = jest.fn((data) => ({
                 onsuccess: null,
@@ -87,7 +87,7 @@ describe("Testing DataAdapter", () => {
             */
         });
     })
-    describe.skip("Testing openning", () => {
+    describe("Testing openning", () => {
         let upgradeneededEventMock = {
             currentTarget : {
                 result : {
@@ -98,7 +98,7 @@ describe("Testing DataAdapter", () => {
         beforeAll(() => {
             global.indexedDB.open.mockClear()
         })
-        it.skip("Regular open only", async () => {
+        it("Regular open only", async () => {
             const adapter = new DataAdapter("DB name in openDB", [{name : "field1", unique : true}, {name : "field2", unique : false}], "field1", 1)
             adapter.openDB()
 
@@ -109,7 +109,7 @@ describe("Testing DataAdapter", () => {
             expect(adapter.db.transaction).toBeDefined()
             expect(adapter.db.transaction).not.toBe(null)
         })
-        it.skip("Regular open and upgradeneeded (with keypath)", async () => {
+        it("Regular open and upgradeneeded (with keypath)", async () => {
             // prepare mocks:
             const createIndexMock = jest.fn().mockImplementationOnce(() => "indexObject")
             upgradeneededEventMock.currentTarget.result.createObjectStore.mockClear()
@@ -131,7 +131,7 @@ describe("Testing DataAdapter", () => {
             expect(createIndexMock.mock.calls[0]).toEqual(["field1", "field1", {unique: true}])
             expect(createIndexMock.mock.calls[1]).toEqual(["field2", "field2", {unique: false}])
         })
-        it.skip("Regular open and upgradeneeded (without keypath)", async () => {
+        it("Regular open and upgradeneeded (without keypath)", async () => {
             // prepare mocks:
             const createIndexMock = jest.fn().mockImplementationOnce(() => "indexObject")
             upgradeneededEventMock.currentTarget.result.createObjectStore.mockClear()
@@ -154,7 +154,7 @@ describe("Testing DataAdapter", () => {
             expect(createIndexMock.mock.calls[0]).toEqual(["field1", "field1", {unique: true}])
             expect(createIndexMock.mock.calls[1]).toEqual(["field2", "field2", {unique: false}])
         })
-        it.skip("Regular open and onupgradeneeded (with error)", async () => {
+        it("Regular open and onupgradeneeded (with error)", async () => {
             // prepare mocks:
             const errorMock = {target : { error : "Error when opening the indexedDB"}}
             const createIndexMock = jest.fn().mockImplementationOnce(() => "indexObject")
@@ -207,7 +207,7 @@ describe("Testing DataAdapter", () => {
 
             return adapter
         }
-        it.skip("Testing getObjectStore (readonly)", async () => {
+        it("Testing getObjectStore (readonly)", async () => {
             // preparing mocks
             const createIndexMock = jest.fn().mockImplementationOnce(() => "indexObject")
             objectStoreMock.mockClear()
@@ -224,7 +224,7 @@ describe("Testing DataAdapter", () => {
             expect(objectStoreMock.mock.calls.at(-1)[0]).toBe("Testing getObjectStore (readonly)") // was called with a single argument : name
             expect(objectStoreMock.mock.results.at(-1).value).toBe(store)
         })
-        it.skip("Testing getObjectStore (readwrite)", async () => {
+        it("Testing getObjectStore (readwrite)", async () => {
             // preparing mocks:
             objectStoreMock.mockClear()
             // calling tested methods:
@@ -237,7 +237,7 @@ describe("Testing DataAdapter", () => {
             expect(adapter.db.transaction.mock.calls.at(-1)[0]).toBe("Testing getObjectStore (readwrite)") // first agrumnet was name
             expect(adapter.db.transaction.mock.calls.at(-1)[1]).toBe("readwrite") // second agrumnet was mode
         })
-        it.skip("Testing getIndex()", async () => {
+        it("Testing getIndex()", async () => {
             // preparing mocks:
             objectStoreMock.mockClear()
             objectStoreMock.mockImplementation(() => ({index : jest.fn()}))
@@ -250,7 +250,7 @@ describe("Testing DataAdapter", () => {
             expect(indexMock).toHaveBeenCalledTimes(1)
             expect(indexMock.mock.calls.at(-1)[0]).toBe("field1")
         })
-        it.skip("Testing getIndex() (with error)", async () => {
+        it("Testing getIndex() (with error)", async () => {
             // preparing mocks:
             objectStoreMock.mockClear()
             objectStoreMock.mockImplementation(() => ({index : jest.fn(() => {throw "<TAG ERROR>"})}))
@@ -265,7 +265,7 @@ describe("Testing DataAdapter", () => {
                 expect(error).toEqual(new Error("Index field1 does not exist in store Testing getIndex() (with error)"))
             }
         })
-        it.skip("Testing clearData()", async () => {
+        it("Testing clearData()", async () => {
             // preparing mocks:
             const indexedDBClearMethodMock = jest.fn(() => ({onsuccess : null, onerror : null}))
             const getObjectStoreMock = jest.fn(() => ({clear : indexedDBClearMethodMock}))
@@ -280,7 +280,7 @@ describe("Testing DataAdapter", () => {
             indexedDBClearMethodMock.mock.results.at(-1).value.onsuccess()
             expect(clearDataPromise).resolves.toBe(undefined) // promise, that was returned from the "clearData" method must be resolved (because "onsuccess" was called)
         })
-        it.skip("Testing clearData() (with error)", async () => {
+        it("Testing clearData() (with error)", async () => {
             // preparing mocks:
             const errorTag = new Error("<TAG ERROR>")
             const indexedDBClearMethodMock = jest.fn(() => ({onsuccess : null, onerror : null}))
@@ -300,7 +300,7 @@ describe("Testing DataAdapter", () => {
                 expect(reason).toBe(errorTag)
             }
         })
-        it.skip("Testing saveOne()", async () => {
+        it("Testing saveOne()", async () => {
             // preparing mocks:
             const entry = {field1 : "one", field2 : "two"}
             const indexedDB_put_MethodMock = jest.fn(() => ({onsuccess : null, onerror : null}))
@@ -317,7 +317,7 @@ describe("Testing DataAdapter", () => {
             indexedDB_put_MethodMock.mock.results.at(-1).value.onsuccess()
             expect(saveOnePromise).resolves.toBeDefined()
         })
-        it.skip("Testing saveOne() (with error)", async () => {
+        it("Testing saveOne() (with error)", async () => {
             // preparing mocks:
             const errorTag = {target : {error : "<TAG ERROR>"}}
             const entry = {field1 : "one", field3 : "two"}
@@ -339,7 +339,7 @@ describe("Testing DataAdapter", () => {
                 expect(reason).toBe(errorTag.target.error)
             }
         })
-        it.skip("Testing saveMany()", async () => {
+        it("Testing saveMany()", async () => {
             // preparing mocks:
             const entries = [{field1 : "one1", field2 : "two1"}, {field1 : "one2", field2 : "two2"},{field1 : "one3", field2 : "two3"}]
             const saveOneMock = jest.fn().mockResolvedValue()
@@ -354,7 +354,7 @@ describe("Testing DataAdapter", () => {
             expect(saveOneMock.mock.calls[2][0]).toEqual(entries[2])
             expect(saveManyPromise).resolves.toBe(undefined)
         })
-        it.skip("Testing loadOneBy() (by keypath with success)", async () => {
+        it("Testing loadOneBy() (by keypath with success)", async () => {
             // preparing mocks:
             const indexedDB_get_MethodMock = jest.fn(() => ({onsuccess : null, onerror : null}))
             const getObjectStoreMock = jest.fn(() => ({get : indexedDB_get_MethodMock, keyPath : "field1"}))
@@ -370,7 +370,7 @@ describe("Testing DataAdapter", () => {
             // testing results:    
             expect(loadOneByPromise).resolves.toBe("<TAG RESULT>")
         })
-        it.skip("Testing loadOneBy() (with success)", async () => {
+        it("Testing loadOneBy() (with success)", async () => {
             // preparing mocks:
             const cursorContinueMock = jest.fn()
             const openCursorSuccessEvent = {
@@ -400,7 +400,7 @@ describe("Testing DataAdapter", () => {
             expect(loadOneByPromise).resolves.toEqual({field1: "one", field2: "two"});
         })
         // TODO: create testcase for cursor.contine() method
-        it.skip("Testing loadOneBy() (with error)", async () => {
+        it("Testing loadOneBy() (with error)", async () => {
             // preparing mocks:
             const getObjectStoreMock = jest.fn(() => ({keyPath : "field1"}))
             const openCursorMock = jest.fn(() => ({onsuccess : null, onerror : null}))
@@ -421,7 +421,7 @@ describe("Testing DataAdapter", () => {
                 expect(reason).toBe("<TAG ERROR>")
             }
         })
-        it.skip("Testing loadManyBy() (with success)", async () => {
+        it("Testing loadManyBy() (with success)", async () => {
             // preparing mocks:
             const cursorContinueMock = jest.fn()
             const openCursorSuccessEvents = [
@@ -484,7 +484,7 @@ describe("Testing DataAdapter", () => {
             expect(cursorContinueMock).toHaveBeenCalledTimes(3)
             expect(loadManyByPromise).resolves.toEqual([openCursorSuccessEvents[0].target.result.value, openCursorSuccessEvents[1].target.result.value]);
         })
-        it.skip("Testing loadManyBy() (with success and error)", async () => {
+        it("Testing loadManyBy() (with success and error)", async () => {
             // preparing mocks:
             const cursorContinueMock = jest.fn()
             const openCursorSuccessEvent = {    target: {         result: {             value: {                 field1: "one1",                field2: "two"            },            continue : cursorContinueMock        }    },}
@@ -510,7 +510,7 @@ describe("Testing DataAdapter", () => {
                 expect(cursorContinueMock).toHaveBeenCalledTimes(1)
             }
         })
-        it.skip("Testing loadAll() (with success)", async () => {
+        it("Testing loadAll() (with success)", async () => {
             // preparing mocks:
             const cursorContinueMock = jest.fn()
             const openCursorSuccessEvents = [
@@ -560,7 +560,7 @@ describe("Testing DataAdapter", () => {
             expect(cursorContinueMock).toHaveBeenCalledTimes(2)
             expect(loadAllPromise).resolves.toEqual([openCursorSuccessEvents[0].target.result.value, openCursorSuccessEvents[1].target.result.value]);
         })
-        it.skip("Testing loadAll() (with success and error)", async () => {
+        it("Testing loadAll() (with success and error)", async () => {
             // preparing mocks:
             const cursorContinueMock = jest.fn()
             const openCursorSuccessEvent = { target: {  result: {  value: {  field1: "one1", field2: "two" }, continue : cursorContinueMock } },}
@@ -585,7 +585,7 @@ describe("Testing DataAdapter", () => {
                 expect(reason).toBe("<TAG ERROR>")
             }
         })
-        it.skip("Testing removeOneBy() (by keypath with success)", async () => {
+        it("Testing removeOneBy() (by keypath with success)", async () => {
             // preparing mocks:
             const deleteMethodMock = jest.fn(() => ({onsuccess : null, onerror : null}))
             const getObjectStoreMock = jest.fn(() => ({keyPath : "field1", delete : deleteMethodMock}))
@@ -600,7 +600,7 @@ describe("Testing DataAdapter", () => {
             deleteMethodMock.mock.results[0].value.onsuccess({target : {result : "<TAG RESULT>"}})
             expect(removeOneBy_promise).resolves.toBe("<TAG RESULT>");
         })
-        it.skip("Testing removeOneBy() (by keypath with error)", async () => {
+        it("Testing removeOneBy() (by keypath with error)", async () => {
             // preparing mocks:
             const deleteMethodMock = jest.fn(() => ({onsuccess : null, onerror : null}))
             const getObjectStoreMock = jest.fn(() => ({keyPath : "field1", delete : deleteMethodMock}))
@@ -620,7 +620,7 @@ describe("Testing DataAdapter", () => {
                 expect(reason).toBe("<TAG ERROR>");
             }
         })
-        it.skip("Testing removeOneBy() (with success)", async () => {
+        it("Testing removeOneBy() (with success)", async () => {
             // preparing mocks:
             const cursorContinueMock = jest.fn()
             const openCursorSuccessEvents = [
@@ -675,7 +675,7 @@ describe("Testing DataAdapter", () => {
             deleteMoethodMock.mock.results[0].value.onsuccess()
             expect(removeOne_promise).resolves.toBeDefined() // the promise is resolved correctly
         })
-        it.skip("Testing removeOneBy() (with success and error when deleting)", async () => {
+        it("Testing removeOneBy() (with success and error when deleting)", async () => {
             // preparing mocks:
             const cursorContinueMock = jest.fn()
             const openCursorSuccessEvent = { target: {  result: {  value: {  field1: "one1", field2: "two" }, continue : cursorContinueMock,key : "one1"} },}
@@ -702,7 +702,7 @@ describe("Testing DataAdapter", () => {
                 expect(reason).toBe("<TAG ERROR>")
             }
         })
-        it.skip("Testing removeOneBy() (with error)", async () => {
+        it("Testing removeOneBy() (with error)", async () => {
             // preparing mocks:
             const cursorContinueMock = jest.fn()
             const openCursorSuccessEvent = { target: {  result: {  value: {  field1: "one1", field2: "two" }, continue : cursorContinueMock,key : "one1"} },}
