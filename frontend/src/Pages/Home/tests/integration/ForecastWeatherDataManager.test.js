@@ -2,6 +2,7 @@ import DataManager, { FetchError } from '../../DataManager/DataManager';
 import dataAdapterFactory from '../../utils/DataAdapterFactory';
 import approximateCoordinates from '../../utils/approximateCoordinates';
 import forecast_data_mock from "./__mocks__/forecast_data"
+import weather_data_mock from "./__mocks__/weather_data"
 
 //dataAdapterFactory.createForecastWeatherAdapter.mockReturnValue(mockAdapter);
 
@@ -51,21 +52,19 @@ describe('Testing ForecastWeatherDataManager class', () => {
         await expect(forecastWeatherDataManager.loadOneBy({ lat: 10, lon: 20 })).rejects.toThrow("<TAG ERROR>");
       });
     });
-  
     describe('setOverdue', () => {
-      it("should set the due_dt of an entry", () => {
-        const entry = { field1: "one", field2 : "two", due_dt : 99 };
-        jest.spyOn(forecastWeatherDataManager, 'getExpirationTime').mockReturnValue(1000);
-        const result = forecastWeatherDataManager.setOverdue(entry);
-        expect(result).toEqual({ ...entry, due_dt: 1000 });
-      });
+        it("should set the due_dt of an entry", () => {
+            const entry = { field1: "one", field2 : "two", due_dt : 99 };
+            jest.spyOn(forecastWeatherDataManager, 'getExpirationTime').mockReturnValueOnce(1000);
+            const result = forecastWeatherDataManager.setOverdue(entry);
+            expect(result).toEqual({ ...entry, due_dt: 1000 });
+        });
     });
-  
     describe('Testing processFetchedData()', () => {
         it('should process and return data correctly', () => {
             const mockData = forecast_data_mock
             approximateCoordinates.mockReturnValue("[10.000,20.000]");
-            jest.spyOn(forecastWeatherDataManager, 'setOverdue').mockImplementation(data => data) // just return data as it is (this method has already been tested)
+            jest.spyOn(forecastWeatherDataManager, 'setOverdue').mockImplementationOnce(data => data) // just return data as it is (this method has already been tested)
 
             const result = forecastWeatherDataManager.processFetchedData(mockData)
 
@@ -86,34 +85,34 @@ describe('Testing ForecastWeatherDataManager class', () => {
         });
     });
   
-    describe.skip('getExpirationTime', () => {
+    describe('Testing getExpirationTime()', () => {
       it('should return correct expiration time', () => {
         const result = forecastWeatherDataManager.getExpirationTime();
         expect(result).toBeGreaterThan(Date.now());
       });
     });
   
-    describe.skip('getData', () => {
-      it('should call super.getData and return result', async () => {
-        const mockData = { weather: 'sunny' };
-        DataManager.prototype.getData.mockResolvedValue(mockData);
-      
-        const result = await forecastWeatherDataManager.getData({ lat: 10, lon: 20 });
-        expect(result).toEqual(mockData);
-      });
-  
-      it('should throw CoordinatesError for bad request', async () => {
-        DataManager.prototype.getData.mockRejectedValue(new FetchError({ statusText: 'Bad Request' }));
-      
-        await expect(forecastWeatherDataManager.getData({ lat: 10, lon: 20 })).rejects.toThrow(CoordinatesError);
-      });
-  
-      it('should throw original error for other fetch errors', async () => {
-        const originalError = new FetchError({ statusText: 'Network Error' });
-        DataManager.prototype.getData.mockRejectedValue(originalError);
-      
-        await expect(forecastWeatherDataManager.getData({ lat: 10, lon: 20 })).rejects.toThrow(originalError);
-      });
+    describe('Testing getData()', () => {
+        it('should call super.getData and return result', async () => {
+            const mockData = weather_data_mock
+            const super_getDataMock = jest.spyOn(DataManager.prototype, "getData").mockResolvedValueOnce(mockData)
+
+            const result = await forecastWeatherDataManager.getData({ lat: 10, lon: 20 });
+            expect(super_getDataMock).toHaveBeenCalledTimes(1)
+            expect(super_getDataMock.mock.calls[0][0]).toEqual({ lat: 10, lon: 20 })
+            expect(result).toEqual(mockData);
+            super_getDataMock.mockClear()
+        });
+    
+        it('should throw CoordinatesError for bad request', async () => {
+            const err = new FetchError({ statusText: 'Bad Request' })
+            err.body = { statusText: 'Bad Request' }
+            const super_getDataMock = jest.spyOn(DataManager.prototype, "getData").mockRejectedValueOnce(err)
+
+            await expect(forecastWeatherDataManager.getData({ lat: 10, lon: 20 })).rejects.toThrow(CoordinatesError);
+            expect(super_getDataMock).toHaveBeenCalledTimes(1)
+            super_getDataMock.mockClear()
+        })
     });
 });
 
