@@ -24,18 +24,18 @@ describe.skip("Testing approximateCoordinates", () => {
     })
     // incorrect inputs:
     it("Test 6", () => {
-        expect(approximateCoordinates({lat : -90.004, lon : 180})).toBe("[-90.00,180.00]")
+        expect(approximateCoordinates({lat : -89.995, lon : 180})).toBe("[-90.00,180.00]")
     })
     it("Test 7", () => {
-        expect(approximateCoordinates({lat : 90.009, lon : -180})).toThrow(ValueError)
+        expect(() => approximateCoordinates({lat : 90.009, lon : -180})).toThrow()
     })
     it("Test 8", () => {
-        expect(approximateCoordinates({lat : 90, lon : -180.004})).toBe("[90.00,-180.00]")
+        expect(() => approximateCoordinates({lat : 90, lon : -180.004})).toThrow()
     })
-    it("Test 9", () => {
-        expect(approximateCoordinates({lat : 90, lon : -180.005})).toThrow(ValueError)
+    it("Test 9", async () => {
+        expect(() => approximateCoordinates({lat : 90, lon : -180.005})).toThrow()
     })
     it("Test 10 absolutely incorrect", () => {
-        expect(approximateCoordinates({lat : 190, lon : -280.005})).toThrow(ValueError)
+        expect(() => approximateCoordinates({lat : 190, lon : -280.005})).toThrow()
     })
 })

@@ -1,23 +1,7 @@
 import { InputState } from "../../Context/inputState"
 
 describe("Fuzz testing of InputState class", () => {
-    const generateRandomInput = () => {
-        return {
-            city: Math.random().toString(36).substring(7),
-            country: Math.random().toString(36).substring(2),
-            lat: Math.floor(Math.random() * (180 + 180 + 1)) - 180,
-            lon: Math.floor(Math.random() * (360 + 360 + 1)) - 360,
-        }
-    }
-    const generateRandomInValidInput = () => {
-        return {
-            city: (Math.random() > .5)?"Moscow":"",
-            country: Math.random().toString(36).substring(2),
-            lat: Math.floor(Math.random() * (90 + 90 + 1)) - 90 + 91 * (Math.random() > .5)?(-1):1,
-            lon: Math.floor(Math.random() * (180 + 180 + 1)) - 180 + 181 * (Math.random() > .5)?(-1):1,
-        }
-    }
-    describe.skip("Testing setLat", () => {
+    describe("Testing setLat", () => {
         const generateRandomInput = () => {
             return Math.floor(Math.random() * (180 + 180 + 1)) - 180
         }

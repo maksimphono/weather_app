@@ -17,7 +17,7 @@ describe.skip("Testing DataAdapter", () => {
                   })),
                 },
             })),
-            deleteDatabase : jest.fn(() => console.log("Database deleted"))
+            deleteDatabase : jest.fn()
         }
     });
     afterAll(() => {
@@ -102,7 +102,7 @@ describe.skip("Testing DataAdapter", () => {
             const adapter = new DataAdapter("DB name in openDB", [{name : "field1", unique : true}, {name : "field2", unique : false}], "field1", 1)
             adapter.openDB()
 
-            console.dir(global.indexedDB.open.mock.results[0]) // immitate slow openning of indexedDB
+            //console.dir(global.indexedDB.open.mock.results[0]) // immitate slow openning of indexedDB
             await global.indexedDB.open.mock.results[0].value.onsuccess()
 
             expect(adapter.db).toBeDefined()
