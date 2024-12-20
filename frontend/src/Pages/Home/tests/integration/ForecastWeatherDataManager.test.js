@@ -116,17 +116,16 @@ describe('Testing ForecastWeatherDataManager class', () => {
     });
 });
 
-describe.skip('extractEveryDayData', () => {
-  it('should extract correct data from list', () => {
-    const mockList = Array(40).fill().map((_, i) => ({
-      dt_txt: `2023-01-${String(i + 1).padStart(2, '0')} ${String(i % 8 * 3).padStart(2, '0')}:00:00`
-    }));
-    const result = extractEveryDayData(mockList);
-    expect(result.length).toBe(5);
-  });
-
-  it('should return null if list length is not 40', () => {
-    const result = extractEveryDayData([]);
-    expect(result).toBeNull();
-  });
+describe('Teasting extractEveryDayData() function', () => {
+    it('should extract correct data from list', () => {
+        const mockList = Array(40).fill().map((_, i) => ({
+            dt_txt: `2023-01-${String(i + 1).padStart(2, '0')} ${String(i % 8 * 3).padStart(2, '0')}:00:00`
+        }));
+        const result = extractEveryDayData(mockList);
+        expect(result.length).toBe(5);
+    });
+    it('should return null if list length is not 40', () => {
+        const result = extractEveryDayData([]);
+        expect(result).toBeNull();
+    });
 });

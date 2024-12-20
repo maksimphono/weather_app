@@ -30,10 +30,12 @@ export class InputState {
         return this
     }
     setLat(val) {
+        if (val > 90 || val < -90) throw new Error("Latitude out of range")
         this._lat = val
         return this
     }
     setLon(val) {
+      if (val > 180 || val < -180) throw new Error("Longitude out of range")
         this._lon = val
         return this
     }
