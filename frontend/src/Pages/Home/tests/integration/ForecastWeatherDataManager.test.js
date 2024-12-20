@@ -1,6 +1,7 @@
 import DataManager, { FetchError } from '../../DataManager/DataManager';
 import dataAdapterFactory from '../../utils/DataAdapterFactory';
 import approximateCoordinates from '../../utils/approximateCoordinates';
+import forecast_data_mock from "./__mocks__/forecast_data"
 
 //dataAdapterFactory.createForecastWeatherAdapter.mockReturnValue(mockAdapter);
 
@@ -51,40 +52,38 @@ describe('Testing ForecastWeatherDataManager class', () => {
       });
     });
   
-    describe.skip('setOverdue', () => {
-      it('should set the due_dt of an entry', () => {
-        const entry = { data: 'test' };
+    describe('setOverdue', () => {
+      it("should set the due_dt of an entry", () => {
+        const entry = { field1: "one", field2 : "two", due_dt : 99 };
         jest.spyOn(forecastWeatherDataManager, 'getExpirationTime').mockReturnValue(1000);
         const result = forecastWeatherDataManager.setOverdue(entry);
         expect(result).toEqual({ ...entry, due_dt: 1000 });
       });
     });
   
-    describe.skip('processFetchedData', () => {
-      it('should process and return data correctly', () => {
-        const mockData = {
-          list: Array(40).fill({ dt_txt: '2023-01-01 12:00:00' }),
-          city: { coord: { lat: 10, lon: 20 } }
-        };
-        approximateCoordinates.mockReturnValue('approx_coords');
-        jest.spyOn(forecastWeatherDataManager, 'setOverdue').mockImplementation(data => data);
-      
-        const result = forecastWeatherDataManager.processFetchedData(mockData);
-      
-        expect(result).toEqual({
-          coordinates: 'approx_coords',
-          data: expect.objectContaining({
-            cnt: 5,
-            list: expect.any(Array)
-          }),
-          lat: 10,
-          lon: 20
+    describe('Testing processFetchedData()', () => {
+        it('should process and return data correctly', () => {
+            const mockData = forecast_data_mock
+            approximateCoordinates.mockReturnValue("[10.000,20.000]");
+            jest.spyOn(forecastWeatherDataManager, 'setOverdue').mockImplementation(data => data) // just return data as it is (this method has already been tested)
+
+            const result = forecastWeatherDataManager.processFetchedData(mockData)
+
+            expect(result).toEqual({
+                coordinates: "[10.000,20.000]",
+                data: expect.objectContaining({
+                    cnt: 5,
+                    list: expect.any(Array)
+                }),
+                lat: 10,
+                lon: 20
+            });
         });
-      });
-  
-      it('should throw error if data is invalid', () => {
-        expect(() => forecastWeatherDataManager.processFetchedData({ list: [] })).toThrow();
-      });
+    
+        it('should throw error if data is invalid', () => {
+            expect(() => forecastWeatherDataManager.processFetchedData({ list: [] })).toThrow()
+            expect(() => forecastWeatherDataManager.processFetchedData({ list: Array(39).fill({dt_txt : "<PLACEHOLDER>"}) })).toThrow()
+        });
     });
   
     describe.skip('getExpirationTime', () => {
